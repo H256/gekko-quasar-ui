@@ -98,10 +98,10 @@ const gekkoPackage = {version:'0.5.13'};//require('../../../../../package.json')
 const uiPackage = require('../../package.json');
 
 export default {
-  name: "LayoutDefault",
+  name: "MainLayoutPage",
   data() {
     return {
-      leftDrawerOpen: this.$q.platform.desktop,
+      leftDrawerOpen: false, 
       version: {
         gekko: gekkoPackage.version,
         ui: uiPackage.version
