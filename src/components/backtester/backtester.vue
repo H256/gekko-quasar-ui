@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row"><h2>Backtest</h2></div>
+    <h2 class="q-mb-xs">Backtest</h2>
     <div class="row">
       <div class="col-12">
          <config-builder v-on:config="check" />
@@ -47,7 +47,7 @@ export default {
       const req = {
         gekkoConfig: this.config,
         data: {
-          candleProps: ["close", "start"],
+          candleProps: ["open", "close", "high", "low", "start"],
           indicatorResults: true,
           report: true,
           roundtrips: true,

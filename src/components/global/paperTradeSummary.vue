@@ -1,27 +1,19 @@
-<template lang='jade'>
-.grd-row-col-3-6
-  table.p1
-    tr
-      th amount of trades
-      td {{ report.trades }}
-    tr
-      th sharpe ratio
-      td {{ round2(report.sharpe) }}
-    tr
-      th start balance
-      td {{ round(report.startBalance) }} {{ report.currency }}
-    tr
-      th final balance
-      td {{ round(report.balance) }} {{ report.currency }}
-    tr
-      th simulated profit
-
-  .big.txt--right.price(:class='profitClass') {{ round(report.relativeProfit) }}%
-
+<template>
+  <dl class="horizontal">
+    <dt>Amount of trades</dt>
+    <dd>{{report.trades}}</dd>
+    <dt>Sharpe ratio</dt>
+    <dd>{{round2(report.sharpe)}}</dd>
+    <dt>Start Balance</dt>
+    <dd>{{round(report.startBalance)}} {{report.currency}}</dd>
+    <dt>End Balance</dt>
+    <dd>{{round(report.balance)}} {{report.currency}}</dd>
+    <dt>Simulated profit</dt>
+    <dd class="q-title" :class="profitClass">{{round(report.relativeProfit)}} %</dd>
+  </dl>
 </template>
 
 <script>
-
 export default {
   props: ['report'],
   methods: {
@@ -31,34 +23,10 @@ export default {
   computed: {
     profitClass: function() {
       if(this.report.relativeProfit > 0)
-        return 'profit'
+        return 'text-positive'
       else
-        return 'loss'
+        return 'text-negative'
     }
   }
 }
 </script>
-
-<style>
-.summary td {
-  text-align: right;
-}
-
-.big {
-  font-size: 1.3em;
-  width: 80%;
-}
-
-.summary table {
-  width: 80%;
-}
-
-.price.profit {
-  color: #7FFF00;
-}
-
-.price.loss {
-  color: red;
-}
-
-</style>

@@ -1,75 +1,80 @@
-<template lang='jade'>
-  .contain.roundtrips
-    h2 Roundtrips
-    table(v-if='roundtrips.length')
-      thead
-        tr
-          th Entry at (UTC)
-          th Exit at (UTC)
-          th Exposure
-          th Entry balance
-          th Exit balance
-          th P&amp;L
-          th Profit
-        tr(v-for='rt in roundtrips')
-          td {{ fmt(rt.entryAt) }}
-          td {{ fmt(rt.exitAt) }}
-          td {{ diff(rt.duration) }}
-          td {{ round(rt.entryBalance) }}
-          td {{ round(rt.exitBalance) }}
-          template(v-if="Math.sign(rt.pnl)===-1")
-            td.loss {{ Math.sign(rt.pnl)*rt.pnl.toFixed(2) }}
-            td.loss {{ rt.profit.toFixed(2) }}%
-          template(v-else)
-            td.profit {{ rt.pnl.toFixed(2) }}
-            td.profit {{ rt.profit.toFixed(2) }}%
-    div(v-if='!roundtrips.length')
-      p Not enough data to display
+<template>
+  <div>
+    <h3>Roundtrips</h3>
+    <q-table 
+      :columns="tblColumns"
+      row-key="id"
+      :data="roundtrips"
+      :pagination="{rowsPerPage: 0}"
+      color="primary"
+      separator="horizontal"
+      hide-bottom
+        >
+        <q-td slot="body-cell-pAndL" slot-scope="props" :props="props">
+            <b v-if="Math.sign(props.value)===-1" class="text-negative">{{Math.sign(props.value)*props.value}}</b>
+            <b v-else class="text-positive">{{props.value}}</b>
+        </q-td>
+        <q-td slot="body-cell-pAndLPercent" slot-scope="props" :props="props">
+           <p v-if="Math.sign(props.value)===-1" class="text-negative"><b>{{props.value}} %</b><q-icon name="arrow downward" color="negative" size="1.2em" /></p>
+           <p v-else class="text-positive"><b>{{props.value}} %</b><q-icon name="arrow upward" color="positive" size="1.2em" /></p>
+        </q-td>
+    </q-table>
+    <div class="text-center" v-if="!roundtrips.length"><p class="q-title">Not enough data to display!</p></div>
+  </div>
 </template>
 
 <script>
+import moment from 'moment'
+import humanizeDuration from 'humanize-duration'
 export default {
   props: ['roundtrips'],
   data: () => {
-    return {}
-  },
-  methods: {
-    diff: n => moment.duration(n).humanize(),
-    humanizeDuration: (n) => window.humanizeDuration(n),
-    fmt: mom => moment.utc(mom).format('YYYY-MM-DD HH:mm'),
-    round: n => (+n).toFixed(3),
-  },
+    return {
+      tblColumns:[
+        {
+          name: 'entryAt',
+          label: 'Entry at (UTC)',
+          field: rt => moment.utc(rt.entryAt).format('YYYY-MM-DD HH:mm'),
+          sortable: false
+        },
+        {
+          name: 'exitAt',
+          label: 'Exit at (UTC)',
+          field: rt => moment.utc(rt.exitAt).format('YYYY-MM-DD HH:mm'),
+          sortable: false
+        },
+        {
+          name: 'exposure',
+          label: 'Exposure',
+          field: rt => moment.duration(rt.duration).humanize(),
+          sortable: false
+        },
+        {
+          name: 'entryBalance',
+          label: 'Entry balance',
+          field: rt => (+rt.entryBalance).toFixed(3),
+          sortable: false
+        },
+        {
+          name: 'exitBalance',
+          label: 'Exit balance',
+          field: rt => (+rt.exitBalance).toFixed(3),
+          sortable: false
+        },
+        {
+          name: 'pAndL',
+          label: 'P&L',
+          field: rt => rt.pnl.toFixed(2),
+          sortable: false
+        },
+        {
+          name: 'pAndLPercent',
+          label: '%',
+          field: rt => rt.profit.toFixed(2),
+          sortable: false
+        }
+      ]
+    }
+  }
 }
 </script>
-
-<style>
-
-.roundtrips {
-  margin-top: 50px;
-  margin-bottom: 50px;
-}
-
-.roundtrips table {
-  width: 100%;
-}
-
-.roundtrips table th,
-.roundtrips table td {
-  border: 1px solid #c6cbd1;
-  padding: 8px 12px;
-}
-
-.roundtrips table td.loss {
-  color: red;
-  text-align: right;
-}
-.roundtrips table td.profit {
-  color: green;
-  text-align: right;
-}
-
-.roundtrips table tr:nth-child(2n) {
-  background-color: #f6f8fa;
-}
-
-</style>

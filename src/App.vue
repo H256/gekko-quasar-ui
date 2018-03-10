@@ -12,7 +12,6 @@
 </template>
 
 <script>
-//import UiConfig from "./UiConfig";
 import { connect as connectWs, bus } from "./components/global/ws";
 import { restPath } from "./tools/api";
 

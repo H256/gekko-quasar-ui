@@ -24,13 +24,13 @@
         <q-field class="col-6" 
           label="Candle Size"
           orientation="vertical" 
-          helper="input a canlde size">
+          helper="input a candle size">
           <q-input v-model="rawCandleSize" type="number" />
         </q-field>
         <q-field class="col-6"
           label="Unit"
           orientation="vertical" 
-          helper="Canldesize unit"
+          helper="Candlesize unit"
           :label-width="2"
           >
           <q-select

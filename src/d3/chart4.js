@@ -1,5 +1,5 @@
 import _ from 'lodash';
-// global moment
+import moment from 'moment';
 
 export default function(_data, _trades, _height) {
 

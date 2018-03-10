@@ -1,11 +1,11 @@
-<template lang='jade'>
-#chartWrapper(v-bind:class='{ clickable: !isClicked }')
-  .shield(v-on:click.prevent='click')
-  svg#chart(width='960', :height='height')
+<template>
+  <div id="chartWrapper" :class="{clickable : !isClicked}">
+    <div class="shield" @click.prevent="click"></div>
+    <svg id="chart" width="960" :height="height"></svg>
+  </div>
 </template>
 
 <script>
-
 import chart from '../../../d3/chart4'
 import { draw as drawMessage, clear as clearMessage } from '../../../d3/message'
 

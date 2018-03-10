@@ -17,7 +17,7 @@
         
         
       </q-toolbar>
-        <q-tabs>
+        <q-tabs align="center">
           <q-route-tab slot="title" default icon="home" label="Home" to="/" exact></q-route-tab>
           <q-route-tab slot="title" icon="cast connected" label="Live Gekkos" to="/live-gekkos" exact></q-route-tab>
           <q-route-tab slot="title" icon="timeline" label="Backtest" to="/backtest" exact></q-route-tab>

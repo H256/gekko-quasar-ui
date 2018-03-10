@@ -1,13 +1,18 @@
-<template lang='jade'>
-  div
-    .hr.contain
-    div.contain
-      h3 Backtest result
-    result-summary(:report='result.report')
-    .hr.contain
-    chart(:data='result', height='500')
-    .hr.contain
-    roundtripTable(:roundtrips='result.roundtrips')
+<template>
+  <div>
+    <div>
+      <h3>Backtest result</h3>
+    </div>
+    <div>
+      <result-summary :report="result.report" />
+    </div>
+    <div>
+      <chart :data="result" height="500" />
+    </div>
+    <div>
+      <roundtrip-table :roundtrips="result.roundtrips" />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -28,6 +33,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

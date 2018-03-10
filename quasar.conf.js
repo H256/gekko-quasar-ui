@@ -15,7 +15,7 @@ module.exports = function (ctx) {
       'material-icons'
       // 'ionicons',
       // 'mdi',
-      // 'fontawesome'
+      //'fontawesome'
     ],
     supportIE: true,
     vendor: {
@@ -75,6 +75,7 @@ module.exports = function (ctx) {
         "QSpinnerDots",
         "QTab",
         "QTable",
+        "QTd",
         "QTabs",
         "QToolbar",
         "QToolbarTitle"

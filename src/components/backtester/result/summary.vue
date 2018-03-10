@@ -1,34 +1,30 @@
-<template lang='jade'>
-div.contain
-
-  .grd-row.summary
-    .grd-row-col-3-6
-      table.p1
-        tr
-          th start time
-          td {{ report.startTime }}
-        tr
-          th end time
-          td {{ report.endTime }}
-        tr
-          th timespan
-          td {{ report.timespan }}
-        tr
-          th start price
-          td {{ round(report.startPrice) }} {{ report.currency }}
-        tr
-          th end price
-          td {{ round(report.endPrice) }} {{ report.currency }}
-        tr
-          th market
-          td {{ round(report.market) }}%
-
-    paperTradeSummary(:report='report')
-
+<template>
+  <div>
+    <div class="row">
+      <div class="col-6">
+        <dl class="horizontal">
+          <dt>Start time</dt>
+          <dd>{{report.startTime}}</dd>
+          <dt>End time</dt>
+          <dd>{{report.endTime}}</dd>
+          <dt>Timespan</dt>
+          <dd>{{report.timespan}}</dd>
+          <dt>Start price</dt>
+          <dd>{{report.startPrice}} {{report.currency}}</dd>
+          <dt>End price</dt>
+          <dd>{{report.endPrice}} {{report.currency}}</dd>
+          <dt>Market</dt>
+          <dd class="text-weight-medium" :class="{'text-negative' : report.market < 0, 'text-positive': report.market > 0}">{{report.market.toFixed(6)}} %</dd>
+        </dl>
+      </div>
+      <div class="col-6">
+        <paper-trade-summary :report="report" />
+      </div>
+    </div>    
+  </div>
 </template>
 
 <script>
-
 import paperTradeSummary from '../../global/paperTradeSummary.vue'
 
 export default {
@@ -38,21 +34,6 @@ export default {
   },
   methods: {
     round: n => (+n).toFixed(5)
-  },
-  computed: {
-    profitClass: function() {
-      if(this.report.relativeProfit > 0)
-        return 'profit'
-      else
-        return 'loss'
-    }
   }
 }
 </script>
-
-<style>
-.summary td {
-  text-align: right;
-}
-
-</style>
