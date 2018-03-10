@@ -1,6 +1,6 @@
 {
   "name": "gekkomat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Quasar Frontend for Gekko Trading Bot",
   "productName": "Gekko Material UI",
   "cordovaId": "org.cordova.quasar.app",
@@ -17,7 +17,7 @@
   "devDependencies": {
     "jade": "^1.11.0",
     "marked": "^0.3.17",
-    "quasar-cli": "^0.15.6",
+    "quasar-cli": "^0.15.9",
     "superagent": "^3.8.2",
     "superagent-no-cache": "^0.1.1"
   },

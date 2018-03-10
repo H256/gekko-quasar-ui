@@ -1,6 +1,7 @@
-# Quasar UI
+# Gekko - Quasar UI Edition
 
-This is my personal try to port the original Gekko UI to the Quasar Framework for practice.
+This is my personal try to port the original Gekko UI to the Quasar Framework. 
+It's based off the original code from the [Gekko trading bot](https://gekko.wizb.it/) UI.
 
 ## Usage
 
@@ -16,7 +17,13 @@ To install, follow these steps:
 ***If you changed your default connection or database-settings, please edit the file ***`<gekko-quasar-ui-folder>/src/statics/UIConfig.js`*** accordingly.***
 
 
+## Screenshots
 
+![homepage](/img/gekko-quasar-1?raw=true "Gekko Home")
+![local-data](/img/gekko-quasar-2?raw=true "Local data management")
+![importer](/img/gekko-quasar-1?raw=true "Importer Configuration")
+![backtester](/img/gekko-quasar-1?raw=true "Backtester strategy configuration")
+![roundtrips](/img/gekko-quasar-1?raw=true "Backtester roundtrips")
 
 
 If you like the ported UI, drop me some coins for coffee ;)
