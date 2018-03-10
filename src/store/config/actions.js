@@ -1,7 +1,3 @@
-/*
-export const someAction = (state) => {}
- */
-
 const transformMarkets = backendData => {
   var exchangesRaw = backendData;
   var exchangesTemp = {};

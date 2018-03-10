@@ -8,19 +8,27 @@
 </template>
 
 <script>
-
-import datasetPicker from '../global/configbuilder/datasetpicker.vue'
-import stratPicker from '../global/configbuilder/stratpicker.vue'
-import paperTrader from '../global/configbuilder/papertrader.vue'
-import _ from 'lodash'
-import { get } from '../../tools/ajax'
+import datasetPicker from "../global/configbuilder/datasetpicker.vue";
+import stratPicker from "../global/configbuilder/stratpicker.vue";
+import paperTrader from "../global/configbuilder/papertrader.vue";
+import _ from "lodash";
 
 export default {
   created: function() {
-    get('configPart/performanceAnalyzer', (error, response) => {
-      this.performanceAnalyzer = toml.parse(response.part);
-      this.performanceAnalyzer.enabled = true;
-    });
+    this.$axios
+      .get(
+        this.$store.state.config.apiBaseUrl + "configPart/performanceAnalyzer"
+      )
+      .then(response => {
+        this.performanceAnalyzer = toml.parse(response.data.part);
+        this.performanceAnalyzer.enabled = true;
+      })
+      .catch(error => {
+        this.$q.notify({
+          type: "negative",
+          message: "Error getting Perfomance-Analyser config from server."
+        });
+      });
   },
   data: () => {
     return {
@@ -28,7 +36,7 @@ export default {
       strat: {},
       paperTrader: {},
       performanceAnalyzer: {}
-    }
+    };
   },
   components: {
     stratPicker,
@@ -37,23 +45,21 @@ export default {
   },
   computed: {
     market: function() {
-      if(!this.dataset.exchange)
-        return {};
+      if (!this.dataset.exchange) return {};
 
       return {
         exchange: this.dataset.exchange,
         currency: this.dataset.currency,
         asset: this.dataset.asset
-      }
+      };
     },
     range: function() {
-      if(!this.dataset.exchange)
-        return {};
+      if (!this.dataset.exchange) return {};
 
       return {
         from: this.dataset.from,
         to: this.dataset.to
-      }
+      };
     },
     config: function() {
       let config = {};
@@ -77,50 +83,43 @@ export default {
   },
   methods: {
     validConfig: function(config) {
-      if(!config.backtest)
-        return false;
+      if (!config.backtest) return false;
 
-      if(!config.backtest.daterange)
-        return false;
+      if (!config.backtest.daterange) return false;
 
-      if(_.isEmpty(config.backtest.daterange))
-        return false;
+      if (_.isEmpty(config.backtest.daterange)) return false;
 
-      if(!config.watch)
-        return false;
+      if (!config.watch) return false;
 
-      if(!config.tradingAdvisor)
-        return false;
+      if (!config.tradingAdvisor) return false;
 
       let strat = config.tradingAdvisor.method;
-      if(_.isEmpty(config[ strat ]))
-        return false;
+      if (_.isEmpty(config[strat])) return false;
 
-      if(config.tradingAdvisor) {
-        if(_.isNaN(config.tradingAdvisor.candleSize))
-          return false;
-        else if(config.tradingAdvisor.candleSize == 0)
-          return false;
+      if (config.tradingAdvisor) {
+        if (_.isNaN(config.tradingAdvisor.candleSize)) return false;
+        else if (config.tradingAdvisor.candleSize == 0) return false;
       }
 
       return true;
     },
     updateDataset: function(set) {
       this.dataset = set;
-      this.$emit('config', this.config);
+      this.$emit("config", this.config);
     },
     updateStrat: function(sc) {
       this.strat = sc;
-      this.$emit('config', this.config);
+      this.$emit("config", this.config);
     },
     updatePaperTrader: function(pt) {
       this.paperTrader = pt;
       this.paperTrader.enabled = true;
-      this.$emit('config', this.config);
-    },
+      this.$emit("config", this.config);
+    }
   }
-}
+};
 </script>
 
 <style>
+
 </style>

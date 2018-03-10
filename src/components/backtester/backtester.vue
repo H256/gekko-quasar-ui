@@ -1,6 +1,6 @@
 <template lang='jade'>
   div
-    h2.contain Backtest
+    h2 Backtest
     .hr.contain
     config-builder(v-on:config='check')
     div(v-if='backtestable')

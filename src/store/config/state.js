@@ -1,4 +1,7 @@
+import {restPath} from '../../tools/api'
+
 export default {
   apiKeys: [],
-  exchanges: {}
+  exchanges: {},
+  apiBaseUrl: restPath
 }
