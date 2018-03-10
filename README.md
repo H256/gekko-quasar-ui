@@ -17,16 +17,18 @@ To install, follow these steps:
 ***If you changed your default connection or database-settings, please edit the file ***`<gekko-quasar-ui-folder>/src/statics/UIConfig.js`*** accordingly.***
 
 
-## Screenshots
-
-![homepage](/img/gekko-quasar-1?raw=true "Gekko Home")
-![local-data](/img/gekko-quasar-2?raw=true "Local data management")
-![importer](/img/gekko-quasar-1?raw=true "Importer Configuration")
-![backtester](/img/gekko-quasar-1?raw=true "Backtester strategy configuration")
-![roundtrips](/img/gekko-quasar-1?raw=true "Backtester roundtrips")
-
-
 If you like the ported UI, drop me some coins for coffee ;)
 
 ***BTC: 191hR9AftcrGH2Vb29ogPBoUjFowsvAMrk***
+
+## Screenshots
+
+![homepage](img/gekko-quasar-1.png?raw=true "Gekko Home")
+![local-data](img/gekko-quasar-2.png?raw=true "Local data management")
+![importer](img/gekko-quasar-3.png?raw=true "Importer Configuration")
+![backtester](img/gekko-quasar-4.png?raw=true "Backtester strategy configuration")
+![roundtrips](img/gekko-quasar-5.png?raw=true "Backtester roundtrips")
+
+
+
 
