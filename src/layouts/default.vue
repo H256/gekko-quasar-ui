@@ -37,9 +37,13 @@
         inset-delimiter
       >
         <q-list-header>Essential Links</q-list-header>
+        <q-item @click.native="openURL('https://github.com/h256/gekko-quasar-ui')">
+          <q-item-side icon="code" />
+          <q-item-main label="Gekko-Quasar-UI on Github" sublabel="github.com/h256/gekko-quasar-ui" />
+        </q-item>
         <q-item @click.native="openURL('https://github.com/askmike/gekko')">
           <q-item-side icon="code" />
-          <q-item-main label="GitHub (original)" sublabel="github.com/askmike/gekko" />
+          <q-item-main label="Gekko on GitHub" sublabel="github.com/askmike/gekko" />
         </q-item>
         <q-item @click.native="openURL('https://discord.gg/26wMygt')">
           <q-item-side icon="chat" />
@@ -51,10 +55,6 @@
         </q-item>
         <q-item-separator></q-item-separator>
         <q-list-header>Unofficial resources (use at own risk!)</q-list-header>
-        <q-item @click.native="openURL('https://github.com/h256/gekko')">
-          <q-item-side icon="code" />
-          <q-item-main label="GitHub (H256's fork)" sublabel="github.com/h256/gekko" />
-        </q-item>
         <q-item @click.native="openURL('https://github.com/gekkowarez/gekkoga')">
           <q-item-side icon="code" />
           <q-item-main label="Gekko-GA " sublabel="Genetic algorithm for gekko" />
