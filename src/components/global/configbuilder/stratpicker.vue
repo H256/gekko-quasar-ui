@@ -1,46 +1,87 @@
-<template lang='jade'>
-.grd
-  .grd-row
-    .grd-row-col-3-6.px1
-      h3 Strategy
-      div
-        label(for='strat').wrapper Strategy:
-        .custom-select.button
-          select(v-model='strategy')
-            option(v-for='strat in strategies') {{ strat.name }}
-      div
-        label(for='candleSize') Candle Size
-        .grd-row
-          .grd-row-col-3-6
-            input(v-model='rawCandleSize')
-          .grd-row-col-3-6.align
-            .custom-select.button
-              select(v-model='candleSizeUnit')
-                option minutes
-                option hours
-                option days
-      div
-        label(for='historySize') Warmup period (in {{ rawCandleSize }} {{ singularCandleSizeUnit }} candles):
-        input(v-model='historySize')
-        em.label-like (will use {{ humanizeDuration(candleSize * historySize * 1000 * 60) }} of data as history)
-    .grd-row-col-2-6.px1
-      div
-        h3 Parameters
-        p {{ strategy }} Parameters:
-        textarea.params(v-model='rawStratParams')
-        p.bg--red.p1(v-if='rawStratParamsError') {{ rawStratParamsError.message }}
+<template>
+<div>    
+  <div class="row gutter-md">
+    <div class="col-4"><h3>Strategy</h3></div>
+    <div class="col-3"><h3>Parameters</h3></div>
+  </div>
+  <div class="row gutter-md">
+    <div class="col-4">
+      <q-field
+      label="Strategy"
+      orientation="vertical"      
+      helper="Pick a strategy"
+      :label-width="2"
+      >
+      <q-select
+      filter
+      autofocus-filter
+      v-model="strategy"
+      :options="strategiesForList"
+      
+      />
+      </q-field>
+      <div class="row q-mt-md gutter-sm">
+        <q-field class="col-6" 
+          label="Candle Size"
+          orientation="vertical" 
+          helper="input a canlde size">
+          <q-input v-model="rawCandleSize" type="number" />
+        </q-field>
+        <q-field class="col-6"
+          label="Unit"
+          orientation="vertical" 
+          helper="Canldesize unit"
+          :label-width="2"
+          >
+          <q-select
+            v-model="candleSizeUnit"
+            :options="candleSizeUnits"
+          />
+        </q-field>
+      </div>
+      <q-field 
+        :label="'Warmup period (in ' + rawCandleSize + ' ' + singularCandleSizeUnit + ' candles):'"
+        orientation="vertical" 
+        class="q-mt-md" 
+        :helper="'(will use ' + warmupHumanized +' of data as history)'">
+          <q-input 
+            v-model="historySize" 
+
+            type="number" 
+            />
+      </q-field>
+    </div>
+    <div class="col-3">
+      <q-field
+        :label=" strategy + ' Parameters:'"
+        orientation="vertical"
+        :error="!!rawStratParamsError"
+        :error-label="rawStratParamsError.message"
+        class="q-mt-md" 
+        helper="Adjust parameters here">
+          <q-input 
+            v-model="rawStratParams" 
+            type="textarea"
+            rows="12"
+            :max-height="100"
+            :inverted="!!rawStratParamsError"
+            />
+      </q-field>
+    </div>
+  </div>
+</div>
 </template>
 
 <script>
-
 import _ from 'lodash'
-import { get } from '../../../tools/ajax'
+import humanizeDuration from 'humanize-duration'
+import StrategyService from '../../mixins/StrategyService'
 
 export default {
+  mixins: [StrategyService],
   data: () => {
     return {
-      strategies: [],
-
+      candleSizeUnits: [{label:'minutes', value: 'minutes'}, {label:'hours', value: 'hours'}, {label:'days', value:'days'}],
       candleSizeUnit: 'hours',
       rawCandleSize: 1,
 
@@ -55,17 +96,7 @@ export default {
     };
   },
   created: function () {
-    get('strategies', (err, data) => {
-        this.strategies = data;
-
-        _.each(this.strategies, function(s) {
-          s.empty = s.params === '';
-        });
-
-        this.rawStratParams = _.find(this.strategies, { name: this.strategy }).params;
-        this.emptyStrat = _.find(this.strategies, { name: this.strategy }).empty;
-        this.emitConfig();
-    });
+    this.getStrategies();
   },
   watch: {
     strategy: function(strat) {
@@ -80,6 +111,9 @@ export default {
     rawStratParams: function() { this.emitConfig() }
   },
   computed: {
+    warmupHumanized: function(){
+      return humanizeDuration(this.candleSize * this.historySize * 1000 * 60)
+    },
     candleSize: function() {
        if(this.candleSizeUnit === 'minutes')
         return this.rawCandleSize;
@@ -111,7 +145,6 @@ export default {
     }
   },
   methods: {
-    humanizeDuration: (n) => window.humanizeDuration(n),
     emitConfig: function() {
       this.parseParams();
       this.$emit('stratConfig', this.config);
@@ -128,18 +161,3 @@ export default {
   }
 }
 </script>
-<style>
-.align .custom-select select {
-  padding: 0.4em 1.2em .3em .8em;
-}
-
-.label-like {
-  display: block;
-  font-size: 0.9em;
-  color: #777;
-}
-
-.align {
-  padding-left: 1em;
-}
-</style>

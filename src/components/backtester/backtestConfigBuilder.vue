@@ -1,11 +1,10 @@
-<template lang='jade'>
-.contain
-  dataset-picker.contain.my2(v-on:dataset='updateDataset')
-  .hr
-  strat-picker.contain.my2(v-on:stratConfig='updateStrat')
-  .hr
-  //paper-trader(v-on:settings='updatePaperTrader')
-  .hr
+<template>
+<div>
+  <dataset-picker v-on:dataset="updateDataset"></dataset-picker>
+  <strat-picker v-on:stratConfig="updateStrat"></strat-picker>
+  <paper-trader v-on:settings="updatePaperTrader"></paper-trader>
+</div>
+  
 </template>
 
 <script>

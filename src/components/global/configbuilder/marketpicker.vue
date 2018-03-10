@@ -44,8 +44,6 @@
 import _ from 'lodash'
 import exchangePicker from './exchangepicker'
 
-import { get } from '../../../tools/ajax'
-
 export default {
   props: ['onlyTradable', 'onlyImportable'],
   components: {

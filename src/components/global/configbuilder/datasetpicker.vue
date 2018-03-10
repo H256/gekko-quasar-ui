@@ -37,13 +37,17 @@
           :disabled="!this.selectedRow || this.selectedRow.length === 0">Adjust range</q-btn>
         <q-btn color="amber" icon="refresh" @click.prevent="scan">reload datasets</q-btn>
       </div>
-      <div v-if="rangeVisible">
-        <q-field class="col-6" label="From:" :label-width="1">
-          <q-datetime v-model="customFrom" :min="minSelectableRange" :max="maxSelectableRange" type="datetime" format-model="auto"></q-datetime>
-        </q-field>
-         <q-field label="To:" :label-width="1">
+      <div class="row"><p class="caption">Adjust the dataset range to your liking</p></div>
+      <div class="row gutter-md" v-if="rangeVisible">
+        <div class="col-6">
+          <q-field class="col-6" label="From:" :label-width="1">
+            <q-datetime v-model="customFrom" :min="minSelectableRange" :max="maxSelectableRange" type="datetime" format-model="auto"></q-datetime>
+          </q-field>
+        </div>
+        <div class="col-6"><q-field label="To:" :label-width="1">
           <q-datetime v-model="customTo" :min="minSelectableRange" :max="maxSelectableRange" type="datetime"></q-datetime>
-        </q-field>   
+        </q-field>
+       </div>
       </div>
       <div v-if="!datasets.length">
         <em>No Data found <router-link to="data/importer">Lets add some</router-link></em> 
