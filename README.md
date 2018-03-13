@@ -5,8 +5,14 @@ It's based off the original code from the [Gekko trading bot](https://gekko.wizb
 
 ## Usage
 
-Since this is still a **WIP** currently (meaning not all pages and components are fully ported), this repo only runs in DEV-Mode.
+1. Download (folder: dist/spa-mat) or clone this repo.
+2. In your gekko-folder zip up the folder `web/vue` as backup.
+3. Place everything from repo's `dist/spa-mat` into the `web/vue` folder. (index.html must be there)
+4. Start Gekko with UI command (`node gekko --ui`).
+5. Enjoy!
 
+
+## Developing
 To install, follow these steps:
 
 1. Install Quasar-CLI via npm `npm install -g quasar-cli`
