@@ -1,6 +1,6 @@
 {
   "name": "gekkomat",
-  "version": "0.1.1",
+  "version": "0.5.13",
   "description": "Quasar Frontend for Gekko Trading Bot",
   "productName": "Gekko Material UI",
   "cordovaId": "org.cordova.quasar.app",
