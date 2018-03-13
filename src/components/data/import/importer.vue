@@ -56,16 +56,16 @@ export default {
     }
   },
   methods: {
-     progress: function(imp) {
-      if(!imp)
-        return;
-      if(imp.done)
-        return 100;
+    progress: function(imp) {
+      if (!imp) return;
+      if (imp.done) return 100;
 
-      const current = moment.utc(imp.to).diff(moment.utc(imp.from)) - moment.utc(imp.to).diff(moment.utc(imp.latest));
+      const current =
+        moment.utc(imp.to).diff(moment.utc(imp.from)) -
+        moment.utc(imp.to).diff(moment.utc(imp.latest));
       let val = 100 * current;
-      val = val / moment.utc(imp.to).diff(moment.utc(imp.from))
-     return val ? +val.toFixed(2) : false;
+      val = val / moment.utc(imp.to).diff(moment.utc(imp.from));
+      return val ? +val.toFixed(2) : false;
     },
     daysApart: function(range) {
       let to = moment(range.to);
@@ -85,6 +85,27 @@ export default {
           message: "You can only import at least one day of data."
         });
         return;
+      }
+
+      let exchange = this.$store.state.config.exchanges[
+        this.config.watch.exchange
+      ];
+      if ("exchangeMaxHistoryAge" in exchange) {
+        if (
+          moment(this.config.importer.daterange.from) <
+          moment().subtract(exchange.exchangeMaxHistoryAge, "days")
+        ) {
+          this.$q.dialog({
+            title: "Error",
+            message:
+              "Your date from is too old for " +
+              this.config.watch.exchange +
+              ". It supports only the last " +
+              exchange.exchangeMaxHistoryAge +
+              " days.."
+          });
+          return;
+        }
       }
 
       this.startImport(this.config)
