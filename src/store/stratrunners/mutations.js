@@ -16,7 +16,7 @@ export const updateStratrunner = (state, update) => {
     if (!item)
         return state;
 
-    let updated = extendObj(item, update.updates);
+    let updated = Vue.util.extend(item, update.updates);
     Vue.set(state.stratrunners, index, updated);
 
     return state;
@@ -27,7 +27,7 @@ export const addTradeToStratrunner = (state, update) => {
     if (!item)
         return state;
 
-    let updated = extendObj({}, item);
+    let updated = Vue.util.extend({}, item);
     updated.trades.push(update.trade);
     Vue.set(state.stratrunners, index, updated);
 
@@ -40,7 +40,7 @@ export const addRoundtripToStratrunner = (state, update) => {
     if (!item)
         return state;
 
-    let updated = Vue.utils.extend({}, item);
+    let updated = Vue.util.extend({}, item);
     updated.roundtrips.push(update.roundtrip);
     Vue.set(state.stratrunners, index, updated);
 

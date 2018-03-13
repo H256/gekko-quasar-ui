@@ -2,11 +2,11 @@ import _ from 'lodash'
 
 export const syncStratrunners = ({ commit }, data) => {
     let runners = _.filter(data, { type: 'leech' });
-    commit('syncStratrunners', data);
+    commit('syncStratrunners', runners);
 }
 
 export const addStratrunner = ({ commit }, data) => {
-    commit('addStratrunner', data.gekko);
+    commit('addStratrunner', data);
 }
 
 export const updateStratrunner = ({ commit }, data) => {

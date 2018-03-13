@@ -76,6 +76,7 @@ module.exports = function (ctx) {
         "QTab",
         "QTable",
         "QTd",
+        "QTr",
         "QTabs",
         "QToolbar",
         "QToolbarTitle"

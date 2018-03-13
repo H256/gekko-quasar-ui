@@ -62,7 +62,7 @@ import moment from 'moment'
 import humanizeDuration from 'humanize-duration'
 import _ from 'lodash'
 
-import {extendObj} from '../../../tools/helpers'
+import Vue from 'vue'
 import dataset from '../../mixins/DatasetService'
 
 export default {
@@ -106,7 +106,7 @@ export default {
       if(!this.customTo)
         set = val;
       else {
-        set = extendObj({}, val);
+        set = Vue.util.extend({}, val);
         set.to = moment.utc(this.customTo, 'YYYY-MM-DD HH:mm').format();
         set.from = moment.utc(this.customFrom, 'YYYY-MM-DD HH:mm').format();
       }
@@ -117,7 +117,7 @@ export default {
   watch: {
 
     selectedRows: function() {
-      this.selectedRow = extendObj({},this.selectedRows[0]);
+      this.selectedRow = Vue.util.extend({},this.selectedRows[0]);
       this.selectedRow.from = this.selectedRow.from.toDate();
       this.selectedRow.to = this.selectedRow.to.toDate();
       this.minSelectableRange = this.selectedRow.from;

@@ -6,8 +6,7 @@ export const initWatchers = ({commit}, response) => {
 }
 
 export const addWatcher = ({commit}, data) => {
-    if(data.gekko.type === 'watcher')
-        commit('addWatcher', data.gekko);
+    commit('addWatcher', data);
 }
 
 export const updateWatcher = ({commit}, data) => {

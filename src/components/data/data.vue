@@ -1,5 +1,5 @@
 <template>
-<q-page padding>
+<div>
   <div>
     <h2>Local Data</h2>
     <p>
@@ -65,7 +65,7 @@
       <q-btn color="primary" label="Go to the importer!" @click.prevent="$router.push('data/importer')" />
     </div>
   </div>
-</q-page>
+</div>
 </template>
 
 <script>

@@ -54,7 +54,7 @@
           Go and <router-link to="/backtest">backtest</router-link> with your new data!</p>
     </div>
     <div v-if="!data">
-      <h2 class="negative">ERROR: Unknown import</h2>
+      <h2 class="text-negative">ERROR: Unknown import</h2>
       <p>The import could not be found!</p>
     </div>
   </q-page>

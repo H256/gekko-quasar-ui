@@ -14,6 +14,7 @@
 <script>
 import { connect as connectWs, bus } from "./components/global/ws";
 import { restPath } from "./tools/api";
+import _ from 'lodash';
 
 export default {
   name: "App",
@@ -48,14 +49,20 @@ export default {
       let updateFunc = data => {
         this.$store.dispatch("watchers/updateWatcher", data);
       };
+
       this.$axios.get(restPath + "gekkos").then(resp => {
-        this.$store.dispatch("watchers/initWatchers", resp.data);
+        let watchers = _.filter(resp.data, {type: 'watcher'});
+        let runners = _.filter(resp.data, {type: 'leech'});
+        this.$store.dispatch("watchers/initWatchers", watchers);
+        this.$store.dispatch("stratrunners/syncStratrunners", runners);
       }); // TODO: CATCH ERROR with Nofification
 
       // Hook in Watcher Websocket events
       bus.$on("new_gekko", data => {
-        this.$store.dispatch("watchers/addWatcher", data);
+        if(data.gekko.type === 'watcher')
+          this.$store.dispatch("watchers/addWatcher", data.gekko);
       });
+
       bus.$on("update", updateFunc);
       bus.$on("startAt", updateFunc);
       bus.$on("lastCandle", updateFunc);
@@ -79,22 +86,23 @@ export default {
       });
 
       // Strat-Runners
-      this.$axios.get(restPath + "gekkos").then(resp => {
-        this.$store.dispatch("stratrunners/syncStratrunners", resp.data);
-      }); // TODO: Catch error here with Notification...
       bus.$on("new_gekko", data => {
         if (data.gekko.type === "leech")
           this.$store.dispatch("stratrunners/addStratrunner", data.gekko);
       });
+      
       let update = data => {
         this.$store.dispatch("stratrunners/updateStratrunner", data);
       };
+      
       let trade = data => {
         this.$store.dispatch("stratrunners/addTradeToStratrunner", data);
       };
-      let roundtrip = data => {
+     
+     let roundtrip = data => {
         this.$store.dispatch("stratrunners/addRoundtripToStratrunner", data);
       };
+      
       bus.$on("report", update);
       bus.$on("trade", trade);
       bus.$on("update", update);

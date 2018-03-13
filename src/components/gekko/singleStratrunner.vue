@@ -108,7 +108,7 @@ export default {
   },
   computed: {
     stratrunners: function() {
-      return this.$store.state.stratrunners;
+      return this.$store.state.stratrunners.stratrunners;
     },
     data: function() {
       return _.find(this.stratrunners, {id: this.$route.params.id});

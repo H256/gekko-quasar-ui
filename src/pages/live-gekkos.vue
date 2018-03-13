@@ -1,13 +1,16 @@
 <template>
   <q-page padding>
-    <!-- content -->
-    <h1>Live-Gekkos here</h1>
+    <list-gekkos />
   </q-page>
 </template>
 
 <script>
+import listGekkos from '../components/gekko/list'
 export default {
-  // name: 'PageName',
+  name: 'LiveGekkosPage',
+  components: {
+    listGekkos
+  }
 }
 </script>
 
