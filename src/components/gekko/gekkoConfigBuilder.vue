@@ -2,7 +2,7 @@
   <div>
     <h3>Market</h3>
     <div class="row">
-      <div class="col-2">
+      <div class="col-3">
         <market-picker v-on:market='updateMarketConfig' :only-tradable="isTradebot" />
       </div>
       <div class="col-2">

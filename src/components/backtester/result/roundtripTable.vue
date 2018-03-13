@@ -8,7 +8,7 @@
       :pagination="{rowsPerPage: 0}"
       color="primary"
       separator="horizontal"
-      hide-bottom
+      no-data-label="Not enough data to display."
         >
         <q-td slot="body-cell-pAndL" slot-scope="props" :props="props">
             <b v-if="Math.sign(props.value)===-1" class="text-negative">{{Math.sign(props.value)*props.value}}</b>
@@ -19,7 +19,7 @@
            <p v-else class="text-positive"><b>{{props.value}} %</b><q-icon name="arrow upward" color="positive" size="1.2em" /></p>
         </q-td>
     </q-table>
-    <div class="text-center" v-if="!roundtrips.length"><p class="q-title">Not enough data to display!</p></div>
+    <!--<div class="text-center" v-if="!roundtrips.length"><p class="q-title">Not enough data to display!</p></div>-->
   </div>
 </template>
 

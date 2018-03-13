@@ -175,10 +175,11 @@ export default {
           });
         })
         .catch(error => {
-          this.$q.notify({
+          console.log(error);
+          /*this.$q.notify({
             type: "negative",
             message: "Error getting candle-data."
-          });
+          });*/
         });
     }
   }
