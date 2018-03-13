@@ -9,11 +9,6 @@ import stratrunners from './stratrunners'
 
 Vue.use(Vuex)
 
-// Stub for Websocket-Connection... see App.vue for real Bootstrappin of Events etc.
-export function initializeState() {
-  return true
-}
-
 const store = new Vuex.Store({
   modules: {
     config,

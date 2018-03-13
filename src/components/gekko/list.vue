@@ -72,7 +72,7 @@
           <q-td key="strategy" :props="props">
             {{props.row.strat ? props.row.strat.name : ''}}
           </q-td>
-          <q-td key="profit" :props="props">{ {props.row.report ? round(props.row.report.profit) : 0 }} {{ props.row.watch.curreny }}</q-td>
+          <q-td key="profit" :props="props">{{props.row.report ? round(props.row.report.profit) : 'N/A' }} {{ props.row.watch.curreny }}</q-td>
           <q-td key="actions" :props="props">
             <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/stratrunner/${props.row.id}`)" icon="visibility" label="view" />
           </q-td>
@@ -120,10 +120,10 @@ export default {
           name: "duration",
           label: "Duration"
         },
-                {
+        {
           name: "actions",
           label: "Actions"
-        },
+        }
       ],
       stratColumns: [
         {
@@ -153,6 +153,10 @@ export default {
         {
           name: "profit",
           label: "Profit"
+        },
+        {
+          name: "actions",
+          label: "Actions"
         }
       ]
     };

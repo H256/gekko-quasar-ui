@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { connect as connectWs, bus } from "./components/global/ws";
+import { connect as connectWs } from "./components/global/ws";
 import { restPath } from "./tools/api";
 import _ from 'lodash';
 
@@ -31,7 +31,7 @@ export default {
       // connect to websocket
       connectWs();
       // init store module (move from store to app-vue for better separation of concerns...)
-
+/*
       // API-Keys init
       this.$axios.get(restPath + "apiKeys").then(resp => {
         this.$store.dispatch("config/initApiKeys", resp.data);
@@ -110,6 +110,7 @@ export default {
       bus.$on("lastCandle", update);
       bus.$on("firstCandle", update);
       bus.$on("roundtrip", roundtrip);
+  */
     }
   }
 };

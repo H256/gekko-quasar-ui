@@ -1,29 +1,38 @@
-<template lang='jade'>
-div
-  h3 Type
-  template
-    label(for='type').wrapper What do you want to do with gekko?
-    form.radio.grd
-      div.grd-row(v-for='(type, i) in types').m1
-        input.grd-row-col-1-6(type='radio', :value='i', v-model='selectedTypeIndex')
-        label.grd-row-col-5-6(:for='i') {{ type }}
+<template>
+  <div>
+    <h3>Type</h3>
+    <p>What do you want to do with gekko?</p>
+    <div class="row">
+      <q-option-group 
+        color="tertiary"
+        type="radio"
+        v-model="selectedTypeIndex"
+        :options="types"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
-
 export default {
   created: function() {
+    this.types = [
+      { label: "Paper trader", value: 0, color: "blue" },
+      { label: "Market watcher", value: 1, color: "green" },
+      { label: "Tradebot", value: 2, color: "red" }
+    ];
     this.emitType();
   },
   data: () => {
     return {
-      types: ['paper trader', 'market watcher', 'tradebot'],
       selectedTypeIndex: 0,
-    }
+      types: [],
+      radio: 1
+    };
   },
   methods: {
     emitType: function() {
-      this.$emit('type', this.type);
+      this.$emit("type", this.type);
     }
   },
   watch: {
@@ -33,16 +42,8 @@ export default {
   },
   computed: {
     type: function() {
-      return this.types[ this.selectedTypeIndex ];
+      return this.types[this.selectedTypeIndex];
     }
   }
-}
+};
 </script>
-
-<style>
-
-.radio label {
-  margin-top: 0;
-}
-
-</style>

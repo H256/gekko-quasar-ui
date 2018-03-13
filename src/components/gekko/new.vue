@@ -109,11 +109,9 @@ export default {
       if (val && val.firstCandle && val.lastCandle) {
         this.pendingStratrunner = false;
 
-        this.startGekko((err, resp) => {
-          this.$router.push({
-            path: `/live-gekkos/stratrunner/${resp.id}`
-          });
-        });
+      this.startGekko()
+            .then(resp => this.routeToGekko(null, resp.data, "stratrunner"))
+            .catch(error => this.routeToGekko(error, resp.data));
       }
     }
   },
@@ -185,8 +183,8 @@ export default {
           // the specified market is already being watched,
           // just start a gekko!
           this.startGekko()
-            .then(this.routeToGekko(null, resp))
-            .catch(error => this.routeToGekko(error, resp));
+            .then(resp => this.routeToGekko(null, resp.data))
+            .catch(error => this.routeToGekko(error, resp.data));
         } else {
           // the specified market is not yet being watched,
           // we need to create a watcher
@@ -202,7 +200,7 @@ export default {
         }
       }
     },
-    routeToGekko: function(err, resp) {
+    routeToGekko: function(err, resp, type="watcher") {
       if (err || resp.error) {
         this.$q.notify({
           type: "negative",
@@ -211,7 +209,7 @@ export default {
         return console.error(err, resp.error);
       }
       this.$router.push({
-        path: `/live-gekkos/stratrunner/${resp.data.id}`
+        path: `/live-gekkos/${type}/${resp.id}`
       });
     },
     startWatcher: function() {

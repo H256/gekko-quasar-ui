@@ -2,7 +2,7 @@ import _ from 'lodash'
 import Vue from 'vue'
 
 import { wsPath } from '../../tools/api'
-import {initializeState} from '../../store/index'
+import initializeState from '../../store/init'
 
 var socket = null;
 

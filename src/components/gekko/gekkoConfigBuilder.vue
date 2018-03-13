@@ -1,16 +1,17 @@
-<template lang='jade'>
-.grd.contain
-  .grd-row
-    .grd-row-col-3-6.mx1
-      h3 Market
-      market-picker.contain(v-on:market='updateMarketConfig', :only-tradable='isTradebot')
-    .grd-row-col-3-6.mx1
-      type-picker(v-on:type='updateType')
-  template(v-if='type !== "market watcher"')
-    .hr
-    strat-picker.contain.my2(v-on:stratConfig='updateStrat')
-    .hr(v-if='type === "paper trader"')
-    paper-trader(v-on:settings='updatePaperTrader', v-if='type === "paper trader"')
+<template>
+  <div>
+    <h3>Market</h3>
+    <div class="row">
+      <div class="col-2">
+        <market-picker v-on:market='updateMarketConfig' :only-tradable="isTradebot" />
+      </div>
+      <div class="col-2">
+        <type-picker v-on:type="updateType" />
+      </div>
+    </div>
+    <strat-picker v-if="type !== 'market watcher'" v-on:stratConfig="updateStrat" />
+    <paper-trader v-if="type === 'paper trader'" v-on:settings="updatePaperTrader" />
+  </div>
 </template>
 
 <script>
@@ -19,19 +20,27 @@ import marketPicker from '../global/configbuilder/marketpicker.vue'
 import typePicker from '../global/configbuilder/typepicker.vue'
 import stratPicker from '../global/configbuilder/stratpicker.vue'
 import paperTrader from '../global/configbuilder/papertrader.vue'
-import { get } from '../../tools/ajax'
 import _ from 'lodash'
 
 export default {
 
   created: function() {
-    get('configPart/candleWriter', (error, response) => {
-      this.candleWriter = toml.parse(response.part);
-    });
-    get('configPart/performanceAnalyzer', (error, response) => {
-      this.performanceAnalyzer = toml.parse(response.part);
+    this.$axios.get(this.$store.state.config.apiBaseUrl + 'configPart/candleWriter')
+    .then(response=>{
+      this.candleWriter = toml.parse(response.data.part);
+    })
+    .catch(error => {
+      console.log("error getting candlewriter-config", error);
+    })
+  
+    this.$axios.get(this.$store.state.config.apiBaseUrl + 'configPart/performanceAnalyzer')
+    .then(response => {
+      this.performanceAnalyzer = toml.parse(response.data.part);
       this.performanceAnalyzer.enabled = true;
-    });
+    })
+    .catch(error => {
+      console.log("error getting performance-analyzer-config", error);
+    })
   },
   data: () => {
     return {
@@ -99,7 +108,7 @@ export default {
       this.emitConfig();
     },
     updateType: function(type) {
-      this.type = type;
+      this.type = type.label.toLowerCase();
       this.emitConfig();
     },
     updateStrat: function(strat) {
