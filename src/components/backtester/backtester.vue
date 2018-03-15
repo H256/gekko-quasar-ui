@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-12">
          <config-builder v-on:config="check" />
-      </div>     
+      </div>
     </div>
     <div class="row justify-center q-mt-md" v-if="backtestable">
       <q-btn color="primary" :loading="backtestState === 'fetching'" :disabled="backtestState === 'fetching'" @click.prevent="run">Backtest</q-btn>
@@ -12,7 +12,7 @@
     <div class="row justify-center q-mt-md" v-if="backtestable">
         <div v-if="backtestState === 'fetching'" class="text-center">
             <h4>Running backtest...</h4>
-            <q-spinner-bars color="secondary" size="48px"></q-spinner-bars> 
+            <q-spinner-bars color="secondary" size="48px"></q-spinner-bars>
         </div>
     </div>
     <result v-if="backtestResult && backtestState === 'fetched'" :result="backtestResult" />
