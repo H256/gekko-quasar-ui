@@ -8,8 +8,10 @@ It's based off the original code from the [Gekko trading bot](https://gekko.wizb
 1. Download (folder: dist/spa-mat) or clone this repo.
 2. In your gekko-folder zip up the folder `web/vue` as backup.
 3. Place everything from repo's `dist/spa-mat` into the `web/vue` folder. (index.html must be there)
-4. Start Gekko with UI command (`node gekko --ui`).
-5. Enjoy!
+4. Modify the first line in `web/routes/baseConfig.js` so that it looks like this `var UIconfig = require('../vue/statics/UIconfig');`
+5. Modify the first line in `web/server.js` so that it looks like this `const config = require('./vue/statics/UIconfig');`
+6. Start Gekko with UI command (`node gekko --ui`).
+7. Enjoy!
 
 
 ## Developing
