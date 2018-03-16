@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>Roundtrips</h3>
-    <q-table 
+    <q-table
       :columns="tblColumns"
       row-key="id"
       :data="roundtrips"
@@ -24,29 +24,31 @@
 </template>
 
 <script>
-import moment from 'moment'
-import humanizeDuration from 'humanize-duration'
+import DateFilters from '../../mixins/DateFilterMixin'
+
 export default {
   props: ['roundtrips'],
-  data: () => {
-    return {
-      tblColumns:[
+  mixins:[DateFilters],
+  data: () => {return {}},
+  computed: {
+    tblColumns: function() {
+      return [
         {
           name: 'entryAt',
           label: 'Entry at (UTC)',
-          field: rt => moment.utc(rt.entryAt).format('YYYY-MM-DD HH:mm'),
+          field: rt => this.$options.filters.formatDate(rt.entryAt), //moment.utc(rt.entryAt).format('YYYY-MM-DD HH:mm'),
           sortable: false
         },
         {
           name: 'exitAt',
           label: 'Exit at (UTC)',
-          field: rt => moment.utc(rt.exitAt).format('YYYY-MM-DD HH:mm'),
+          field: rt => this.$options.filters.formatDate(rt.exitAt),
           sortable: false
         },
         {
           name: 'exposure',
           label: 'Exposure',
-          field: rt => moment.duration(rt.duration).humanize(),
+          field: rt => this.$options.filters.humanizeMoment(rt.duration),
           sortable: false
         },
         {

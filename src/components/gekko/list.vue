@@ -27,10 +27,10 @@
             {{props.row.watch.asset}}
           </q-td>
           <q-td key="startedat" :props="props">
-            {{props.row.firstCandle ?  fmt(props.row.firstCandle.start) : ''}}
+            {{props.row.firstCandle ?  props.row.firstCandle.start : '' | formatDate}}
           </q-td>
           <q-td key="lastupdate" :props="props">
-            {{props.row.lastCandle ? fmt(props.row.lastCandle.start): ''}}
+            {{props.row.lastCandle ? props.row.lastCandle.start : '' | formatDate}}
           </q-td>
           <q-td key="duration" :props="props">
             {{props.row.firstCandle && props.row.lastCandle ?  timespan(props.row.lastCandle.start, props.row.firstCandle.start) : ''}}
@@ -64,7 +64,7 @@
             {{props.row.watch.asset}}
           </q-td>
           <q-td key="lastupdate" :props="props">
-            {{props.row.lastCandle ? fmt(props.row.lastCandle.start): ''}}
+            {{props.row.lastCandle ? props.row.lastCandle.start : '' | formatDate}}
           </q-td>
           <q-td key="duration" :props="props">
             {{props.row.firstCandle && props.row.lastCandle ?  timespan(props.row.lastCandle.start, props.row.firstCandle.start) : ''}}
@@ -89,8 +89,10 @@
 <script>
 import moment from "moment";
 import humanizeDuration from "humanize-duration";
+import DateFilters from '../mixins/DateFilterMixin'
 
 export default {
+  mixins:[DateFilters],
   data: () => {
     return {
       timer: false,
@@ -178,12 +180,10 @@ export default {
     }
   },
   methods: {
-    humanizeDuration: n => humanizeDuration(n),
     moment: mom => moment.utc(mom),
-    fmt: mom => moment.utc(mom).format("YYYY-MM-DD HH:mm"),
     round: n => (+n).toFixed(3),
     timespan: function(a, b) {
-      return this.humanizeDuration(this.moment(a).diff(this.moment(b)));
+      return humanizeDuration(this.moment(a).diff(this.moment(b)));
     }
   }
 };

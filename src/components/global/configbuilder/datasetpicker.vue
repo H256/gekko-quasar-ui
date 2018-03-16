@@ -8,11 +8,11 @@
       <q-spinner-bars color="secondary" v-if="datasetScanstate === 'scanning'" size="48px"></q-spinner-bars>
     </div>
     <div v-if="datasetScanstate === 'scanned'">
-    <q-table 
+    <q-table
       v-if="datasets.length"
-      title="Local Datasets" 
-      row-key="id" 
-      :data="datasets" 
+      title="Local Datasets"
+      row-key="id"
+      :data="datasets"
       :columns="tblColumns"
       dense
       :filter="dsFilter"
@@ -30,9 +30,9 @@
         </template>
       </q-table>
       <div class="text-center q-pa-sm" v-if="datasets.length">
-        <q-btn 
-          color="primary" 
-          icon="av timer" 
+        <q-btn
+          color="primary"
+          icon="av timer"
           @click.prevent="openRange"
           :disabled="!this.selectedRow || this.selectedRow.length === 0">Adjust range</q-btn>
         <q-btn color="amber" icon="refresh" @click.prevent="scan">reload datasets</q-btn>
@@ -50,7 +50,7 @@
        </div>
       </div>
       <div v-if="!datasets.length">
-        <em>No Data found <router-link to="data/importer">Lets add some</router-link></em> 
+        <em>No Data found <router-link to="data/importer">Lets add some</router-link></em>
       </div>
     </div>
 
@@ -59,8 +59,6 @@
 
 <script>
 import moment from 'moment'
-import humanizeDuration from 'humanize-duration'
-import _ from 'lodash'
 
 import Vue from 'vue'
 import dataset from '../../mixins/DatasetService'
@@ -85,9 +83,6 @@ export default {
     }
   },
   methods: {
-    humanizeDuration: (n) => {
-      return humanizeDuration(n, {largest: 4});
-    },
     fmt: mom => moment(mom).utc().format('YYYY-MM-DD HH:mm'),
     openRange: function() {
       this.updateCustomRange();
