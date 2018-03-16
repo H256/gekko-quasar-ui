@@ -93,19 +93,19 @@
               <strong>Market:</strong>
             </div>
             <div class="col">{{ round(report.market) }} {{ data.watch.currency }}</div>
-          </div> 
+          </div>
           <div class="row" v-if="report">
             <div class="col">
               <strong>Profit:</strong>
             </div>
             <div class="col">{{ round(report.profit) }} {{ data.watch.currency }}</div>
-          </div> 
+          </div>
           <div class="row" v-if="report">
             <div class="col">
               <strong>Alpha:</strong>
             </div>
             <div class="col">{{ round(report.alpha) }} {{ data.watch.currency }}</div>
-          </div> 
+          </div>
         </div>
       </div>
       <div class="row">
@@ -117,7 +117,7 @@
         <h3>Market Graph</h3>
         <div class="row justify-center">
           <q-spinner-bars v-if="candleFetch === 'fetching'" color="primary" size="36px" />
-          <chart v-if="candleFetch === 'fetched'" :data="chartData" :height="300"/>
+          <echart v-if="candleFetch === 'fetched'" :candles="chartData.candles" :trades="chartData.trades" />
         </div>
         <div class="row">
           <roundtrips class="col-12" :roundtrips="data.roundtrips"/>
@@ -134,7 +134,8 @@ import humanizeDuration from "humanize-duration";
 import Vue from "vue";
 import _ from "lodash";
 
-import chart from "../backtester/result/chartWrapper.vue";
+import echart from '../global/chart'
+
 import roundtrips from "../backtester/result/roundtripTable.vue";
 import paperTradeSummary from "../global/paperTradeSummary.vue";
 
@@ -143,7 +144,7 @@ export default {
     if (!this.isLoading) this.getCandles();
   },
   components: {
-    chart,
+    echart,
     paperTradeSummary,
     roundtrips
   },
