@@ -47,13 +47,13 @@
         </div>
         <div class="col-10">{{dataSpanning}}</div>
      </div>
-     <h3 v-if="!isLoading">Market Graph</h3>
+
      <div class="row" v-if="!isLoading && candleFetch === 'fetching'">
        <div class="col-2 text-center">
           <q-spinner-bars size="36" color="tertiary" />
        </div>
      </div>
-     <chart v-if="candles.length" :data="chartData" height="500" />
+     <echart v-if="candles.length" :candles="chartData.candles" :trades="chartData.trades" height="500" />
   </q-page>
 </template>
 
@@ -62,15 +62,15 @@ import moment from "moment";
 import humanizeDuration from "humanize-duration";
 
 import _ from "lodash";
-import Vue from "vue";
-import chart from "../backtester/result/chartWrapper.vue";
+
+import echart from '../global/chart'
 
 export default {
   created: function() {
     if (!this.isLoading) this.getCandles();
   },
   components: {
-    chart
+    echart
   },
   data: () => {
     return {
