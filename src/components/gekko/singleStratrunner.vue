@@ -241,11 +241,11 @@ export default {
         .post(this.$store.state.config.apiBaseUrl + "getCandles")
         .then(response => {
           this.candleFetch = "fetched";
-          if (!_.isArray(res)) {
+          if (!response.data || !_.isArray(response.data)) {
             return console.log(response);
           }
 
-          this.candles = res.map(c => {
+          this.candles = response.data.map(c => {
             c.start = moment
               .unix(c.start)
               .utc()
