@@ -114,8 +114,7 @@
         </p>
       </div>
       <div v-if="!isLoading">
-        <h3>Market Graph</h3>
-        <div class="row justify-center">
+        <div>
           <q-spinner-bars v-if="candleFetch === 'fetching'" color="primary" size="36px" />
           <echart v-if="candleFetch === 'fetched'" :candles="chartData.candles" :trades="chartData.trades" />
         </div>
@@ -228,7 +227,7 @@ export default {
       let candleSize = this.data.strat.tradingAdvisor.candleSize;
 
       let config = {
-        watch: this.data.watch,
+        watch: JSON.parse(JSON.stringify(this.data.watch)),
         daterange: {
           to,
           from
@@ -238,7 +237,7 @@ export default {
       };
 
       this.$axios
-        .post(this.$store.state.config.apiBaseUrl + "getCandles")
+        .post(this.$store.state.config.apiBaseUrl + "getCandles", config)
         .then(response => {
           this.candleFetch = "fetched";
           if (!response.data || !_.isArray(response.data)) {
