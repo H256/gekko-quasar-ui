@@ -84,7 +84,7 @@
         </q-toolbar-title>
         <q-toolbar-title>
           <em>Use Gekko at your own risk!</em>
-          <div slot="subtitle">Using Gekko v {{version.gekko}}</div>
+          <!--<div slot="subtitle">Using Gekko v {{version.gekko}}</div>-->
         </q-toolbar-title>
       </q-toolbar>
     </q-layout-footer>
@@ -94,7 +94,7 @@
 <script>
 import { openURL } from "quasar";
 //TODO: Get Real Version from API or from Folder...
-const gekkoPackage = {version:'0.5.13'};//require('../../../../../package.json');
+//const gekkoPackage = {version:'0.5.13'};//require('../../../../../package.json');
 const uiPackage = require('../../package.json');
 
 export default {
@@ -103,7 +103,7 @@ export default {
     return {
       leftDrawerOpen: false, 
       version: {
-        gekko: gekkoPackage.version,
+        //gekko: gekkoPackage.version,
         ui: uiPackage.version
       }
     };
