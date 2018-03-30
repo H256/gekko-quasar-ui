@@ -74,6 +74,8 @@ export default {
 
       this.chartOptions.dataZoom[1].startValue = lowest;
       this.chartOptions.dataZoom[1].endValue = highest;
+      this.chartOptions.dataZoom[0].start = 75;
+      this.chartOptions.dataZoom[0].end = 100;
       this.chartOptions.legend = {
         data: ["K"]
       };
