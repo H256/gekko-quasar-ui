@@ -22,7 +22,7 @@ import echart from '../../global/chart.vue'
 
 export default {
   props: ['result'],
-  data: () => {
+  data: function() {
     return {}
   },
   computed: {

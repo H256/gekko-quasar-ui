@@ -5,7 +5,8 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'i18n',
-      'axios'
+      //'axios'
+      'eventbus'
     ],
     css: [
       'app.styl'
@@ -77,6 +78,7 @@ module.exports = function (ctx) {
         "QSpinnerDots",
         "QSpinnerRadio",
         "QTab",
+        "QTabPane",
         "QTable",
         "QTd",
         "QTr",

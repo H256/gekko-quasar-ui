@@ -151,6 +151,11 @@ export default {
     trades: function(newVal, oldVal) {
       this.updateCandles();
     }
+  },
+  beforeDestroy() {
+    const that = this;
+    that.chartRef && that.chartRef.dispose();
+    that.chartRef = null;
   }
 };
 </script>

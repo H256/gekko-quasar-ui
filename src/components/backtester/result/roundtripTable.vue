@@ -29,7 +29,9 @@ import DateFilters from '../../mixins/DateFilterMixin'
 export default {
   props: ['roundtrips'],
   mixins:[DateFilters],
-  data: () => {return {}},
+  data: function() {
+    return {}
+    },
   computed: {
     tblColumns: function() {
       return [

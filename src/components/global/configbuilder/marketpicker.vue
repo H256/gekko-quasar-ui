@@ -49,7 +49,7 @@ export default {
   components: {
     exchangePicker
   },
-  data: () => {
+  data: function() {
     return {
       // defaults:
       exchange: 'poloniex',

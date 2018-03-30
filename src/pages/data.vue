@@ -8,6 +8,7 @@
 <script>
 import DataManager from '../components/data/data'
 export default {
+  name: 'DataPage',
   components: {
     DataManager
   }

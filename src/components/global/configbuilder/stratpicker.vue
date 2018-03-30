@@ -1,5 +1,5 @@
 <template>
-<div>    
+<div>
   <div class="row gutter-md">
     <div class="col-4"><h3>Strategy</h3></div>
     <div class="col-3"><h3>Parameters</h3></div>
@@ -8,7 +8,7 @@
     <div class="col-4">
       <q-field
       label="Strategy"
-      orientation="vertical"      
+      orientation="vertical"
       helper="Pick a strategy"
       :label-width="2"
       >
@@ -17,19 +17,19 @@
       autofocus-filter
       v-model="strategy"
       :options="strategiesForList"
-      
+
       />
       </q-field>
       <div class="row q-mt-md gutter-sm">
-        <q-field class="col-6" 
+        <q-field class="col-6"
           label="Candle Size"
-          orientation="vertical" 
+          orientation="vertical"
           helper="input a candle size">
           <q-input v-model="rawCandleSize" type="number" />
         </q-field>
         <q-field class="col-6"
           label="Unit"
-          orientation="vertical" 
+          orientation="vertical"
           helper="Candlesize unit"
           :label-width="2"
           >
@@ -39,15 +39,15 @@
           />
         </q-field>
       </div>
-      <q-field 
+      <q-field
         :label="'Warmup period (in ' + rawCandleSize + ' ' + singularCandleSizeUnit + ' candles):'"
-        orientation="vertical" 
-        class="q-mt-md" 
+        orientation="vertical"
+        class="q-mt-md"
         :helper="'(will use ' + warmupHumanized +' of data as history)'">
-          <q-input 
-            v-model="historySize" 
+          <q-input
+            v-model="historySize"
 
-            type="number" 
+            type="number"
             />
       </q-field>
     </div>
@@ -57,10 +57,10 @@
         orientation="vertical"
         :error="!!rawStratParamsError"
         :error-label="rawStratParamsError.message"
-        class="q-mt-md" 
+        class="q-mt-md"
         helper="Adjust parameters here">
-          <q-input 
-            v-model="rawStratParams" 
+          <q-input
+            v-model="rawStratParams"
             type="textarea"
             rows="12"
             :max-height="100"
@@ -79,7 +79,7 @@ import StrategyService from '../../mixins/StrategyService'
 
 export default {
   mixins: [StrategyService],
-  data: () => {
+  data: function() {
     return {
       candleSizeUnits: [{label:'minutes', value: 'minutes'}, {label:'hours', value: 'hours'}, {label:'days', value:'days'}],
       candleSizeUnit: 'hours',

@@ -11,20 +11,20 @@
         orientation="vertical"
         :error="!!rawPaperTraderParamsError"
         :error-label="rawPaperTraderParamsError.message"
-        class="q-mt-md" 
+        class="q-mt-md"
         helper="adjust you paper trader settings here...">
-          <q-input 
-            v-model="rawPaperTraderParams" 
+          <q-input
+            v-model="rawPaperTraderParams"
             type="textarea"
             rows="8"
             :max-height="80"
             :inverted="!!rawPaperTraderParamsError"
             />
       </q-field>
-    </div>    
+    </div>
   </div>
 </div>
-  
+
 </template>
 
 <script>
@@ -44,7 +44,7 @@ export default {
         });
       });
   },
-  data: () => {
+  data: function() {
     return {
       rawPaperTraderParams: "",
       rawPaperTraderParamsError: false,

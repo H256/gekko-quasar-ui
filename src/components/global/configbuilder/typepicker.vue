@@ -3,7 +3,7 @@
     <h3>Type</h3>
     <p>What do you want to do with gekko?</p>
     <div class="row">
-      <q-option-group 
+      <q-option-group
         color="tertiary"
         type="radio"
         v-model="selectedTypeIndex"
@@ -23,7 +23,7 @@ export default {
     ];
     this.emitType();
   },
-  data: () => {
+  data: function() {
     return {
       selectedTypeIndex: 0,
       types: [],

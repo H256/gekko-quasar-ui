@@ -44,7 +44,7 @@ export default {
   components: {
     apiConfigBuilder
   },
-  data: () => {
+  data: function() {
     return {
       addApiToggle: false
     };

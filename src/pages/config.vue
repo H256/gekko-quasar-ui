@@ -6,14 +6,11 @@
 
 <script>
 import config from '../components/config/config'
+
 export default {
-  
-  // name: 'PageName',
+   name: 'ConfigPage',
   components: {
     config
   }
 }
 </script>
-
-<style>
-</style>

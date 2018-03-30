@@ -82,6 +82,9 @@ export default {
       return this.datasetScanstate === 'scanning';
     }
   },
+  mounted: function(){
+    this.scan();
+  },
   methods: {
     fmt: mom => moment(mom).utc().format('YYYY-MM-DD HH:mm'),
     openRange: function() {

@@ -11,7 +11,7 @@ import rangeCreator from '../../global/configbuilder/rangecreator.vue'
 import _ from 'lodash'
 
 export default {
-  data: () => {
+  data: function() {
     return {
       market: {},
       range: {}

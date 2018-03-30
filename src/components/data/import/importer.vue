@@ -7,9 +7,9 @@
       <p v-if="imports.length === 0">You currently don't have any imports running.</p>
       <q-list highlight v-if="imports.length">
         <q-list-header>The following imports are currently running:</q-list-header>
-        <q-item 
-          v-for="_import in imports" 
-          :key="_import.id" 
+        <q-item
+          v-for="_import in imports"
+          :key="_import.id"
           :link="true"
           :to="'/data/importer/import/' + _import.id"
         >
@@ -21,7 +21,7 @@
           <q-item-side v-if="progress(_import)">
             {{progress(_import)}} %
           </q-item-side>
-        </q-item> 
+        </q-item>
       </q-list>
     </div>
     <div>
@@ -45,7 +45,7 @@ export default {
   components: {
     importConfigBuilder
   },
-  data: () => {
+  data: function() {
     return {
       config: {}
     };

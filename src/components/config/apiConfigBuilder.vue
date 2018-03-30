@@ -7,7 +7,7 @@
   <div class="row">
     <div class="col-4 q-pa-sm">
       <h4>Exchange</h4>
-      <exchange-picker 
+      <exchange-picker
       v-on:exchange="updateExchange"
       :only-tradeable="true"
       />
@@ -15,9 +15,9 @@
 
     <div class="col-8 q-pa-sm">
       <h4>Credentials</h4>
-      <q-input 
-      v-for="(cred, idx) in requires" 
-      :key="idx" 
+      <q-input
+      v-for="(cred, idx) in requires"
+      :key="idx"
       v-model='credentials[cred]'
       :stack-label="cred"
       />
@@ -36,7 +36,7 @@ import ApiKeyService from "../mixins/ApiKeyService";
 
 export default {
   mixins: [ApiKeyService],
-  data: () => {
+  data: function() {
     return {
       exchange: false,
       credentials: {}

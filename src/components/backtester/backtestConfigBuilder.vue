@@ -4,7 +4,7 @@
   <strat-picker v-on:stratConfig="updateStrat"></strat-picker>
   <paper-trader v-on:settings="updatePaperTrader"></paper-trader>
 </div>
-  
+
 </template>
 
 <script>
@@ -98,7 +98,7 @@ export default {
 
       if (config.tradingAdvisor) {
         if (_.isNaN(config.tradingAdvisor.candleSize)) return false;
-        else if (config.tradingAdvisor.candleSize == 0) return false;
+        else if (config.tradingAdvisor.candleSize === 0) return false;
       }
 
       return true;

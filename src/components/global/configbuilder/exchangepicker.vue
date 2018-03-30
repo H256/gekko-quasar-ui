@@ -3,12 +3,12 @@
   helper="Pick an exchange"
   :label-width="3"
 >
-<q-select 
+<q-select
     filter
     autofocus-filter
-    v-model="exchange" 
-    :options="exchangeList" 
-    float-label="Exchange" 
+    v-model="exchange"
+    :options="exchangeList"
+    float-label="Exchange"
     />
 </q-field>
 </template>
@@ -18,7 +18,7 @@ import _ from "lodash";
 
 export default {
   props: ["onlyTradable", "onlyImportable"],
-  data: () => {
+  data: function() {
     return {
       exchange: "poloniex"
     };

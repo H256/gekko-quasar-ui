@@ -24,7 +24,7 @@ import configBuilder from "./backtestConfigBuilder.vue";
 import result from "./result/result.vue";
 
 export default {
-  data: () => {
+  data: function() {
     return {
       backtestable: false,
       backtestState: "idle",
