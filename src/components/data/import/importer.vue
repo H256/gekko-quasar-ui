@@ -13,6 +13,7 @@
 
 
         <q-tab-pane name="running-imports">
+          <div class="row">
           <q-alert v-if="imports.length === 0"
                    type="warning"
                    icon="warning"
@@ -20,11 +21,11 @@
             You currently don't have any imports running.
           </q-alert>
 
-          <div class="row justify-center">
+
             <q-card
               v-for="_import in imports"
               :key="_import.id"
-              class="col-1 text-center q-mr-md"
+              class="col text-center q-mr-md q-mt-sm"
             >
               <q-card-title class="bg-teal-2">
                 {{ _import.watch.exchange }}
