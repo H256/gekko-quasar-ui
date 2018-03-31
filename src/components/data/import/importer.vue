@@ -2,7 +2,6 @@
   <q-page padding>
     <div class="q-headline">Import data</div>
     <div class="subheading">The importer can download historical market data directly from the exchange.</div>
-    <q-divider></q-divider>
     <div class="row justify-center q-pa-md">
       <q-btn color="amber" label="Start Import" @click.prevent="run"/>
     </div>
