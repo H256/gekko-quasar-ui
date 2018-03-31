@@ -1,15 +1,14 @@
 // import something here
 import axios from 'axios'
 import _ from "lodash";
-import { restPath } from "../tools/api";
-import { wsPath } from '../tools/api'
+import {restPath} from "../tools/api";
+import {wsPath} from '../tools/api'
 //import initializeState from '../store/init'
 
 let socket = null;
 
 // leave the export, even if you don't use it
-export default ({ app, router, Vue, store }) => {
-
+export default ({app, router, Vue, store}) => {
   // AXIOS to prototype
   Vue.prototype.$axios = axios;
 
@@ -30,36 +29,31 @@ export default ({ app, router, Vue, store }) => {
 
   const connect = () => {
     socket = new ReconnectingWebSocket(wsPath);
-
     setTimeout(() => {
       // in case we cannot connect
-      if(!info.connected) {
+      if (!info.connected) {
         bus.$emit('WS_STATUS_CHANGE', info);
       }
     }, 500);
-
     socket.onopen = () => {
-      if(info.connected)
+      if (info.connected)
         return;
-
       info.connected = true;
       bus.$emit('WS_STATUS_CHANGE', info);
     };
     socket.onclose = () => {
-      if(!info.connected)
+      if (!info.connected)
         return;
-
       info.connected = false;
       bus.$emit('WS_STATUS_CHANGE', info);
     };
     socket.onerror = () => {
-      if(!info.connected)
+      if (!info.connected)
         return;
-
       info.connected = false;
       bus.$emit('WS_STATUS_CHANGE', info);
     };
-    socket.onmessage = function(message) {
+    socket.onmessage = function (message) {
       let payload = JSON.parse(message.data);
       bus.$emit(payload.type, payload);
     };
@@ -84,8 +78,8 @@ export default ({ app, router, Vue, store }) => {
   };
 
   axios.get(restPath + "gekkos").then(resp => {
-    let watchers = _.filter(resp.data, { type: "watcher" });
-    let runners = _.filter(resp.data, { type: "leech" });
+    let watchers = _.filter(resp.data, {type: "watcher"});
+    let runners = _.filter(resp.data, {type: "leech"});
     store.dispatch("watchers/initWatchers", watchers);
     store.dispatch("stratrunners/syncStratrunners", runners);
   }); // TODO: CATCH ERROR with Nofification

@@ -1,8 +1,7 @@
 <template>
-  <q-card inline style="width:250px" class="q-ma-sm">
-    <q-card-title>
-      Daterange
-    </q-card-title>
+  <q-card class="q-ma-sm">
+    <q-card-title class="bg-amber-8 text-white">Daterange</q-card-title>
+    <q-card-separator />
     <q-card-main>
       <q-field
         label="From"

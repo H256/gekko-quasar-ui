@@ -1,130 +1,160 @@
 <template>
   <q-page padding>
-    <h2>Import data</h2>
-    <p>The importer can download historical market data directly from the exchange.</p>
-    <div>
-      <h3>Currently running imports</h3>
-      <p v-if="imports.length === 0">You currently don't have any imports running.</p>
-      <q-list highlight v-if="imports.length">
-        <q-list-header>The following imports are currently running:</q-list-header>
-        <q-item
-          v-for="_import in imports"
-          :key="_import.id"
-          :link="true"
-          :to="'/data/importer/import/' + _import.id"
-        >
-          <q-item-side :class="_import.done ? 'text-green' : 'text-black'" :icon="_import.done ? 'done' : 'fast forward'"></q-item-side>
-          <q-item-main>
-            <b>{{ _import.watch.exchange }}</b>:{{ _import.watch.currency }}/{{ _import.watch.asset }}
-            <q-progress v-if="progress(_import)" animated height="10px" :percentage="+progress(_import)" color="primary"></q-progress>
-          </q-item-main>
-          <q-item-side v-if="progress(_import)">
-            {{progress(_import)}} %
-          </q-item-side>
-        </q-item>
-      </q-list>
-    </div>
-    <div>
-      <h3>Start new import</h3>
-      <import-config-builder v-on:config="updateConfig"></import-config-builder>
-    </div>
+    <div class="q-headline">Import data</div>
+    <div class="subheading">The importer can download historical market data directly from the exchange.</div>
+    <q-divider></q-divider>
     <div class="row justify-center q-pa-md">
-        <q-btn color="primary" label="Import" @click.prevent="run" />
+      <q-btn color="amber" label="Start Import" @click.prevent="run"/>
+    </div>
+    <div>
+      <q-tabs v-model="currentTab" align="justify" color="blue-grey-5 text-white full-width">
+        <q-tab icon="av timer" slot="title" name="running-imports" label="Running imports"></q-tab>
+        <q-tab icon="add" slot="title" name="start-new" label="Start new import"></q-tab>
+
+
+        <q-tab-pane name="running-imports">
+          <q-alert v-if="imports.length === 0"
+                   type="warning"
+                   icon="warning"
+          >
+            You currently don't have any imports running.
+          </q-alert>
+
+          <div class="row justify-center">
+            <q-card
+              v-for="_import in imports"
+              :key="_import.id"
+              class="col-1 text-center q-mr-md"
+            >
+              <q-card-title class="bg-teal-2">
+                {{ _import.watch.exchange }}
+                <span slot="subtitle">
+                {{ _import.watch.currency }}-{{ _import.watch.asset }}
+              </span>
+              </q-card-title>
+              <q-card-separator></q-card-separator>
+              <q-card-main>
+                <q-knob
+                  :class="{'text-teal': !_import.done, 'text-positive': _import.done}"
+                  :min="0"
+                  :max="100"
+                  :value="+progress(_import)">
+                  <q-icon size="64px" v-if="_import.done" color="positive" name="done"></q-icon>
+                  <span v-if="!_import.done" class="q-title">{{+progress(_import)}} %</span>
+                </q-knob>
+              </q-card-main>
+              <q-card-separator></q-card-separator>
+              <q-card-actions align="center">
+                <q-btn color="teal" flat :to="'/data/importer/import/' + _import.id">open import</q-btn>
+              </q-card-actions>
+            </q-card>
+          </div>
+        </q-tab-pane>
+
+        <q-tab-pane name="start-new">
+          <import-config-builder v-on:config="updateConfig"></import-config-builder>
+        </q-tab-pane>
+
+      </q-tabs>
     </div>
   </q-page>
 
 </template>
 
 <script>
-import importConfigBuilder from "./importConfigBuilder.vue";
-import ImportService from "../../mixins/ImportService";
-import moment from "moment";
+  import importConfigBuilder from "./importConfigBuilder.vue";
+  import ImportService from "../../mixins/ImportService";
+  import moment from "moment";
 
-export default {
-  mixins: [ImportService],
-  components: {
-    importConfigBuilder
-  },
-  data: function() {
-    return {
-      config: {}
-    };
-  },
-  computed: {
-    imports: function() {
-      return this.$store.state.imports.imports;
-    }
-  },
-  methods: {
-    progress: function(imp) {
-      if (!imp) return;
-      if (imp.done) return 100;
-
-      const current =
-        moment.utc(imp.to).diff(moment.utc(imp.from)) -
-        moment.utc(imp.to).diff(moment.utc(imp.latest));
-      let val = 100 * current;
-      val = val / moment.utc(imp.to).diff(moment.utc(imp.from));
-      return val ? +val.toFixed(2) : false;
+  export default {
+    mixins: [ImportService],
+    components: {
+      importConfigBuilder
     },
-    daysApart: function(range) {
-      let to = moment(range.to);
-      let from = moment(range.from);
-
-      return to.diff(from, "days");
+    data: function () {
+      return {
+        config: {},
+        currentTab: "running-imports"
+      };
     },
-    updateConfig: function(config) {
-      this.config = config;
+    mounted: function () {
+      if (!this.imports.length) this.currentTab = "start-new"
     },
-    run: function() {
-      let daysApart = this.daysApart(this.config.importer.daterange);
-
-      if (daysApart < 1) {
-        this.$q.dialog({
-          title: "Error",
-          message: "You can only import at least one day of data."
-        });
-        return;
+    computed: {
+      imports: function () {
+        return this.$store.state.imports.imports;
       }
+    },
+    methods: {
+      progress: function (imp) {
+        if (!imp) return;
+        if (imp.done) return 100;
 
-      let exchange = this.$store.state.config.exchanges[
-        this.config.watch.exchange
-      ];
-      if ("exchangeMaxHistoryAge" in exchange) {
-        if (
-          moment(this.config.importer.daterange.from) <
-          moment().subtract(exchange.exchangeMaxHistoryAge, "days")
-        ) {
+        const current =
+          moment.utc(imp.to).diff(moment.utc(imp.from)) -
+          moment.utc(imp.to).diff(moment.utc(imp.latest));
+        let val = 100 * current;
+        val = val / moment.utc(imp.to).diff(moment.utc(imp.from));
+        return val ? +val.toFixed(2) : false;
+      },
+      daysApart: function (range) {
+        let to = moment(range.to);
+        let from = moment(range.from);
+
+        return to.diff(from, "days");
+      },
+      updateConfig: function (config) {
+        this.config = config;
+      },
+      run: function () {
+        let daysApart = this.daysApart(this.config.importer.daterange);
+
+        if (daysApart < 1) {
           this.$q.dialog({
             title: "Error",
-            message:
+            message: "You can only import at least one day of data."
+          });
+          return;
+        }
+
+        let exchange = this.$store.state.config.exchanges[
+          this.config.watch.exchange
+          ];
+        if ("exchangeMaxHistoryAge" in exchange) {
+          if (
+            moment(this.config.importer.daterange.from) <
+            moment().subtract(exchange.exchangeMaxHistoryAge, "days")
+          ) {
+            this.$q.dialog({
+              title: "Error",
+              message:
               "Your date from is too old for " +
               this.config.watch.exchange +
               ". It supports only the last " +
               exchange.exchangeMaxHistoryAge +
               " days.."
-          });
-          return;
+            });
+            return;
+          }
         }
-      }
 
-      this.startImport(this.config)
-        .then(response => {
-          this.$store.dispatch("imports/addImport", response.data);
-          this.$router.push({
-            path: `/data/importer/import/${response.data.id}`
+        this.startImport(this.config)
+          .then(response => {
+            this.$store.dispatch("imports/addImport", response.data);
+            this.$router.push({
+              path: `/data/importer/import/${response.data.id}`
+            });
+          })
+          .catch(error => {
+            console.error(error);
+            this.$q.notify({
+              message: "An error occured while trying to start the import!",
+              type: "negative"
+            });
           });
-        })
-        .catch(error => {
-          console.error(error);
-          this.$q.notify({
-            message: "An error occured while trying to start the import!",
-            type: "negative"
-          });
-        });
+      }
     }
-  }
-};
+  };
 </script>
 
 <style>

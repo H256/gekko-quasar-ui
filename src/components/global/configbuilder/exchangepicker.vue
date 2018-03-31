@@ -1,5 +1,6 @@
 <template>
 <q-field
+  label="Exchange"
   helper="Pick an exchange"
   :label-width="3"
 >
@@ -8,7 +9,6 @@
     autofocus-filter
     v-model="exchange"
     :options="exchangeList"
-    float-label="Exchange"
     />
 </q-field>
 </template>
