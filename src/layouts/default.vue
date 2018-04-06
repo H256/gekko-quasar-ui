@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
-      <q-toolbar color="blue-grey-7">
+      <q-toolbar color="blue-grey-8">
         <q-btn
           flat
           dense
@@ -13,13 +13,29 @@
         <q-toolbar-title>
           Gekko UI
         </q-toolbar-title>
+
+        <q-toolbar-title shrink v-if="currentWatchers.length > 0" class="text-right">Prices: <span slot="subtitle">(from Watchers)</span></q-toolbar-title>
+        <q-toolbar-title shrink v-for="(w,idx) in currentWatchers" :key="w.id" v-if="w.lastCandle">
+          {{w.lastCandle.close}}
+          <span class="text-amber">
+              {{w.watch.currency}}
+            </span>
+          <span slot="subtitle">
+              {{w.watch.exchange}}
+              <span class="text-amber-4">{{w.watch.asset}}
+              </span>
+            </span>
+        </q-toolbar-title>
+
       </q-toolbar>
       <q-tabs align="justify" color="blue-grey-7">
         <q-route-tab slot="title" default icon="home" label="Home" to="/" exact></q-route-tab>
-        <q-route-tab slot="title" icon="cast connected" label="Live Gekkos" to="/live-gekkos" exact :count="$store.state.stratrunners.stratrunners.length"></q-route-tab>
+        <q-route-tab slot="title" icon="cast connected" label="Live Gekkos" to="/live-gekkos" exact
+                     :count="$store.state.stratrunners.stratrunners.length"></q-route-tab>
         <q-route-tab slot="title" icon="timeline" label="Backtest" to="/backtest" exact></q-route-tab>
         <q-route-tab slot="title" icon="storage" label="Data" to="/data" exact></q-route-tab>
-        <q-route-tab slot="title" icon="import export" label="Importer" to="/data/importer" exact :count="activeImports"></q-route-tab>
+        <q-route-tab slot="title" icon="import export" label="Importer" to="/data/importer" exact
+                     :count="activeImports"></q-route-tab>
         <q-route-tab slot="title" icon="settings" label="Config" to="/config" exact></q-route-tab>
         <q-route-tab slot="title" icon="help" label="Documentation" to="/help"></q-route-tab>
       </q-tabs>
@@ -108,8 +124,13 @@
       };
     },
     computed: {
-      activeImports: function(){
-        return _.filter(this.$store.state.imports.imports, function(item){ return !item.done}).length;
+      activeImports: function () {
+        return _.filter(this.$store.state.imports.imports, function (item) {
+          return !item.done
+        }).length;
+      },
+      currentWatchers: function () {
+        return _.slice(this.$store.getters['watchers/watchers'], 0, 5);
       }
     },
     methods: {

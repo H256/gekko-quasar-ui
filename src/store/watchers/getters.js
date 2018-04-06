@@ -1,3 +1,2 @@
-/*
-export const someGetter = (state) => {}
- */
+export const watchers = (state) => state.watchers;
+
