@@ -45,7 +45,7 @@
               </q-card-main>
               <q-card-separator></q-card-separator>
               <q-card-actions align="center">
-                <q-btn color="teal" flat :to="'/data/importer/import/' + _import.id">open import</q-btn>
+                <q-btn color="teal" flat @click="$router.push('/data/importer/import/' + _import.id)">open import</q-btn>
               </q-card-actions>
             </q-card>
           </div>
