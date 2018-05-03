@@ -130,7 +130,7 @@
         }).length;
       },
       currentWatchers: function () {
-        return _.slice(this.$store.getters['watchers/watchers'], 0, 5);
+        return _.slice(this.$store.getters['watchers/watchers'], 0, 10);
       }
     },
     methods: {

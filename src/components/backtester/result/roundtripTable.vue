@@ -1,6 +1,17 @@
 <template>
   <div>
     <h3>Roundtrips</h3>
+    <div class="row">
+      <div class="col">Percent Wins: <b>{{getPercentWinning().toFixed(2)}} %</b></div>
+      <div class="col">Best Win: <b class="text-positive">{{getMostLeastProfitable().toFixed(2)}} %</b></div>
+      <div class="col">Worst Loss: <b class="text-negative">{{getMostLeastProfitable(true).toFixed(2)}} %</b></div>
+    </div>
+    <div class="row q-mb-md">
+      <div class="col">Profit/Loss: <b>{{(getSum() + getSum(true)).toFixed(8)}} {{currency}}</b></div>
+      <div class="col">Sum profits: <b class="text-positive">{{getSum().toFixed(8)}} {{currency}}</b></div>
+      <div class="col">Sum losses: <b class="text-negative"> {{getSum(true).toFixed(8)}} {{currency}}</b></div>
+    </div>
+
     <q-table
       :columns="tblColumns"
       row-key="id"
@@ -11,8 +22,8 @@
       no-data-label="Not enough data to display."
         >
         <q-td slot="body-cell-pAndL" slot-scope="props" :props="props">
-            <b v-if="Math.sign(props.value)===-1" class="text-negative">{{Math.sign(props.value)*props.value}}</b>
-            <b v-else class="text-positive">{{props.value}}</b>
+            <b v-if="Math.sign(props.value)===-1" class="text-negative">{{Math.sign(props.value)*props.value}} {{currency}}</b>
+            <b v-else class="text-positive">{{props.value}} {{currency}}</b>
         </q-td>
         <q-td slot="body-cell-pAndLPercent" slot-scope="props" :props="props">
            <p v-if="Math.sign(props.value)===-1" class="text-negative"><b>{{props.value}} %</b><q-icon name="arrow downward" color="negative" size="1.2em" /></p>
@@ -25,9 +36,10 @@
 
 <script>
 import DateFilters from '../../mixins/DateFilterMixin'
+import _ from 'lodash'
 
 export default {
-  props: ['roundtrips'],
+  props: ['roundtrips', 'currency', 'asset'],
   mixins:[DateFilters],
   data: function() {
     return {}
@@ -68,7 +80,7 @@ export default {
         {
           name: 'pAndL',
           label: 'P&L',
-          field: rt => rt.pnl.toFixed(2),
+          field: rt => rt.pnl.toFixed(8),
           sortable: false
         },
         {
@@ -78,6 +90,30 @@ export default {
           sortable: false
         }
       ]
+    }
+  },
+  methods: {
+    getMostLeastProfitable(least){
+      if(this.roundtrips && this.roundtrips.length){
+        return least === true ? _.get(_.minBy(this.roundtrips, 'profit'),'profit') : _.get(_.maxBy(this.roundtrips, 'profit'),'profit');
+      }
+      return 0
+    },
+    getPercentWinning(){
+      let win = 0;
+      if(this.roundtrips && this.roundtrips.length){
+        _.each(this.roundtrips, function(item){
+          if(item.profit > 0) win++;
+        });
+        return (100 * win / this.roundtrips.length);
+      }
+      return 0
+    },
+    getSum(losses){
+      if(this.roundtrips && this.roundtrips.length) {
+        return losses === true ? _.sumBy(this.roundtrips, o => o.profit < 0 ? o.profit : 0) : _.sumBy(this.roundtrips, o => o.profit > 0 ? o.profit : 0);
+      }
+      return 0;
     }
   }
 }

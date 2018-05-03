@@ -10,7 +10,7 @@
       <echart :candles="candles" :trades="trades"></echart>
     </div>
     <div>
-      <roundtrip-table :roundtrips="result.roundtrips" />
+      <roundtrip-table :roundtrips="result.roundtrips" :asset="result.report.asset" :currency="result.report.currency" />
     </div>
   </div>
 </template>

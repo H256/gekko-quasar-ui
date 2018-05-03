@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Select a dataset</h3>
+    <h3>Select a dataset {{selectedText}}</h3>
     <div class="text-center" v-if="datasetScanstate === 'idle'">
       <q-btn color="primary" @click.prevent="scan">Scan available data</q-btn>
     </div>
@@ -80,6 +80,12 @@ export default {
   computed: {
     isScanning(){
       return this.datasetScanstate === 'scanning';
+    },
+    selectedText(){
+      if(this.selectedRow){
+        return `(current: ${this.selectedRow.currency} - ${this.selectedRow.asset})`
+      }
+      return ""
     }
   },
   mounted: function(){
