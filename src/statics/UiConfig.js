@@ -16,11 +16,10 @@ const CONFIG = {
       port: 3000,
       path: '/'
     },
-    adapter: 'mongodb'
+    adapter: 'postgresql'
   }
-  
+
   if(typeof window === 'undefined')
     module.exports = CONFIG;
   else
     window.CONFIG = CONFIG;
-  

@@ -15,6 +15,10 @@
             <q-spinner-bars color="secondary" size="48px"></q-spinner-bars>
         </div>
     </div>
+    <div class="row justify-center" v-if="backtestable">
+      <q-btn color="red" class="q-mr-xs" :disabled="backtestState === 'fetching'" @click.prevent="startLiveGekko(false)" icon="flash on" label="Start Tradebot" />
+      <q-btn color="amber-8" class="q-ml-xs" :disabled="backtestState === 'fetching'" @click.prevent="startLiveGekko(true)" icon="remove red eye" label="Start Paper Trader" />
+    </div>
     <result v-if="backtestResult && backtestState === 'fetched'" :result="backtestResult" />
   </div>
 </template>
@@ -22,8 +26,10 @@
 <script>
 import configBuilder from "./backtestConfigBuilder.vue";
 import result from "./result/result.vue";
+import liveMixin from '../mixins/LiveGekkoSharedMixin'
 
 export default {
+  mixins:[liveMixin],
   data: function() {
     return {
       backtestable: false,
@@ -67,6 +73,19 @@ export default {
             message: "Error during backtest-fetching of data."
           });
         });
+    },
+    startLiveGekko(isPaperTrader){
+      this.config.type = isPaperTrader ? "paper trader" : "tradebot";
+      this.$q.dialog({
+        title: 'Start live ' + this.config.type + "?",
+        message: 'Do you really want to start a live ' + this.config.type + ' for ' + this.config.watch.currency + '-' + this.config.watch.asset + ' on ' + this.config.watch.exchange + ' with the current backtest settings?',
+        ok: 'Yes',
+        cancel: 'No'
+      }).then(() => {
+        if(!isPaperTrader) _.set(this.config, "trader.enabled", true);
+        this.start();
+      })
+
     }
   },
   components: {

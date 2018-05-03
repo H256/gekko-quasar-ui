@@ -49,8 +49,8 @@ export default {
 
       return {
         exchange: this.dataset.exchange,
-        currency: this.dataset.currency,
-        asset: this.dataset.asset
+        currency: this.dataset.currency.toUpperCase(),
+        asset: this.dataset.asset.toUpperCase()
       };
     },
     range: function() {
