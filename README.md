@@ -1,17 +1,26 @@
 # Gekko - Quasar UI Edition
 
-This is my personal try to port the original Gekko UI to the Quasar Framework. 
+This is my personal try to port the original Gekko UI to the Quasar Framework.
 It's based off the original code from the [Gekko trading bot](https://gekko.wizb.it/) UI.
 
-Use this parallel to the original Gekko-UI.
+Use this parallel to the original Gekko-UI (or compile and replace the original).
+
+## Some Features:
+- "Tickers" for all running live market-watchers in the top toolbar
+- Searchable tables for datasets
+- EChart-Candlestick charts for market and backtest-graphs
+- some stats for roundtrips
+- Material design UI
+- Enhanced information for running live-bots (differentiate between live-bot and paper-trader at a glance)
+- and more...
 
 ## Usage
 
 ### Dev-Mode
-Needed: 
+Needed:
   - Node >= 7.0
   - running Gekko Instance started as --ui
-  
+
 To install, follow these steps:
 
 1. Install Quasar-CLI via npm `npm install -g quasar-cli`
