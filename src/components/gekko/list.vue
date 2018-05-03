@@ -57,8 +57,11 @@
       >
         <q-tr slot="body" slot-scope="props" :props="props"
               :class="{'bg-green-11': (props.row.report && props.row.report.profit > 0), 'bg-red-11': (props.row.report && props.row.report.profit < 0)}">
+          <q-td key="type" :props="props">
+            {{props.row.trader.replace(/\b\w/g, l => l.toUpperCase())}}
+          </q-td>
           <q-td key="exchange" :props="props">
-            {{props.row.watch.exchange}}
+            {{props.row.watch.exchange.toUpperCase()}}
           </q-td>
           <q-td key="pair" :props="props">
             {{props.row.watch.currency}} - {{props.row.watch.asset}}
@@ -139,6 +142,10 @@
           }
         ],
         stratColumns: [
+          {
+            name: "type",
+            label: "Type"
+          },
           {
             name: "exchange",
             label: "Exchange"

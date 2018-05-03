@@ -5,7 +5,7 @@
       <p>Gekko doesn't know what strat runner this is...</p>
     </div>
     <div v-if="data">
-      <h2>Strat runner</h2>
+      <h2>{{runnerType}}</h2>
       <div class="row">
         <div class="col-3">
           <h3>Market</h3>
@@ -154,6 +154,13 @@ export default {
     };
   },
   computed: {
+    runnerType: function(){
+      let current = _.find(this.stratrunners, { id: this.$route.params.id });
+      if(current && current.trader){
+        return current.trader.replace(/\b\w/g, l => l.toUpperCase());
+      }
+      return "Strat runner";
+    },
     stratrunners: function() {
       return this.$store.state.stratrunners.stratrunners;
     },

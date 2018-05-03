@@ -47,8 +47,12 @@ If you like the ported UI, drop me some coins for coffee ;)
 
 ## Screenshots
 
-![homepage](img/gekko-quasar-1.png?raw=true "Gekko Home")
-![local-data](img/gekko-quasar-2.png?raw=true "Local data management")
-![importer](img/gekko-quasar-3.png?raw=true "Importer Configuration")
-![backtester](img/gekko-quasar-4.png?raw=true "Backtester strategy configuration")
-![roundtrips](img/gekko-quasar-5.png?raw=true "Backtester roundtrips")
+![image1](img/gekko-quasar-1.png?raw=true "Screenshot 1")
+![image2](img/gekko-quasar-2.png?raw=true "Screenshot 2")
+![image3](img/gekko-quasar-3.png?raw=true "Screenshot 3")
+![image4](img/gekko-quasar-4.png?raw=true "Screenshot 4")
+![image5](img/gekko-quasar-5.png?raw=true "Screenshot 5")
+![image6](img/gekko-quasar-6.png?raw=true "Screenshot 6")
+![image7](img/gekko-quasar-7.png?raw=true "Screenshot 7")
+![image8](img/gekko-quasar-8.png?raw=true "Screenshot 8")
+![image9](img/gekko-quasar-9.png?raw=true "Screenshot 9")
