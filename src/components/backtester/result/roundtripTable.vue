@@ -111,7 +111,7 @@ export default {
     },
     getSum(losses){
       if(this.roundtrips && this.roundtrips.length) {
-        return losses === true ? _.sumBy(this.roundtrips, o => o.profit < 0 ? o.profit : 0) : _.sumBy(this.roundtrips, o => o.profit > 0 ? o.profit : 0);
+        return losses === true ? _.sumBy(this.roundtrips, o => o.profit < 0 ? o.pnl : 0) : _.sumBy(this.roundtrips, o => o.profit > 0 ? o.pnl : 0);
       }
       return 0;
     }
