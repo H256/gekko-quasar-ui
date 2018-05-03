@@ -113,15 +113,16 @@ export default {
     }
   },
   watch: {
-
-    selectedRows: function() {
-      this.selectedRow = Vue.util.extend({},this.selectedRows[0]);
-      this.selectedRow.from = this.selectedRow.from.toDate();
-      this.selectedRow.to = this.selectedRow.to.toDate();
-      this.minSelectableRange = this.selectedRow.from;
-      this.maxSelectableRange = this.selectedRow.to;
-      this.updateCustomRange();
-      this.emitSet(this.selectedRow[0]);
+    selectedRows: function(row) {
+        if(row && row.length) {
+          this.selectedRow = Vue.util.extend({}, this.selectedRows[0]);
+          this.selectedRow.from = this.selectedRow.from.toDate();
+          this.selectedRow.to = this.selectedRow.to.toDate();
+          this.minSelectableRange = this.selectedRow.from;
+          this.maxSelectableRange = this.selectedRow.to;
+          this.updateCustomRange();
+          this.emitSet(this.selectedRow[0]);
+        }
     },
 
     customTo: function() { this.emitSet(this.selectedRow); },
