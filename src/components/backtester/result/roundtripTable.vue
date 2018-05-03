@@ -1,12 +1,12 @@
 <template>
   <div>
     <h3>Roundtrips</h3>
-    <div class="row">
+    <div class="row" v-if="roundtrips && roundtrips.length">
       <div class="col">Percent Wins: <b>{{getPercentWinning().toFixed(2)}} %</b></div>
       <div class="col">Best Win: <b class="text-positive">{{getMostLeastProfitable().toFixed(2)}} %</b></div>
       <div class="col">Worst Loss: <b class="text-negative">{{getMostLeastProfitable(true).toFixed(2)}} %</b></div>
     </div>
-    <div class="row q-mb-md">
+    <div class="row q-mb-md" v-if="roundtrips && roundtrips.length">
       <div class="col">Profit/Loss: <b>{{(getSum() + getSum(true)).toFixed(8)}} {{currency}}</b></div>
       <div class="col">Sum profits: <b class="text-positive">{{getSum().toFixed(8)}} {{currency}}</b></div>
       <div class="col">Sum losses: <b class="text-negative"> {{getSum(true).toFixed(8)}} {{currency}}</b></div>
