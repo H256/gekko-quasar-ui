@@ -95,7 +95,15 @@ export default {
   methods: {
     getMostLeastProfitable(least){
       if(this.roundtrips && this.roundtrips.length){
-        return least === true ? _.get(_.minBy(this.roundtrips, 'profit'),'profit') : _.get(_.maxBy(this.roundtrips, 'profit'),'profit');
+        let pVal = 0;
+        if(least) {
+          pVal = _.get(_.minBy(this.roundtrips, 'profit'), 'profit');
+          if (pVal > 0) return 0;
+        } else {
+          pVal = _.get(_.maxBy(this.roundtrips, 'profit'),'profit');
+          if(pVal < 0) return 0;
+        }
+        return pVal;
       }
       return 0
     },
