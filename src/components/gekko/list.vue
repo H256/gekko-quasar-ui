@@ -274,16 +274,17 @@
                 });
                 if (wIdx >= 0) wList.push(this.watchers[wIdx].id)
               }
+              let self = this;
               wList.forEach(function (id) {
-                this.$axios
-                  .post(this.$store.state.config.apiBaseUrl + "killGekko", {id: id})
+                self.$axios
+                  .post(self.$store.state.config.apiBaseUrl + "killGekko", {id: id})
                   .then(response => {
-                    this.$q.notify({type: 'positive', message: 'Successfully stopped Gekko (ID ' + id + ')'});
-                    this.$store.dispatch('stratrunners/removeRunner', id);
-                    this.$store.dispatch('watchers/removeWatcher', id);
+                    self.$q.notify({type: 'positive', message: 'Successfully stopped Gekko (ID ' + id + ')'});
+                    self.$store.dispatch('stratrunners/removeRunner', id);
+                    self.$store.dispatch('watchers/removeWatcher', id);
                   })
                   .catch(error => {
-                    this.$q.notify({
+                    self.$q.notify({
                       type: 'negative',
                       message: 'Error while stopping Gekko (ID ' + id + ')',
                       detail: error
@@ -323,24 +324,23 @@
                 otherRunners.forEach(function (item) {
                   wList.push(item.id);
                 });
+                let self = this;
                 wList.forEach(function (id) {
-                  this.$axios
-                    .post(this.$store.state.config.apiBaseUrl + "killGekko", {id: id})
+                  self.$axios
+                    .post(self.$store.state.config.apiBaseUrl + "killGekko", {id: id})
                     .then(response => {
-                      this.$q.notify({type: 'positive', message: 'Successfully stopped Gekko (ID ' + id + ')'});
-                      this.$store.dispatch('stratrunners/removeRunner', id);
-                      this.$store.dispatch('watchers/removeWatcher', id);
+                      self.$q.notify({type: 'positive', message: 'Successfully stopped Gekko (ID ' + id + ')'});
+                      self.$store.dispatch('stratrunners/removeRunner', id);
+                      self.$store.dispatch('watchers/removeWatcher', id);
                     })
                     .catch(error => {
-                      this.$q.notify({
+                      self.$q.notify({
                         type: 'negative',
                         message: 'Error while stopping Gekko (ID ' + id + ')',
                         detail: error
                       });
                     });
                 })
-              }).catch(() => {
-                this.$q.notify('Disagreed...')
               })
             } else {
               // watcher has no dependency , so just confirm it's stop

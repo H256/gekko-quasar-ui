@@ -5,6 +5,9 @@ It's based off the original code from the [Gekko trading bot](https://gekko.wizb
 
 Use this parallel to the original Gekko-UI (or compile and replace the original).
 
+*Sidenote: Currently the repository works with Gekko 0.5.14 and it will probably break when Gekko 0.6 is out due to a completely rewritten event-system.*
+
+
 ## Some Features:
 - "Tickers" for all running live market-watchers in the top toolbar
 - Searchable tables for datasets
