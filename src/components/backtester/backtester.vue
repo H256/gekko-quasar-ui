@@ -76,6 +76,7 @@ export default {
     },
     startLiveGekko(isPaperTrader){
       this.config.type = isPaperTrader ? "paper trader" : "tradebot";
+      if(!isPaperTrader) _.set(this.config, 'paperTrader.enabled', false); // disable paper trader, when we want to start a live bot
       this.$q.dialog({
         title: 'Start live ' + this.config.type + "?",
         message: 'Do you really want to start a live ' + this.config.type + ' for ' + this.config.watch.currency + '-' + this.config.watch.asset + ' on ' + this.config.watch.exchange + ' with the current backtest settings?',
