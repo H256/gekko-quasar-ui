@@ -20,3 +20,7 @@ export const addTradeToStratrunner = ({ commit }, data) => {
 export const addRoundtripToStratrunner = ({ commit }, data) => {
     commit('addRoundtripToStratrunner', data);
 }
+
+export const removeRunner = ({commit}, gekkoId) => {
+  commit('removeRunner', gekkoId);
+}

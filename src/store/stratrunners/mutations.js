@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import _ from 'lodash'
 
 export const addStratrunner = (state, runner) => {
     state.stratrunners.push(runner);
@@ -45,4 +46,10 @@ export const addRoundtripToStratrunner = (state, update) => {
     Vue.set(state.stratrunners, index, updated);
 
     return state;
+}
+
+export const removeRunner = (state, idToRemove) => {
+  state.stratrunners =_.filter(state.stratrunners, function(r) {
+    return r.id.toString() !== idToRemove.toString();
+  });
 }

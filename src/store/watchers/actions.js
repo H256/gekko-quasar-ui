@@ -12,3 +12,7 @@ export const addWatcher = ({commit}, data) => {
 export const updateWatcher = ({commit}, data) => {
     commit('updateWatcher', data);
 }
+
+export const removeWatcher = ({commit}, gekkoId) => {
+  commit('removeWatcher', gekkoId);
+}

@@ -39,6 +39,7 @@
           <q-td key="actions" :props="props">
             <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/watcher/${props.row.id}`)"
                    icon="visibility" label="view"/>
+            <q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"/>
           </q-td>
         </q-tr>
       </q-table>
@@ -89,6 +90,7 @@
           <q-td class="bg-white" key="actions" :props="props">
             <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/stratrunner/${props.row.id}`)"
                    icon="visibility" label="view"/>
+            <q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"/>
           </q-td>
         </q-tr>
       </q-table>
@@ -202,6 +204,171 @@
       }
     },
     methods: {
+      stopGekko(gekkoId) {
+        if (!gekkoId) return;
+        // find dependant gekkos (important for watchers that have one or more traders)
+        let runnerIdx = _.findIndex(this.stratrunners, function (o) {
+          return o.id == gekkoId
+        });
+        let watcherIdx = -1;
+        let runnerWatch = {};
+        if (runnerIdx >= 0) {
+          // the gekko to kill is a stratrunner... so get its watch properties to find the corresponding watcher
+          runnerWatch = this.stratrunners[runnerIdx].watch;
+          // and look for other stratrunners on the same market
+          let otherRunners = _.filter(this.stratrunners, function (o) {
+            let l = runnerWatch.asset + runnerWatch.currency + runnerWatch.exchange;
+            let r = o.watch.asset + o.watch.currency + o.watch.exchange
+            return l == r;
+          });
+          // if there are multiple runners for one watcher - we do not kill the watcher!
+          if (otherRunners.length > 1) {
+            // kill single runner only after confirmation...
+            this.$q.dialog({
+              title: 'Stop Live Gekko',
+              color: "warning",
+              message: `Do you really want to stop the Stratrunner for [${runnerWatch.exchange} ${runnerWatch.currency}-${runnerWatch.asset}] ?`,
+              ok: 'Ok',
+              cancel: 'Cancel'
+            }).then(() => {
+              let wList = gekkoId;
+              this.$axios
+                .post(this.$store.state.config.apiBaseUrl + "killGekko", {id: wList})
+                .then(response => {
+                  this.$q.notify({type: 'positive', message: 'Successfully stopped Gekko (ID ' + gekkoId + ')'});
+                  this.$store.dispatch('stratrunners/removeRunner', gekkoId);
+                })
+                .catch(error => {
+                  this.$q.notify({
+                    type: 'negative',
+                    message: 'Error while stopping Gekko (ID ' + gekkoId + ')',
+                    detail: error
+                  });
+                });
+            })
+          } else {
+            // otherwise we ask the user, if he wants to kill the watcher also
+            this.$q.dialog({
+              title: 'Stop Live Gekko and market watcher',
+              color: "info",
+              message: `The selected stratrunner
+              for [${runnerWatch.exchange} ${runnerWatch.currency}-${runnerWatch.asset}]
+              has a dependant market-watcher. What do you want to do?`,
+              options: {
+                type: 'radio',
+                model: '1',
+                items: [
+                  {label: 'Stop only strategy-runner', value: '1', color: 'primary'},
+                  {label: 'Stop strategy-runner AND market-watcher', value: '2', color: 'secondary'}
+                ]
+              },
+              ok: 'Ok',
+              cancel: 'Cancel'
+            }).then((data) => {
+              // if yes, kill stratrunner, and eventually watcher.
+              let wList = [];
+              wList.push(gekkoId);
+              if (data == '2') {
+                let wIdx = _.findIndex(this.watchers, function (o) {
+                  return o.watch == runnerWatch
+                });
+                if (wIdx >= 0) wList.push(this.watchers[wIdx].id)
+              }
+              wList.forEach(function (id) {
+                this.$axios
+                  .post(this.$store.state.config.apiBaseUrl + "killGekko", {id: id})
+                  .then(response => {
+                    this.$q.notify({type: 'positive', message: 'Successfully stopped Gekko (ID ' + id + ')'});
+                    this.$store.dispatch('stratrunners/removeRunner', id);
+                    this.$store.dispatch('watchers/removeWatcher', id);
+                  })
+                  .catch(error => {
+                    this.$q.notify({
+                      type: 'negative',
+                      message: 'Error while stopping Gekko (ID ' + id + ')',
+                      detail: error
+                    });
+                  });
+              })
+            })
+
+          }
+        } else {
+          // we have a watcher...
+          // so find it inside the watchers collection
+          watcherIdx = _.findIndex(this.watchers, function (o) {
+            return o.id == gekkoId
+          });
+          if (watcherIdx >= 0) {
+            let runnerWatch = this.watchers[watcherIdx].watch;
+            // look for stratrunners, that are using that watcher
+            let otherRunners = _.filter(this.stratrunners, function (o) {
+              let l = runnerWatch.asset + runnerWatch.currency + runnerWatch.exchange;
+              let r = o.watch.asset + o.watch.currency + o.watch.exchange;
+              return l == r;
+            });
+            if (otherRunners.length > 0) {
+              // if there is one or more, ask if we should kill the whole bunch
+              this.$q.dialog({
+                title: 'This market watcher has dependant runners!',
+                color: "warning",
+                message: `The market watcher for [${runnerWatch.exchange} ${runnerWatch.currency}-${runnerWatch.asset}]
+                has ${otherRunners.length} dependant strategy-runner(s).
+                Do you want to close ALL of them?`,
+                ok: 'Yes, close all!',
+                cancel: 'No, do nothing!'
+              }).then(() => {
+                let wList = [];
+                wList.push(gekkoId);
+                otherRunners.forEach(function (item) {
+                  wList.push(item.id);
+                });
+                wList.forEach(function (id) {
+                  this.$axios
+                    .post(this.$store.state.config.apiBaseUrl + "killGekko", {id: id})
+                    .then(response => {
+                      this.$q.notify({type: 'positive', message: 'Successfully stopped Gekko (ID ' + id + ')'});
+                      this.$store.dispatch('stratrunners/removeRunner', id);
+                      this.$store.dispatch('watchers/removeWatcher', id);
+                    })
+                    .catch(error => {
+                      this.$q.notify({
+                        type: 'negative',
+                        message: 'Error while stopping Gekko (ID ' + id + ')',
+                        detail: error
+                      });
+                    });
+                })
+              }).catch(() => {
+                this.$q.notify('Disagreed...')
+              })
+            } else {
+              // watcher has no dependency , so just confirm it's stop
+              this.$q.dialog({
+                title: 'Stop market watcher',
+                message: `Do you really want to stop the market watcher for [${runnerWatch.exchange} ${runnerWatch.currency}-${runnerWatch.asset}] ?`,
+                ok: 'Ok',
+                cancel: 'Cancel'
+              }).then(() => {
+                // if yes, kill all stratrunners, then watcher
+                this.$axios
+                  .post(this.$store.state.config.apiBaseUrl + "killGekko", {id: gekkoId})
+                  .then(response => {
+                    this.$q.notify({type: 'positive', message: 'Successfully stopped Gekko (ID ' + gekkoId + ')'});
+                    this.$store.dispatch('watchers/removeWatcher', gekkkoId);
+                  })
+                  .catch(error => {
+                    this.$q.notify({
+                      type: 'negative',
+                      message: 'Error while stopping Gekko (ID ' + gekkoId + ')',
+                      detail: error
+                    });
+                  });
+              })
+            }
+          }
+        }
+      },
       moment: mom => moment.utc(mom),
       round: n => (+n).toFixed(3),
       timespan: function (a, b) {

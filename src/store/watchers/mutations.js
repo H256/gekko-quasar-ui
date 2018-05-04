@@ -21,3 +21,9 @@ export const updateWatcher = (state, update) => {
 
     return state;
 }
+
+export const removeWatcher = (state, idToRemove) => {
+  state.watchers =_.filter(state.watchers, function(r) {
+    return r.id.toString() !== idToRemove.toString();
+  });
+}
