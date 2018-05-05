@@ -38,8 +38,8 @@
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/watcher/${props.row.id}`)"
-                   icon="visibility" label="view"/>
-            <q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"/>
+                   icon="visibility" label="view"></q-btn>
+            <!--<q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"></q-btn>-->
           </q-td>
         </q-tr>
       </q-table>
@@ -90,7 +90,7 @@
           <q-td class="bg-white" key="actions" :props="props">
             <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/stratrunner/${props.row.id}`)"
                    icon="visibility" label="view"/>
-            <q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"/>
+            <!--<q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"/>-->
           </q-td>
         </q-tr>
       </q-table>

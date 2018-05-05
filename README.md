@@ -11,7 +11,7 @@ Use this parallel to the original Gekko-UI (or compile and replace the original)
 ## Some Features:
 - "Tickers" for all running live market-watchers in the top toolbar
 - Searchable tables for datasets
-- Stop running instances from within the Live-Gekko-Dashboard
+- *DISABLED UNTIL WORKING RELIABLY:* Stop running instances from within the Live-Gekko-Dashboard
 - EChart-Candlestick charts for market and backtest-graphs
 - some stats for roundtrips
 - Material design UI
