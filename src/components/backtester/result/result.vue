@@ -7,7 +7,7 @@
       <result-summary :report="result.report" />
     </div>
      <div>
-      <echart :candles="candles" :trades="trades"></echart>
+      <echart :candles="candles" :trades="trades" :indicators="indicators"></echart>
     </div>
     <div>
       <roundtrip-table :roundtrips="result.roundtrips" :asset="result.report.asset" :currency="result.report.currency" />
@@ -31,6 +31,9 @@ export default {
     },
     trades: function() {
       return this.result.trades || []
+    },
+    indicators: function(){
+      return this.result.indicatorResults || []
     }
   },
   methods: {},
