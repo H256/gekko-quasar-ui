@@ -34,9 +34,12 @@ export default {
     return {
       backtestable: false,
       backtestState: "idle",
-      backtestResult: false,
+     // backtestResult: false,
       config: false
     };
+  },
+  computed: {
+    backtestResult() {return this.$store.getters['backtest/result']}
   },
   methods: {
     check: function(config) {
@@ -49,6 +52,7 @@ export default {
     },
     run: function() {
       this.backtestState = "fetching";
+      let ctx = this; // promise inside promise can't keep context...
 
       const req = {
         gekkoConfig: this.config,
@@ -64,9 +68,14 @@ export default {
         .post(this.$store.state.config.apiBaseUrl + "backtest", req)
         .then(response => {
           this.backtestState = "fetched";
-          this.backtestResult = response.data;
+          //this.backtestResult = response.data;
+          // save results to store
+          this.$store.dispatch('backtest/setBacktestResult', response.data).then(()=>{
+              this.$store.dispatch('backtest/extendAndFixCandles');
+          })
         })
         .catch(error => {
+          console.error(error);
           this.$q.notify({
             type: "negative",
             message: "Error during backtest-fetching of data."

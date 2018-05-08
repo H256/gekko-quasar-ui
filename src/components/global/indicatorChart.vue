@@ -54,16 +54,6 @@
           return i !== 'undefined'
         });
       },
-      fixCandles() {
-        // fix candles so that all candles have at least the required properties
-        // get this info from last candle - there should be all values inside...
-        let vToCheck = Object.keys(this.candles[this.candles.length - 1]);
-        this.candles.forEach(function (candle) {
-          vToCheck.forEach(function (p) {
-            if (!_.has(candle, p)) _.set(candle, p, null);
-          })
-        })
-      },
       createCharts: function () {
         let ctx = this;
 
@@ -103,9 +93,6 @@
                       o['displayName'] = item + ' (' + indicatorResult.baseType + ')';
                     }
 
-                    // add result value to candle-array
-                    ctx.candles[idx][o.name] = indicatorResult.result[it];
-
                     if (!_.find(ctx.indicatorChartOptions.dimensions, {name: o.name}))
                       ctx.indicatorChartOptions.dimensions.push(o);
                   })
@@ -116,9 +103,6 @@
                   o['type'] = "number";
                   o['displayName'] = item + ' (native)';
 
-                  // add result value to candle-array
-                  ctx.candles[idx][o.name] = indicatorResult.result;
-
                   if (!_.find(ctx.indicatorChartOptions.dimensions, {name: o.name}))
                     ctx.indicatorChartOptions.dimensions.push(o);
                 }
@@ -128,7 +112,6 @@
         }
 
         // setup each Indicator (grouped) as one chart based on returned data from the backtest
-        this.fixCandles();
         this.setGroups();
 
         // setup series and axes
@@ -229,11 +212,11 @@
       }
     },
     watch: {
-      candles: function (newVal, oldVal) {
+      candles: function () {
         this.disposeCharts();
         this.createCharts();
       },
-      trades: function (newVal, oldVal) {
+      trades: function () {
         this.createCharts();
       }
     },
