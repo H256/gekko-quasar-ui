@@ -7,8 +7,9 @@
       <result-summary :report="result.report" />
     </div>
      <div>
-      <echart :candles="candles" :trades="trades" :indicators="indicators"></echart>
+      <echart :candles="candles" :trades="trades"></echart>
     </div>
+      <indicator-chart :candles="candles" :trades="trades" :indicators="indicators" v-if="result.indicatorResults"></indicator-chart>
     <div>
       <roundtrip-table :roundtrips="result.roundtrips" :asset="result.report.asset" :currency="result.report.currency" />
     </div>
@@ -19,6 +20,7 @@
 import resultSummary from './summary.vue'
 import roundtripTable from './roundtripTable.vue'
 import echart from '../../global/chart.vue'
+import IndicatorChart from '../../global/indicatorChart'
 
 export default {
   props: ['result'],
@@ -38,6 +40,7 @@ export default {
   },
   methods: {},
   components: {
+    IndicatorChart,
     roundtripTable,
     resultSummary,
     echart

@@ -53,14 +53,13 @@ export default {
       const req = {
         gekkoConfig: this.config,
         data: {
-          candleProps: ["open", "close", "high", "low", "start"],
+          candleProps: ["open", "close", "high", "low", "start", "volume"],
           indicatorResults: true,
           report: true,
           roundtrips: true,
           trades: true
         }
       };
-
       this.$axios
         .post(this.$store.state.config.apiBaseUrl + "backtest", req)
         .then(response => {

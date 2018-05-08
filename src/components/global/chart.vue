@@ -7,16 +7,15 @@
 
 <script>
   import Vue from "vue";
-  import echarts from "echarts/dist/echarts-en";
+  import echarts from "echarts/dist/echarts-en.min";
   import _ from "lodash";
 
   export default {
     name: "EChartWrapper",
-    props: ["candles", "trades", "indicators"],
+    props: ["candles", "trades"],
     mounted: function () {
       this.chartRef = echarts.init(this.$refs.chart);
       this.updateCandles();
-      this.renderIndicatorChart();
     },
     data() {
       return {
@@ -86,11 +85,7 @@
       };
     },
     methods: {
-      setGraphOptions: function () {
-        this.chartRef.setOption(this.chartOptions, true);
-      },
       updateCandles: function () {
-        let ctx = this;
         const tradeMarkings = [];
         let lowest = Number.POSITIVE_INFINITY;
         let highest = Number.NEGATIVE_INFINITY;
@@ -105,8 +100,8 @@
         this.chartOptions.dataset = {};
         this.chartOptions.dataset.source = this.candles;
 
-        //this.chartOptions.dataZoom[1].startValue = lowest;
-        //this.chartOptions.dataZoom[1].endValue = highest;
+        this.chartOptions.dataZoom[1].startValue = lowest;
+        this.chartOptions.dataZoom[1].endValue = highest;
 
         //this.chartOptions.dataZoom[0].start = 80;
         //this.chartOptions.dataZoom[0].end = 100;
@@ -155,52 +150,6 @@
           {name: "start", displayName: "Start"}
         ];
 
-        // Add Dimensions from indicatorResults and extend candles with dimensional values
-        if (!_.isEmpty(this.indicators)) {
-          _.each(Object.keys(ctx.indicators), function (item) {
-            let ind = ctx.indicators[item];
-
-            ind.forEach(function (indicatorResult, idx) {
-              if (!_.isEmpty(indicatorResult.result) || (!_.isNull(indicatorResult.result) && !_.isUndefined(indicatorResult.result))) {
-                if (_.isObject(indicatorResult.result)) {
-                  let k = Object.keys(indicatorResult.result);
-                  _.each(k, function (it) {
-                    let o = {};
-                    if (!(it === 'result')) {
-                      o['name'] = item + '_' + it;
-                      o['group'] = indicatorResult.indicator === null ? item : indicatorResult.indicator;
-                      o['type'] = 'number';
-                      o['displayName'] = item + ' (' + it + ', ' + indicatorResult.baseType + ')';
-                    } else {
-                      o['name'] = item;
-                      o['group'] = indicatorResult.indicator === null ? item : indicatorResult.indicator;
-                      o['type'] = 'number';
-                      o['displayName'] = item + ' (' + indicatorResult.baseType + ')';
-                    }
-
-                    // add result value to candle-array
-                    ctx.candles[idx][o.name] = indicatorResult.result[it];
-
-                    if (!_.find(ctx.chartOptions.dimensions, {name: o.name}))
-                      ctx.chartOptions.dimensions.push(o);
-                  })
-                } else {
-                  let o = {};
-                  o['name'] = item;
-                  o['group'] = indicatorResult.indicator === null ? item : indicatorResult.indicator;
-                  o['type'] = "number";
-                  o['displayName'] = item + ' (native)';
-
-                  // add result value to candle-array
-                  ctx.candles[idx][o.name] = indicatorResult.result;
-
-                  if (!_.find(ctx.chartOptions.dimensions, {name: o.name}))
-                    ctx.chartOptions.dimensions.push(o);
-                }
-              }
-            });
-          });
-        }
 
         if (this.trades && this.trades.length) {
           let self = this;
@@ -230,112 +179,9 @@
 
         this.chartRef.setOption(this.chartOptions, true);
       },
-      setGroups() {
-        this.indicatorChartGroups = _.filter(Object.keys(_.groupBy(this.chartOptions.dimensions, 'group')), function (i) {
-          return i !== 'undefined'
-        });
-      },
-      renderIndicatorChart: function () {
-        this.setGroups();
-        // fix candles so that all candles have at least the required properties
-        // get this info from last candle - there should be all values inside...
-        let vToCheck = Object.keys(this.candles[this.candles.length - 1]);
-        this.candles.forEach(function (candle) {
-          vToCheck.forEach(function (p) {
-            if (!_.has(candle, p)) _.set(candle, p, null);
-          })
-        })
 
-
-        this.indicatorChartOptions.dataset = {};
-        this.indicatorChartOptions.dataset.source = this.candles;
-        this.indicatorChartOptions.series = []
-
-        //this.indicatorChartOptions.dataZoom[0].start = 80;
-        //this.indicatorChartOptions.dataZoom[0].end = 100;
-
-        let ctx = this;
-
-        // render a new axis for each group
-        let groups = _.groupBy(this.chartOptions.dimensions, 'group');
-        let idx = 0; // second axis for series as start - first axis ist candlesticks
-        _.each(Object.keys(groups), function (groupItem) {
-          if (groupItem !== "undefined") {
-            // create an instance for every group
-            let instanceProps = _.cloneDeep(ctx.indicatorChartOptions);
-            instanceProps.legend = {
-              data: []
-            };
-            // create an axis for every group item
-            let yAxisObject = {
-              scale: true,
-              name: groupItem,
-              show: true
-            };
-            // this one contains all grouped indicators that we want to display at once in the chart
-            // loop through itemnames and create a series
-            _.each(groups[groupItem], function (sItem) {
-              let seriesObj = {
-                type: "line",
-                encode: {
-                  x: "start",
-                  y: sItem.name
-                },
-                name: sItem.name,
-                showSymbol: false
-              };
-              instanceProps.series.push(seriesObj);
-              instanceProps.legend.data.push(sItem.name);
-            });
-            // always add price
-            let yAxisObjectPrice = {
-              scale: true,
-              name: "price",
-              show: false
-            };
-            let seriesObj = {
-              type: "line",
-              encode: {
-                x: "start",
-                y: "close"
-              },
-              name: "price",
-              yAxisIndex: 1,
-              showSymbol: false,
-              itemStyle: {
-                color: "#617e95"
-              },
-              lineStyle: {
-                type: 'dashed'
-              }
-            };
-            instanceProps.series.push(seriesObj);
-            instanceProps.legend.data.push("price")
-
-            instanceProps.yAxis.push(yAxisObject);
-            instanceProps.yAxis.push(yAxisObjectPrice);
-
-            instanceProps.dataZoom[1].yAxisIndex.push(idx);
-            idx++;
-
-            instanceProps.title.text = "Indicator chart " + groupItem;
-            // create Chart for this group of indicators
-            let e = document.createElement('div');
-            e.setAttribute('ref', 'indicator_' + groupItem);
-            e.setAttribute('style', 'height:300px');
-            ctx.$el.appendChild(e);
-            let chartRef = echarts.init(e);
-            chartRef.setOption(instanceProps, false);
-            ctx.indicatorChartRefs.push(chartRef);
-          }
-        });
-      },
       disposeCharts: function () {
         this.chartRef.dispose();
-        this.indicatorChartRefs.forEach(function (ref) {
-          ref.dispose();
-          ref = null;
-        })
         this.chartRef = null;
       }
     },
@@ -344,7 +190,6 @@
         this.disposeCharts();
         this.chartRef = echarts.init(this.$refs.chart);
         this.updateCandles();
-        this.renderIndicatorChart();
       },
       trades: function (newVal, oldVal) {
         this.updateCandles();
@@ -353,10 +198,6 @@
     beforeDestroy() {
       const that = this;
       that.chartRef && that.chartRef.dispose();
-      that.indicatorChartRefs.forEach(function (ref) {
-        ref.dispose();
-        ref = null;
-      })
       that.chartRef = null;
     }
   };
