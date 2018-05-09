@@ -71,6 +71,7 @@ module.exports = function (ctx) {
         "QPage",
         "QPageContainer",
         "QProgress",
+        "QRadio",
         "QRouteTab",
         "QSearch",
         "QSelect",

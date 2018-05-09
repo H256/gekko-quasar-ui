@@ -7,7 +7,7 @@
       <result-summary :report="result.report"/>
     </div>
     <div>
-      <echart :candles="candles" :trades="trades"></echart>
+      <echart :candles="candles" :trades="trades" :indicators="indicators"></echart>
     </div>
     <div class="row justify-center">
       <excel-json class="column q-pa-sm" :data="genExportable()" name="Backtest-Result.csv" type="csv">
@@ -25,8 +25,6 @@
         <q-btn icon="file download" label="roundtrips csv" color="teal"></q-btn>
       </excel-json>
     </div>
-    <indicator-chart :candles="candles" :trades="trades" :indicators="indicators"
-                     v-if="result.indicatorResults"></indicator-chart>
     <div>
       <roundtrip-table :roundtrips="result.roundtrips" :asset="result.report.asset" :currency="result.report.currency"/>
     </div>
@@ -34,10 +32,9 @@
 </template>
 
 <script>
-  import resultSummary from './summary.vue'
-  import roundtripTable from './roundtripTable.vue'
-  import echart from '../../global/chart.vue'
-  import IndicatorChart from '../../global/indicatorChart'
+  import resultSummary from './summary'
+  import roundtripTable from './roundtripTable'
+  import echart from '../../global/chart'
   import ExcelJson from 'vue-json-excel'
   import _ from 'lodash'
 
@@ -64,7 +61,6 @@
           _.each(this.trades, function (item) {
             // lookup timestamp inside candles table
             let idx = _.indexOf(exCandles, _.find(exCandles, function (o) {
-              console.log(o.start === item.date);
               return o.start === item.date
             }))
             // set trade as column in the table
@@ -81,7 +77,6 @@
       }
     },
     components: {
-      IndicatorChart,
       roundtripTable,
       resultSummary,
       echart,
