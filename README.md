@@ -7,6 +7,7 @@ Use this parallel to the original Gekko-UI (or compile and replace the original)
 
 *Sidenote: Currently the repository works with Gekko 0.5.14 and it will probably break when Gekko 0.6 is out due to a completely rewritten event-system.*
 
+**for an experimental Gekko with this UI and indicator display see here [Gekko trading bot fork](https://github.com/h256/gekko)**
 
 ## Some Features:
 - "Tickers" for all running live market-watchers in the top toolbar
@@ -17,6 +18,8 @@ Use this parallel to the original Gekko-UI (or compile and replace the original)
 - Material design UI
 - Enhanced information for running live-bots (differentiate between live-bot and paper-trader at a glance)
 - Start Live Gekkos directly from backtester including current selected settings
+- when present: **render indicator results to market chart!**
+- download backtest data as excel and csv
 - and more...
 
 ## Usage
@@ -61,3 +64,4 @@ If you like the ported UI, drop me some coins for coffee ;)
 ![image7](img/gekko-quasar-7.png?raw=true "Screenshot 7")
 ![image8](img/gekko-quasar-8.png?raw=true "Screenshot 8")
 ![image9](img/gekko-quasar-9.png?raw=true "Screenshot 9")
+![image10](img/gekko-quasar-10.png?raw=true "Screenshot 10")

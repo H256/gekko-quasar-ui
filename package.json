@@ -1,6 +1,6 @@
 {
   "name": "gekkomat",
-  "version": "0.5.18",
+  "version": "0.5.24",
   "description": "Quasar Frontend for Gekko Trading Bot",
   "productName": "Gekko Material UI",
   "cordovaId": "org.cordova.quasar.app",
@@ -13,7 +13,9 @@
     "echarts": "^4.1.0",
     "humanize-duration": "^3.14.0",
     "moment": "^2.22.1",
-    "vue-i18n": "^7.6.0"
+    "vue-echarts": "^3.0.7",
+    "vue-i18n": "^7.6.0",
+    "vue-json-excel": "^0.2.5"
   },
   "devDependencies": {
     "jade": "^1.11.0",

@@ -6,6 +6,7 @@ import watchers from './watchers'
 import imports from './imports'
 import warnings from './warnings'
 import stratrunners from './stratrunners'
+import backtest from './backtest'
 
 Vue.use(Vuex)
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
     watchers,
     imports,
     warnings,
-    stratrunners
+    stratrunners,
+    backtest
   }
 })
 
