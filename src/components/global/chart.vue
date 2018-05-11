@@ -1,18 +1,7 @@
 <template>
   <div>
     <h3>Market graph</h3>
-    <div class="row justify-center q-ma-sm">
-      <q-radio v-model="selectedIndicator" :val="null" label="Market only"/>
-      <q-radio class="q-ml-md" v-for="g in indicatorChartGroups" v-model="selectedIndicator" :val="g"
-               :label="g.toUpperCase()" :key="g"/>
-    </div>
-    <div class="row justify-center q-mb-lg" v-if="selectedIndicator">
-      <b>Display on</b>
-      <q-radio v-model="displaySide" :val="0" label="left"/>
-      <q-radio v-model="displaySide" :val="2" label="right"/>
-    </div>
-
-    <chart :options="dynOptions" auto-resize ref="chart" class="full-width"></chart>
+    <chart :options="dynOptions" auto-resize ref="chart" class="full-width" :class="dynStyle"></chart>
   </div>
 </template>
 
@@ -20,14 +9,173 @@
   import _ from "lodash";
   import ECharts from 'vue-echarts'
 
+  const userIndicators = (window.CONFIG.userChartConfig && window.CONFIG.userChartConfig.indicators) || [];
+  const userPatterns = (window.CONFIG.userChartConfig && window.CONFIG.userChartConfig.patterns) || [];
+  const userOverlays = (window.CONFIG.userChartConfig && window.CONFIG.userChartConfig.overlays) || [];
+
+  const chartOverlays = [
+    ...userOverlays,
+    'avgprice',
+    'bbands',
+    'dema',
+    'ema',
+    'hma',
+    'kama',
+    'linreg',
+    'ma',
+    'mama',
+    'medprice',
+    'midprice',
+    'psar',
+    'sma',
+    't3',
+    'tema',
+    'trima',
+    'tsf',
+    'typprice',
+    'vidya',
+    'vwma',
+    'wclprice',
+    'wcprice',
+    'wilders',
+    'wma',
+    'zlema'
+  ];
+  const chartPatterns = [
+    ...userPatterns,
+    'cdl2crows',
+    'cdl3blackcrows',
+    'cdl3inside',
+    'cdl3linestrike',
+    'cdl3outside',
+    'cdl3starsinsouth',
+    'cdl3whitesoldiers',
+    'cdlabandonedbaby',
+    'cdladvanceblock',
+    'cdlbelthold',
+    'cdlbreakaway',
+    'cdlclosingmarubozu',
+    'cdlconcealbabyswall',
+    'cdlcounterattack',
+    'cdldarkcloudcover',
+    'cdldoji',
+    'cdldojistar',
+    'cdldragonflydoji',
+    'cdlengulfing',
+    'cdleveningdojistar',
+    'cdleveningstar',
+    'cdlgapsidesidewhite',
+    'cdlgravestonedoji',
+    'cdlhammer',
+    'cdlhangingman',
+    'cdlharami',
+    'cdlharamicross',
+    'cdlhighwave',
+    'cdlhikkake',
+    'cdlhikkakemod',
+    'cdlhomingpigeon',
+    'cdlidentical3crows',
+    'cdlinneck',
+    'cdlinvertedhammer',
+    'cdlkicking',
+    'cdlkickingbylength',
+    'cdlladderbottom',
+    'cdllongleggeddoji',
+    'cdllongline',
+    'cdlmarubozu',
+    'cdlmatchinglow',
+    'cdlmathold',
+    'cdlmorningdojistar',
+    'cdlmorningstar',
+    'cdlonneck',
+    'cdlpiercing',
+    'cdlrickshawman',
+    'cdlrisefall3methods',
+    'cdlseparatinglines',
+    'cdlshootingstar',
+    'cdlshortline',
+    'cdlspinningtop',
+    'cdlstalledpattern',
+    'cdlsticksandwich',
+    'cdltakuri',
+    'cdltasukigap',
+    'cdlthrusting',
+    'cdltristar',
+    'cdlunique3river',
+    'cdlupsidegap2crows',
+    'cdlxsidegap3methods'
+  ];
+  const chartIndicators = [
+    ...userIndicators,
+    'ad',
+    'adosc',
+    'adx',
+    'adxr',
+    'ao',
+    'apo',
+    'aroon',
+    'aroonosc',
+    'atr',
+    'bop',
+    'cci',
+    'cmo',
+    'cvi',
+    'di',
+    'dm',
+    'dpo',
+    'dx',
+    'emv',
+    'fisher',
+    'fosc',
+    'kvo',
+    'linregintercept',
+    'linregslope',
+    'macd',
+    'macdext',
+    'macdfix',
+    'marketfi',
+    'mass',
+    'mfi',
+    'minus_di',
+    'minus_dm',
+    'mom',
+    'msw',
+    'natr',
+    'nvi',
+    'obv',
+    'plus_di',
+    'plus_dm',
+    'ppo',
+    'pvi',
+    'qstick',
+    'roc',
+    'rocp',
+    'rocr',
+    'rocr100',
+    'rsi',
+    'sar',
+    'sarext',
+    'stoch',
+    'stochf',
+    'stochrsi',
+    'tr',
+    'trange',
+    'trix',
+    'ultosc',
+    'vhf',
+    'volatility',
+    'vosc',
+    'wad',
+    'willr'
+  ];
+
+
   export default {
     name: "VueEchartWrapper",
     props: ["candles", "trades", "indicators"],
     mounted: function () {
       this.extendDimensions();
-
       this.preparedOptions = this.updateCandles();
-
     },
     components: {
       'chart': ECharts
@@ -39,10 +187,10 @@
     },
     data() {
       return {
+        dynStyle: 'oneAxis',
         selectedIndicator: null,
         indicatorChartGroups: [],
         preparedOptions: null,
-        displaySide: 2, // can be 0 (for price axis) or 2 (for e.g. RSI)
         dimensions: [
           {name: "low", type: "number", displayName: "Low"},
           {name: "high", type: "number", displayName: "High"},
@@ -58,10 +206,6 @@
       };
     },
     methods: {
-      setSelectedIndicator(indicator) {
-        this.selectedIndicator = indicator;
-        this.preparedOptions = this.updateCandles();
-      },
       setGroups() {
         this.indicatorChartGroups = _.filter(Object.keys(_.groupBy(this.dimensions, 'group')), function (i) {
           return i !== 'undefined'
@@ -92,6 +236,8 @@
                       o['displayName'] = item + ' (' + indicatorResult.baseType + ')';
                     }
 
+                    o['displayType'] = ctx.checkForDisplayType((indicatorResult.indicator === null ? item : indicatorResult.indicator));
+
                     if (!_.find(ctx.dimensions, {name: o.name}))
                       ctx.dimensions.push(o);
                   })
@@ -102,6 +248,8 @@
                   o['type'] = "number";
                   o['displayName'] = item + ' (native)';
 
+                  o['displayType'] = ctx.checkForDisplayType((indicatorResult.indicator === null ? item : indicatorResult.indicator));
+
                   if (!_.find(ctx.dimensions, {name: o.name}))
                     ctx.dimensions.push(o);
                 }
@@ -111,6 +259,16 @@
         }
         // setup each Indicator (grouped) as one chart based on returned data from the backtest
         this.setGroups();
+      },
+      checkForDisplayType: function (resultName) {
+        if (resultName) {
+          let s = resultName.toLowerCase();
+          if (chartIndicators.indexOf(s) >= 0) return 'indicator';
+          if (chartOverlays.indexOf(s) >= 0) return 'overlay';
+          if (chartPatterns.indexOf(s) >= 0) return 'pattern';
+        }
+        // defaults to overlay
+        return 'overlay';
       },
       updateCandles: function () {
         let options = {
@@ -239,28 +397,130 @@
             data: tradeMarkings
           };
         }
-        let ctx = this;
-        if (this.selectedIndicator) {
-          // CREATE A NEW SERIES FOR THE SELECTED INDICATOR
-          let group = _.groupBy(_.filter(options.dimensions, function (o) {
-            return o.group === ctx.selectedIndicator
-          }), 'group');
-          options.yAxis.push({scale: true});
-          _.each(group[ctx.selectedIndicator], function (sItem) {
-            let seriesObj = {
-              type: "line",
-              encode: {
-                x: "start",
-                y: sItem.name
-              },
-              xAxisIndex: 0,
-              yAxisIndex: ctx.displaySide,
-              name: sItem.name,
-              showSymbol: false
-            };
-            options.legend.data.push(sItem.name)
-            options.series.push(seriesObj);
-          });
+        let ctx = this
+
+        // CREATE LINE FOR EACH INDICATOR AND DETERMINE AXIS FOR DISPLAY
+        let group = _.groupBy(options.dimensions, 'group');
+        options.yAxis.push({scale: true}); // create a third yAxis // Grid Index 1 left
+        options.yAxis.push({scale: true}); // create a fourth yAxis // Grid Index 1 right
+        options.yAxis.push({scale: true}); // create a fifth yAxis // Grid Index 2 left
+        let lastyAxisIndicator = 'left';
+        _.each(Object.keys(group), function (item) {
+          if (item !== 'undefined') {
+            _.each(group[item], function (sItem) {
+              if (sItem !== undefined) {
+                let yAxisIndex = 2;
+                let xAxisIndex = 0;
+                if (sItem.displayType) {
+                  if (sItem.displayType === 'overlay') {
+                    yAxisIndex = 0;
+                  }
+                  else if (sItem.displayType === 'indicator') {
+                    // push to grid axis
+                    if (options.xAxis.length < 3) {
+                      options.xAxis.push({type: "time"});
+                    }
+                    xAxisIndex = 1;
+                    yAxisIndex = lastyAxisIndicator === 'left' ? 3 : 2;
+                    if (lastyAxisIndicator === 'left') {
+                      lastyAxisIndicator = 'right';
+                    }
+                    else lastyAxisIndicator = 'left';
+                  }
+                  else if (sItem.displayType === 'pattern') {
+                    if (options.xAxis.length < 3) {
+                      options.xAxis.push({type: "time"});
+                    }
+                    xAxisIndex = 2;
+                    yAxisIndex = 4;
+                  }
+                }
+                // don't display if the indicator is a pattern-recognition
+                if (yAxisIndex !== null) {
+                  let seriesObj = {
+                    type: "line",
+                    encode: {
+                      x: "start",
+                      y: sItem.name
+                    },
+                    xAxisIndex: xAxisIndex,
+                    yAxisIndex: yAxisIndex,
+                    name: sItem.name,
+                    showSymbol: false
+                  };
+                  options.legend.data.push(sItem.name)
+                  options.series.push(seriesObj);
+                }
+              }
+            });
+          }
+        });
+        // now correct xAxis assignments if necessary (because we couldn't determine it in the above loop :(
+        let axisLength = options.xAxis.length;
+        _.each(options.series, function (s) {
+          if (s.xAxisIndex && s.xAxisIndex > (axisLength - 1)) {
+            s.xAxisIndex = axisLength - 1;
+            s.yAxisIndex = s.yAxisIndex - 1;
+          }
+        });
+
+        // Create Grid and assign axes stuff....
+        switch (options.xAxis.length) {
+          case 2:
+            this.dynStyle = 'twoAxis';
+            break;
+          case 3:
+            this.dynStyle = 'threeAxis';
+            break;
+          default:
+            this.dynStyle = 'oneAxis';
+            break;
+        }
+
+        // Grid Settings:
+        // yAxis 0+1, xAxis 0 => Index: 0
+        // yAxis 2+3, xAxis 1 => Index: 1
+        // yAxis 4, xAxis 2 => Index: 2
+        if (axisLength > 1) {
+          // Define a Grid!
+          let preGrid = [{
+            left: 20,
+            right: 20,
+            top: 110,
+            height: 220
+          }, {
+            left: 20,
+            right: 20,
+            height: 80,
+            top: 360
+          }, {
+            left: 20,
+            right: 20,
+            height: 40,
+            top: 470
+          }];
+
+          options.grid = [];
+          for (let i = 0; i <= axisLength - 1; i++) {
+            options.grid.push(preGrid[i]);
+          }
+          switch (options.grid.length) {
+            case 2:
+              options.xAxis[1]['gridIndex'] = 1;
+              options.yAxis[2]['gridIndex'] = 1;
+              options.yAxis[3]['gridIndex'] = 1;
+              options.dataZoom[0].xAxisIndex = [0, 1]
+              options.yAxis.splice(4,1);
+              break;
+            case 3:
+              options.xAxis[1]['gridIndex'] = 1;
+              options.yAxis[2]['gridIndex'] = 1;
+              options.yAxis[3]['gridIndex'] = 1;
+              options.xAxis[2]['gridIndex'] = 2;
+              options.yAxis[4]['gridIndex'] = 2;
+              options.dataZoom[0].xAxisIndex = [0, 1, 2]
+              break;
+          }
         }
         return options;
       }
@@ -286,3 +546,17 @@
     }
   };
 </script>
+
+<style>
+  .oneAxis {
+    height: 300px;
+  }
+
+  .twoAxis {
+    height: 500px;
+  }
+
+  .threeAxis {
+    height: 600px;
+  }
+</style>

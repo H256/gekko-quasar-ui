@@ -11,7 +11,7 @@ export const extendAndFixCandles = ({state, commit}) => {
   return new Promise((resolve)=>{
     let candleArray = [];
 
-    if (!_.isEmpty(state.backtestResult.indicatorResults)) {
+    if (state.backtestResult && state.backtestResult.indicatorResults !== {}) {
       candleArray = _.clone(state.backtestResult.candles);
       _.each(Object.keys(state.backtestResult.indicatorResults), function (item) {
         let ind = state.backtestResult.indicatorResults[item];
