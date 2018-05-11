@@ -16,7 +16,10 @@ const CONFIG = {
       port: 3000,
       path: '/'
     },
-    adapter: 'sqlite'
+    adapter: 'sqlite',
+    /*userChartConfig: {
+      patterns:['hasInvertedHammer']
+    }*/
   }
 
   if(typeof window === 'undefined')
