@@ -175,9 +175,7 @@
     props: ["candles", "trades", "indicators"],
     mounted: function () {
       this.extendDimensions();
-
       this.preparedOptions = this.updateCandles();
-
     },
     components: {
       'chart': ECharts
