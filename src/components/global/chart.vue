@@ -162,6 +162,7 @@
     'trange',
     'trix',
     'ultosc',
+    'uo',
     'vhf',
     'volatility',
     'vosc',
@@ -188,6 +189,7 @@
     data() {
       return {
         dynStyle: 'oneAxis',
+        marketLineThreshold: 100,
         selectedIndicator: null,
         indicatorChartGroups: [],
         preparedOptions: null,
@@ -326,26 +328,57 @@
           data: ["Market", "Volume"]
         };
 
-        options.series = [
-          {
-            name: 'Market',
-            type: "candlestick",
-            encode: {
-              x: "start",
-              y: ["open", "close", "high", "low"],
-              tooltip: ["open", "close", "high", "low"]
-            },
-            itemStyle: {
-              normal: {
-                color: this.upColor,
-                color0: this.downColor,
-                borderColor: this.upBorderColor,
-                borderColor0: this.downBorderColor
-              }
-            },
-            xAxisIndex: 0,
-            yAxisIndex: 0
-          },
+        options.series = [];
+        // if the backtester yielded more than X candles switch to line instead of candlesticks
+        if (this.candles.length > this.marketLineThreshold) {
+          options.series.push(
+            {
+              name: 'Market',
+              type: "line",
+              encode: {
+                x: "start",
+                y: ["close"],
+                tooltip: ["open", "close", "high", "low"]
+              },
+              showSymbol: false,
+              itemStyle: {
+                normal: {
+                  color: '#000',
+                  lineStyle: {
+                    type: 'solid',
+                    width: '1'
+                  }
+                },
+              },
+              xAxisIndex: 0,
+              yAxisIndex: 0
+            }
+          );
+        } else {
+          options.series.push(
+            {
+              name: 'Market',
+              type: "candlestick",
+              encode: {
+                x: "start",
+                y: ["open", "close", "high", "low"],
+                tooltip: ["open", "close", "high", "low"]
+              },
+              itemStyle: {
+                normal: {
+                  color: this.upColor,
+                  color0: this.downColor,
+                  borderColor: this.upBorderColor,
+                  borderColor0: this.downBorderColor
+                }
+              },
+              xAxisIndex: 0,
+              yAxisIndex: 0
+            }
+          );
+        }
+
+        options.series.push(
           {
             name: "Volume",
             type: "bar",
@@ -363,7 +396,7 @@
             xAxisIndex: 0,
             yAxisIndex: 1
           }
-        ];
+        );
 
         options.xAxis.push({type: "time"});
         options.yAxis.push({scale: true});
@@ -397,11 +430,10 @@
             data: tradeMarkings
           };
         }
-        let ctx = this
 
         // CREATE LINE FOR EACH INDICATOR AND DETERMINE AXIS FOR DISPLAY
         let group = _.groupBy(options.dimensions, 'group');
-        options.yAxis.push({scale: true}); // create a third yAxis // Grid Index 1 left
+        options.yAxis.push({scale:false}); // create a third yAxis // Grid Index 1 left
         options.yAxis.push({scale: true}); // create a fourth yAxis // Grid Index 1 right
         options.yAxis.push({scale: true}); // create a fifth yAxis // Grid Index 2 left
         let lastyAxisIndicator = 'left';
@@ -421,7 +453,7 @@
                       options.xAxis.push({type: "time"});
                     }
                     xAxisIndex = 1;
-                    yAxisIndex = lastyAxisIndicator === 'left' ? 3 : 2;
+                    yAxisIndex = lastyAxisIndicator === 'left' ? 2 : 3;
                     if (lastyAxisIndicator === 'left') {
                       lastyAxisIndicator = 'right';
                     }
@@ -510,7 +542,7 @@
               options.yAxis[2]['gridIndex'] = 1;
               options.yAxis[3]['gridIndex'] = 1;
               options.dataZoom[0].xAxisIndex = [0, 1]
-              options.yAxis.splice(4,1);
+              options.yAxis.splice(4, 1);
               break;
             case 3:
               options.xAxis[1]['gridIndex'] = 1;
