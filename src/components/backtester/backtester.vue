@@ -35,8 +35,20 @@ export default {
       backtestable: false,
       backtestState: "idle",
      // backtestResult: false,
-      config: false
+      config: false,
+      candleWriter: null
     };
+  },
+  created: function(){
+    // load candleWriter config - in case, the user wants to start a live gekko from here...
+    this.$axios.get(this.$store.state.config.apiBaseUrl + 'configPart/candleWriter')
+      .then(response=>{
+        this.candleWriter = toml.parse(response.data.part);
+      })
+      .catch(error => {
+        console.log("error getting candlewriter-config", error);
+      });
+
   },
   computed: {
     backtestResult() {return this.$store.getters['backtest/result']}
@@ -83,6 +95,10 @@ export default {
         });
     },
     startLiveGekko(isPaperTrader){
+      if(this.candleWriter){
+        this.config["candleWriter"] = this.candleWriter;
+      }
+
       this.config.type = isPaperTrader ? "paper trader" : "tradebot";
       if(!isPaperTrader) _.set(this.config, 'paperTrader.enabled', false); // disable paper trader, when we want to start a live bot
       this.$q.dialog({

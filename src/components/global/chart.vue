@@ -189,7 +189,7 @@
     data() {
       return {
         dynStyle: 'oneAxis',
-        marketLineThreshold: 100,
+        marketLineThreshold: 500,
         selectedIndicator: null,
         indicatorChartGroups: [],
         preparedOptions: null,
@@ -202,9 +202,9 @@
           {name: "start", displayName: "Start"}
         ],
         upColor: "#ec0000",
-        upBorderColor: "#8A0000",
+        //upBorderColor: "#8A0000",
         downColor: "#00da3c",
-        downBorderColor: "#008F28"
+        // downBorderColor: "#008F28"
       };
     },
     methods: {

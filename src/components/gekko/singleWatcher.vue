@@ -27,7 +27,7 @@
       <h3>Statistics</h3>
       <div class="row" v-if="isLoading">
         <div class="col-2 text-center">
-          <q-spinner-bars size="36" color="tertiary" />
+          <q-spinner-bars size="36" color="tertiary"/>
         </div>
       </div>
       <div class="row" v-if="!isLoading && data.firstCandle">
@@ -51,130 +51,132 @@
 
       <div class="row" v-if="!isLoading && candleFetch === 'fetching'">
         <div class="col-2 text-center">
-          <q-spinner-bars size="36" color="tertiary" />
+          <q-spinner-bars size="36" color="tertiary"/>
         </div>
       </div>
-      <echart v-if="candles.length" :candles="chartData.candles" :trades="chartData.trades" height="500" />
+      <echart v-if="candles.length" :candles="chartData.candles" :trades="chartData.trades" height="500"/>
     </template>
 
   </q-page>
 </template>
 
 <script>
-import moment from "moment";
-import humanizeDuration from "humanize-duration";
+  import moment from "moment";
+  import humanizeDuration from "humanize-duration";
 
-import _ from "lodash";
+  import _ from "lodash";
 
-import echart from '../global/chart'
+  import echart from '../global/chart'
 
-export default {
-  created: function() {
-    if (!this.isLoading) {
-      this.getCandles();
-    }
-  },
-  components: {
-    echart
-  },
-  data: () => {
-    return {
-      candleFetch: "idle",
-      candles: []
-    };
-  },
-  computed: {
-    watchers: function() {
-      return this.$store.state.watchers.watchers;
+  export default {
+    created: function () {
+      if (!this.isLoading) {
+        this.getCandles();
+      }
     },
-    data: function() {
-      return _.find(this.watchers, { id: this.$route.params.id });
+    components: {
+      echart
     },
-    chartData: function() {
+    data: () => {
       return {
-        candles: this.candles,
-        trades: []
+        candleFetch: "idle",
+        candles: []
       };
     },
-    isLoading: function() {
-      if (!this.data) return true;
-      if (!_.isObject(this.data.firstCandle)) return true;
-      if (!_.isObject(this.data.lastCandle)) return true;
+    computed: {
+      watchers: function () {
+        return this.$store.state.watchers.watchers;
+      },
+      data: function () {
+        return _.find(this.watchers, {id: this.$route.params.id});
+      },
+      chartData: function () {
+        return {
+          candles: this.candles,
+          trades: []
+        };
+      },
+      isLoading: function () {
+        if (!this.data) return true;
+        if (!_.isObject(this.data.firstCandle)) return true;
+        if (!_.isObject(this.data.lastCandle)) return true;
 
-      return false;
+        return false;
+      },
+      dataSpanning: function () {
+        return humanizeDuration(moment(this.data.lastCandle.start).diff(moment(this.data.firstCandle.start))) || ''
+      }
     },
-    dataSpanning: function() {
-      return humanizeDuration(moment(this.data.lastCandle.start).diff(moment(this.data.firstCandle.start))) || ''
-    }
-  },
-  watch: {
-    'data.lastCandle.start': function() {
-      this.candleFetch = "dirty";
+    watch: {
+      'data.lastCandle.start': function () {
+        this.candleFetch = "dirty";
+      },
+      data: function (val, prev) {
+        let complete = val && val.firstCandle && val.lastCandle;
+
+        if (!complete) return;
+
+        if (this.candleFetch !== 'fetched') this.getCandles();
+      }
     },
-    data: function(val, prev) {
-      let complete = val && val.firstCandle && val.lastCandle;
+    methods: {
+      humanizeDuration: n => humanizeDuration(n),
+      moment: mom => moment.utc(mom),
+      fmt: mom => moment.utc(mom).format("YYYY-MM-DD HH:mm"),
+      getCandles: function () {
+        this.candleFetch = "fetching";
 
-      if (!complete) return;
+        // up unto we have data
+        let to = moment.utc(this.data.lastCandle.start).unix();
 
-      if (this.candleFetch !== 'fetched') this.getCandles();
-    }
-  },
-  methods: {
-    humanizeDuration: n => humanizeDuration(n),
-    moment: mom => moment.utc(mom),
-    fmt: mom => moment.utc(mom).format("YYYY-MM-DD HH:mm"),
-    getCandles: function() {
-      this.candleFetch = "fetching";
+        // max 7 days of data
+        let from = Math.max(
+          moment.utc(this.data.firstCandle.start).unix(),
+          moment.utc(to).subtract(7, "days").unix()
+        );
 
-      // up unto we have data
-      let to = moment.utc(this.data.lastCandle.start).unix();
+        const diff = to - from;
+        let candleSize = 60;
+        if (diff < 60 * 60 * 24) {// a day
+          if (diff < 60 * 60 * 12) {// 3 hours
+            candleSize = 5;
+          }
+          else {
+            candleSize = 15;
+          }
+        }
 
-      // max 7 days of data
-      let from = Math.max(
-        moment.utc(this.data.firstCandle.start).unix(),
-        moment.utc(to).subtract(7, "days").unix()
-      );
+        from = moment.unix(from).utc().format();
+        to = moment.unix(to).utc().format();
 
-      // TODO...
-      const diff = to - from;
-      let candleSize = 60;
-      if (diff < 60 * 60 * 24)// a day
-        if (diff < 60 * 60 * 12)// 3 hours
-          candleSize = 1;
-        else
-          candleSize = 5;
+        let config = {
+          watch: this.data.watch,
+          daterange: {
+            to,
+            from
+          },
+          // hourly candles
+          candleSize
+        };
 
-      from = moment.unix(from).utc().format();
-      to = moment.unix(to).utc().format();
-
-      let config = {
-        watch: this.data.watch,
-        daterange: {
-          to,
-          from
-        },
-        // hourly candles
-        candleSize
-      };
-
-      this.$axios
-        .post(this.$store.state.config.apiBaseUrl + "getCandles", config)
-        .then(response => {
-          //console.log("Successfully loaded candles", response.data)
-          this.candleFetch = "fetched";
-          this.candles = response.data.map(c => {
-            c.start = moment.unix(c.start).utc().format();
-            return c;
+        this.$axios
+          .post(this.$store.state.config.apiBaseUrl + "getCandles", config)
+          .then(response => {
+            //console.log("Successfully loaded candles", response.data)
+            this.candleFetch = "fetched";
+            this.candles = response.data.map(c => {
+              c.start = moment.unix(c.start).utc().format();
+              return c;
+            });
+          })
+          .catch(error => {
+            console.log("Error on getting candle Data", error);
+            /*this.$q.notify({
+              type: "negative",
+              message: "Error getting candle-data."
+            });*/
           });
-        })
-        .catch(error => {
-          console.log("Error on getting candle Data", error);
-          /*this.$q.notify({
-            type: "negative",
-            message: "Error getting candle-data."
-          });*/
-        });
+      }
     }
-  }
-};
+  };
 </script>
