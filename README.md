@@ -41,12 +41,12 @@ To install, follow these steps:
 2. Run `npm install` + ```quasar build``` from this repo.
 2. In your gekko-folder zip up the folder `web/vue` as backup.
 3. Place everything from repo's `dist/spa-mat` into the `web/vue` folder. (index.html must be there)
-4. Modify the first line in `web/routes/baseConfig.js` so that it looks like this `var UIconfig = require('../vue/statics/UIconfig');`
-5. Modify the first line in `web/server.js` so that it looks like this `const config = require('./vue/statics/UIconfig');`
+4. Modify the first line in `web/routes/baseConfig.js` so that it looks like this `var UIconfig = require('../vue/statics/UiConfig');`
+5. Modify the first line in `web/server.js` so that it looks like this `const config = require('./vue/statics/UiConfig');`
 6. Start Gekko with UI command (`node gekko --ui`).
 7. Enjoy!
 
-***If you changed your default connection or database-settings, please edit the file ***`<gekko-quasar-ui-folder>/src/statics/UIConfig.js`*** accordingly.***
+***If you changed your default connection or database-settings, please edit the file ***`<gekko-quasar-ui-folder>/src/statics/UiConfig.js`*** accordingly.***
 
 
 If you like the ported UI, drop me some coins for coffee ;)
