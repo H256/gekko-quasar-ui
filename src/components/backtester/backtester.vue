@@ -97,6 +97,7 @@ export default {
     startLiveGekko(isPaperTrader){
       if(this.candleWriter){
         this.config["candleWriter"] = this.candleWriter;
+        this.config["watch"]["candleWriter"] = this.candleWriter;
       }
 
       this.config.type = isPaperTrader ? "paper trader" : "tradebot";
