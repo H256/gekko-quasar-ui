@@ -15,10 +15,10 @@
             <q-spinner-bars color="secondary" size="48px"></q-spinner-bars>
         </div>
     </div>
-    <div class="row justify-center" v-if="backtestable">
-      <q-btn color="red" class="q-mr-xs" :disabled="backtestState === 'fetching'" @click.prevent="startLiveGekko(false)" icon="flash on" label="Start Tradebot" />
-      <q-btn color="amber-8" class="q-ml-xs" :disabled="backtestState === 'fetching'" @click.prevent="startLiveGekko(true)" icon="remove red eye" label="Start Paper Trader" />
-    </div>
+    <!--<div class="row justify-center" v-if="backtestable">-->
+      <!--<q-btn color="red" class="q-mr-xs" :disabled="backtestState === 'fetching'" @click.prevent="startLiveGekko(false)" icon="flash on" label="Start Tradebot" />-->
+      <!--<q-btn color="amber-8" class="q-ml-xs" :disabled="backtestState === 'fetching'" @click.prevent="startLiveGekko(true)" icon="remove red eye" label="Start Paper Trader" />-->
+    <!--</div>-->
     <result v-if="backtestResult && backtestState === 'fetched'" :result="backtestResult" />
   </div>
 </template>
