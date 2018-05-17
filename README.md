@@ -17,7 +17,7 @@ Use this parallel to the original Gekko-UI (or compile and replace the original)
 - some stats for roundtrips
 - Material design UI
 - Enhanced information for running live-bots (differentiate between live-bot and paper-trader at a glance)
-- Start Live Gekkos directly from backtester including current selected settings
+- *DISABLED UNTIL WORKING RELIABLY:* Start Live Gekkos directly from backtester including current selected settings
 - when present: **render indicator results to market chart!**
 - download backtest data as excel and csv
 - and more...
