@@ -1,11 +1,11 @@
-# Gekko - Quasar UI Edition
+# Gordon-UI for Gekko trading bot
 
 This is my personal try to port the original Gekko UI to the Quasar Framework.
 It's based off the original code from the [Gekko trading bot](https://gekko.wizb.it/) UI.
 
 Use this parallel to the original Gekko-UI (or compile and replace the original).
 
-*Sidenote: Currently the repository works with Gekko 0.5.14 and it will probably break when Gekko 0.6 is out due to a completely rewritten event-system.*
+*Sidenote: This repository should work with all Gekkos > version 0.6.*
 
 **for an experimental Gekko with this UI and indicator display see here [Gekko trading bot fork](https://github.com/h256/gekko)**
 
@@ -45,7 +45,7 @@ To install, follow these steps:
 5. Modify the first line in `web/server.js` so that it looks like this `const config = require('./vue/statics/UiConfig');`
 6. Modify ~line 87 in web -> server.js:
 replace
-`
+``` 
 app
   .use(cors())
   .use(serve(WEBROOT + 'vue/dist'))
@@ -53,9 +53,9 @@ app
   .use(require('koa-logger')())
   .use(router.routes())
   .use(router.allowedMethods());
-`
+```
 with
-`
+```
 app
   .use(cors())
   .use(serve(WEBROOT + 'vue'))
@@ -63,7 +63,7 @@ app
   .use(require('koa-logger')())
   .use(router.routes())
   .use(router.allowedMethods());
-`
+```
 7. Start Gekko with UI command (`node gekko --ui`).
 8. Enjoy!
 
