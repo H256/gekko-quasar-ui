@@ -217,18 +217,18 @@
         let ctx = this;
         // EXTEND DIMENSIONS WITH INDICATORS
         if (!_.isEmpty(this.indicators)) {
-          this.indicators.forEach((item, idx)=>{
-            if(item.indicators){
+          this.indicators.forEach((item, idx) => {
+            if (item.indicators) {
               _.each(Object.keys(item.indicators), function (indicator) {
                 let o = {
                   name: indicator,
-                  group: indicator,
+                  group: indicator.split('_')[0],
                   type: 'number',
                   displayName: indicator.charAt(0).toUpperCase() + indicator.substr(1),
                   displayType: ctx.checkForDisplayType(indicator)
                 };
 
-                if(!_.find(ctx.dimensions, {name: o.name}))
+                if (!_.find(ctx.dimensions, {name: o.name}))
                   ctx.dimensions.push(o);
               });
             }
@@ -238,21 +238,36 @@
         // setup each Indicator (grouped) as one chart based on returned data from the backtest
         this.setGroups();
       },
-      extendCandlesWithIndicatorValues(){
+      extendCandlesWithIndicatorValues() {
         let ctx = this;
+        let dim = this.dimensions.map(d => d.name);
+        let cDim = Object.keys(this.candles[0]);
+        let diff = _.difference(dim, cDim);
+
+        // patch candles with dimension
         if (!_.isEmpty(this.indicators)) {
           this.indicators.forEach((item, idx) => {
             if (item.indicators) {
-              _.each(Object.keys(item.indicators), function (indicator) {
-                ctx.candles[idx][indicator] = item.indicators[indicator];
-              });
+              _.each(diff, function (dimension) {
+                if (!item.indicators[dimension]) {
+                    ctx.candles[idx][dimension] = null;
+                } else {
+                  ctx.candles[idx][dimension] = item.indicators[dimension]
+                }
+              })
             }
           });
         }
       },
       checkForDisplayType: function (resultName) {
         if (resultName) {
-          let s = resultName.toLowerCase();
+          let s = "";
+          // emitter emits talib and tulip by name -> example bb_bbandsLower, rsi_result etc.
+          if (resultName.indexOf('_') > 0) {
+            s = resultName.split('_')[0];
+          } else {
+            s = resultName.toLowerCase();
+          }
           if (chartIndicators.indexOf(s) >= 0) return 'indicator';
           if (chartOverlays.indexOf(s) >= 0) return 'overlay';
           if (chartPatterns.indexOf(s) >= 0) return 'pattern';
