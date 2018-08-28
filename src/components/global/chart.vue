@@ -171,6 +171,7 @@
     'willr'
   ];
 
+  console.log(chartIndicators)
 
   export default {
     name: "VueEchartWrapper",
@@ -239,7 +240,7 @@
                       o['displayName'] = key;
                     }
 
-                    o['displayType'] = ctx.checkForDisplayType(key);
+                    o['displayType'] = ctx.checkForDisplayType(it);
 
                     if (!_.find(ctx.dimensions, {name: o.name}))
                       ctx.dimensions.push(o);
@@ -287,8 +288,8 @@
                 }
               });
               // patch remaining properties of candle
-              _.each(diff, function(value, idx) {
-                if(!candle[value]) candle[value] = null;
+              _.each(diff, function (value, idx) {
+                if (!candle[value]) candle[value] = null;
               });
             });
           }
@@ -296,17 +297,9 @@
       },
       checkForDisplayType: function (resultName) {
         if (resultName) {
-          let s = "";
-          // emitter emits talib and tulip by name -> example bb_bbandsLower, rsi_result etc.
-          if (resultName.indexOf('_') > 0) {
-            s = resultName.substring(0, resultName.lastIndexOf('_'));
-          } else {
-            s = resultName.toLowerCase();
-          }
-          //console.log(s, "will be searched on chartindicator config", chartIndicators)
-          if (chartIndicators.indexOf(s) >= 0) return 'indicator';
-          if (chartOverlays.indexOf(s) >= 0) return 'overlay';
-          if (chartPatterns.indexOf(s) >= 0) return 'pattern';
+          if (chartIndicators.indexOf(resultName) >= 0) return 'indicator';
+          if (chartOverlays.indexOf(resultName) >= 0) return 'overlay';
+          if (chartPatterns.indexOf(resultName) >= 0) return 'pattern';
         }
         // defaults to overlay
         return 'overlay';
