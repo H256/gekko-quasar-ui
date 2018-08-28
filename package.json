@@ -9,18 +9,18 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "axios": "^0.17.1",
+    "axios": "^0.18.0",
     "echarts": "^4.1.0",
-    "humanize-duration": "^3.14.0",
-    "moment": "^2.22.1",
-    "vue-echarts": "^3.0.7",
-    "vue-i18n": "^7.6.0",
-    "vue-json-excel": "^0.2.5"
+    "humanize-duration": "^3.15.1",
+    "moment": "^2.22.2",
+    "vue-echarts": "^3.1.1",
+    "vue-i18n": "^8.0.0",
+    "vue-json-excel": "^0.2.83"
   },
   "devDependencies": {
-    "jade": "^1.11.0",
     "marked": "^0.3.19",
-    "quasar-cli": "^0.15.18",
+    "quasar-cli": "^0.17.13",
+    "strip-ansi": "^3.0.1",
     "superagent": "^3.8.3",
     "superagent-no-cache": "^0.1.1"
   },
