@@ -5,7 +5,7 @@ It's based off the original code from the [Gekko trading bot](https://gekko.wizb
 
 Use this parallel to the original Gekko-UI (or compile and replace the original).
 
-*Sidenote: Currently the repository works with Gekko 0.5.14 and it will probably break when Gekko 0.6 is out due to a completely rewritten event-system.*
+*Sidenote: This repository should work with all Gekkos > version 0.6.*
 
 **for an experimental Gekko with this UI and indicator display see here [Gekko trading bot fork](https://github.com/h256/gekko)**
 
