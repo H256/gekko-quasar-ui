@@ -71,12 +71,24 @@ export default {
         {
           backtest: {
             daterange: this.range
+          },
+          backtestResultExporter: {
+            enabled: true,
+            writeToDisk: false,
+            data: {
+              stratUpdates: true,
+              roundtrips: true,
+              stratCandles: true,
+              stratCandleProps: ['open', 'close', 'high', 'low', 'vwp', 'volume'],
+              trades: true
+            }
           }
         },
         { performanceAnalyzer: this.performanceAnalyzer }
       );
 
       config.valid = this.validConfig(config);
+      config.backtestResultExporter.enabled = true; // this is gloabally switching resultExporter on?
 
       return config;
     }

@@ -66,25 +66,13 @@ export default {
       this.backtestState = "fetching";
       let ctx = this; // promise inside promise can't keep context...
 
-      const req = {
-        gekkoConfig: this.config,
-        data: {
-          candleProps: ["open", "close", "high", "low", "start", "volume"],
-          indicatorResults: true,
-          report: true,
-          roundtrips: true,
-          trades: true
-        }
-      };
       this.$axios
-        .post(this.$store.state.config.apiBaseUrl + "backtest", req)
+        .post(this.$store.state.config.apiBaseUrl + "backtest", this.config)
         .then(response => {
           this.backtestState = "fetched";
           //this.backtestResult = response.data;
           // save results to store
-          this.$store.dispatch('backtest/setBacktestResult', response.data).then(()=>{
-              this.$store.dispatch('backtest/extendAndFixCandles');
-          })
+          this.$store.dispatch('backtest/setBacktestResult', response.data);
         })
         .catch(error => {
           console.error(error);

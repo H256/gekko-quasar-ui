@@ -55,6 +55,7 @@ export default ({app, router, Vue, store}) => {
     };
     socket.onmessage = function (message) {
       let payload = JSON.parse(message.data);
+      //console.log("Event from WebSocket:", payload.type, payload)
       bus.$emit(payload.type, payload);
     };
   };
@@ -78,11 +79,8 @@ export default ({app, router, Vue, store}) => {
   };
 
   axios.get(restPath + "gekkos").then(resp => {
-    let watchers = _.filter(resp.data, {type: "watcher"});
-    let runners = _.filter(resp.data, {type: "leech"});
-    store.dispatch("watchers/initWatchers", watchers);
-    store.dispatch("stratrunners/syncStratrunners", runners);
-  }); // TODO: CATCH ERROR with Nofification
+    store.commit('gekkos/syncGekkos', resp.data);
+  });
 
   // Hook in Watcher Websocket events
   bus.$on("new_gekko", data => {
@@ -94,6 +92,12 @@ export default ({app, router, Vue, store}) => {
   bus.$on("startAt", updateFunc);
   bus.$on("lastCandle", updateFunc);
   bus.$on("firstCandle", updateFunc);
+
+  bus.$on('gekko_new', data => store.commit('gekkos/addGekko', data.state));
+  bus.$on('gekko_event', data => store.commit('gekkos/updateGekko', data));
+  bus.$on('gekko_archived', data => store.commit('gekkos/archiveGekko', data.id));
+  bus.$on('gekko_error', data => store.commit('gekkos/errorGekko', data));
+  bus.$on('gekko_deleted', data => store.commit('gekkos/deleteGekko', data.id));
 
   // Imports
   axios.get(restPath + "imports").then(resp => {

@@ -2,22 +2,20 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import config from './config'
-import watchers from './watchers'
 import imports from './imports'
 import warnings from './warnings'
-import stratrunners from './stratrunners'
 import backtest from './backtest'
+import gekkos from './gekkos'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   modules: {
     config,
-    watchers,
     imports,
     warnings,
-    stratrunners,
-    backtest
+    backtest,
+    gekkos
   }
 })
 

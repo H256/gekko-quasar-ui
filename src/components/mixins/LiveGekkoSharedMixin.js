@@ -4,35 +4,47 @@ import Vue from "vue";
 
 export default {
   computed: {
-    watchers: function() {
-      return this.$store.state.watchers.watchers;
+    gekkos() {
+      return this.$store.state.gekkos.gekkos;
     },
-    stratrunners: function() {
-      return this.$store.state.stratrunners.stratrunners;
+    stratrunners: function () {
+      return _.values(this.$store.getters['gekkos/list'])
+        .concat(_.values(this.$store.getters['gekkos/archive']))
+        .filter(g => {
+          if (g.logType === 'papertrader')
+            return true;
+
+          if (g.logType === 'tradebot')
+            return true;
+
+          return false;
+        })
     },
-    watchConfig: function() {
+    watchers: function () {
+      return _.values(this.$store.getters['gekkos/list'])
+        .concat(_.values(this.$store.getters['gekkos/archive']))
+        .filter(g => g.logType === 'watcher')
+    },
+    watchConfig: function () {
       let raw = _.pick(this.config, "watch", "candleWriter");
       let watchConfig = Vue.util.extend({}, raw);
       watchConfig.type = "market watcher";
       watchConfig.mode = "realtime";
       return watchConfig;
     },
-    requiredHistoricalData: function() {
+    requiredHistoricalData: function () {
       if (!this.config.tradingAdvisor || !this.config.valid) return;
 
       let stratSettings = this.config.tradingAdvisor;
       return stratSettings.candleSize * stratSettings.historySize;
     },
-    gekkoConfig: function() {
+    gekkoConfig: function () {
       var startAt;
 
       if (!this.existingMarketWatcher) return;
 
       if (!this.requiredHistoricalData)
-        startAt = moment()
-          .utc()
-          .startOf("minute")
-          .format();
+        startAt = moment().utc().startOf("minute").format();
       else {
         // TODO: figure out whether we can stitch data
         // without looking at the existing watcher
@@ -43,7 +55,7 @@ export default {
           .unix();
 
         const available = moment
-          .utc(this.existingMarketWatcher.firstCandle.start)
+          .utc(this.existingMarketWatcher.events.initial.candle.start)
           .unix();
 
         startAt = moment
@@ -52,53 +64,59 @@ export default {
           .format();
       }
 
-      const gekkoConfig = Vue.util.extend(
-        {
+      const gekkoConfig = Vue.util.extend({
           market: {
             type: "leech",
             from: startAt
           },
           mode: "realtime"
         },
-        this.config
-      );
+        this.config);
       return gekkoConfig;
     },
-    existingMarketWatcher: function() {
+    existingMarketWatcher: function () {
       const market = Vue.util.extend({}, this.watchConfig.watch);
-      return _.find(this.watchers, { watch: market });
+      return _.find(this.gekkos, {config: {watch: market}});
     },
-    exchange: function() {
+    exchange: function () {
       return this.watchConfig.watch.exchange;
     },
-    existingTradebot: function() {
-      return _.find(this.stratrunners.filter(s => s.trader === "tradebot"), {
-        watch: { exchange: this.exchange }
-      });
+    existingTradebot: function () {
+      return _.find(
+        this.gekkos,
+        g => {
+          if (g.logType === 'tradebot' && g.config.watch.exchange === this.exchange) {
+            return true;
+          }
+          return false;
+        }
+      );
     },
-    availableApiKeys: function() {
+    availableApiKeys: function () {
       return this.$store.state.config.apiKeys;
     }
   },
   watch: {
     // start the stratrunner
-    existingMarketWatcher: function(val, prev) {
+    existingMarketWatcher: function (val, prev) {
       if (!this.pendingStratrunner) return;
 
-      if (val && val.firstCandle && val.lastCandle) {
+      const gekko = this.existingMarketWatcher;
+
+      if (gekko.events.latest.candle) {
         this.pendingStratrunner = false;
 
         this.startGekko()
-          .then(resp => this.routeToGekko(null, resp.data, "stratrunner"))
+          .then(resp => this.routeToGekko(null, resp.data))
           .catch(error => this.routeToGekko(error, resp.data));
       }
     }
   },
   methods: {
-    updateConfig: function(config) {
+    updateConfig: function (config) {
       this.config = config;
     },
-    start: function() {
+    start: function () {
       // if the user starts a tradebot we do some
       // checks first.
       if (this.config.type === "tradebot") {
@@ -132,12 +150,11 @@ export default {
         // check if the specified market is already being watched
         if (this.existingMarketWatcher) {
           this.$q.dialog({
-            title: "Market is already beign watched",
-            message:
-              "This market is already being watched, redirecting you now..."
+            title: "Market is already being watched",
+            message: "This market is already being watched, redirecting you now..."
           });
           this.$router.push({
-            path: `/live-gekkos/watcher/${this.existingMarketWatcher.id}`
+            path: `/live-gekkos/${this.existingMarketWatcher.id}`
           });
         } else {
           this.startWatcher()
@@ -147,7 +164,7 @@ export default {
                 message: "Watcher sucessfully started."
               });
               this.$router.push({
-                path: `/live-gekkos/watcher/${resp.data.id}`
+                path: `/live-gekkos/${resp.data.id}`
               });
             })
             .catch(error => {
@@ -170,7 +187,7 @@ export default {
           this.startWatcher().then(resp => {
             // now we just wait for the watcher to be properly initialized
             // (see the `watch.existingMarketWatcher` method)
-            this.pendingStratrunner = true;
+            this.pendingStratrunner = resp.data.id;
             this.$q.notify({
               type: "positive",
               message: "Watcher sucessfully started."
@@ -179,8 +196,7 @@ export default {
         }
       }
     },
-    routeToGekko: function(err, resp, type="watcher") {
-      let tp = type;
+    routeToGekko: function (err, resp) {
       if (err || resp.error) {
         this.$q.notify({
           type: "negative",
@@ -188,20 +204,18 @@ export default {
         });
         return console.error(err, resp.error);
       }
-      if(resp && resp.type && resp.type === 'leech')
-        tp = 'stratrunner'
 
       this.$router.push({
-        path: `/live-gekkos/${tp}/${resp.id}`
+        path: `/live-gekkos/${resp.id}`
       });
     },
-    startWatcher: function() {
+    startWatcher: function () {
       return this.$axios.post(
         this.$store.state.config.apiBaseUrl + "startGekko",
         this.watchConfig
       );
     },
-    startGekko: function() {
+    startGekko: function () {
       return this.$axios.post(
         this.$store.state.config.apiBaseUrl + "startGekko",
         this.gekkoConfig

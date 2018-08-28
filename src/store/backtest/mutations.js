@@ -3,6 +3,6 @@ export const setResult = (state, result) => {
 }
 
 export const setFixedCandles = (state, result) => {
-  state.backtestResult.candles = result;
+  state.backtestResult.stratCandles = result;
 }
 

@@ -50,13 +50,13 @@ export default {
         {
           name: 'entryAt',
           label: 'Entry at (UTC)',
-          field: rt => this.$options.filters.formatDate(rt.entryAt), //moment.utc(rt.entryAt).format('YYYY-MM-DD HH:mm'),
+          field: rt => this.$options.filters.formatFromUnix(rt.entryAt), //moment.utc(rt.entryAt).format('YYYY-MM-DD HH:mm'),
           sortable: false
         },
         {
           name: 'exitAt',
           label: 'Exit at (UTC)',
-          field: rt => this.$options.filters.formatDate(rt.exitAt),
+          field: rt => this.$options.filters.formatFromUnix(rt.exitAt),
           sortable: false
         },
         {

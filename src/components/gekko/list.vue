@@ -18,26 +18,26 @@
       >
         <q-tr slot="body" slot-scope="props" :props="props">
           <q-td key="exchange" :props="props">
-            {{props.row.watch.exchange}}
+            {{props.row.config.watch.exchange}}
           </q-td>
           <q-td key="pair" :props="props">
-            {{props.row.watch.currency}} - {{props.row.watch.asset}}
+            {{props.row.config.watch.currency}} - {{props.row.config.watch.asset}}
           </q-td>
           <q-td key="startedat" :props="props">
-            {{props.row.firstCandle ? props.row.firstCandle.start : '' | formatDate}}
+            {{props.row.start ? props.row.start : '' | formatDate}}
           </q-td>
           <q-td key="lastupdate" :props="props">
-            {{props.row.lastCandle ? props.row.lastCandle.start : '' | formatDate}}
+            {{props.row.latestUpdate ? props.row.latestUpdate : '' | formatDate}}
           </q-td>
           <q-td key="duration" :props="props">
-            {{props.row.firstCandle && props.row.lastCandle ? timespan(props.row.lastCandle.start,
-            props.row.firstCandle.start) : ''}}
+            {{props.row.start && props.row.latestUpdate ? timespan(props.row.start,
+            props.row.latestUpdate) : ''}}
           </q-td>
           <q-td key="price" :props="props">
-            {{props.row.lastCandle ? props.row.lastCandle.close + ' ' + props.row.watch.currency : ''}}
+            {{props.row.events.latest.candle ? props.row.events.latest.candle.close + ' ' + props.row.config.watch.currency : ''}}
           </q-td>
           <q-td key="actions" :props="props">
-            <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/watcher/${props.row.id}`)"
+            <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/${props.row.id}`)"
                    icon="visibility" label="view"></q-btn>
             <!--<q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"></q-btn>-->
           </q-td>
@@ -57,38 +57,43 @@
                hide-bottom
       >
         <q-tr slot="body" slot-scope="props" :props="props"
-              :class="{'bg-green-11': (props.row.report && props.row.report.profit > 0), 'bg-red-11': (props.row.report && props.row.report.profit < 0)}">
+              :class="{'bg-green-11': (props.row.events.latest.performanceReport && props.row.events.latest.performanceReport.profit > 0), 'bg-red-11': (props.row.events.latest.performanceReport && props.row.events.latest.performanceReport.profit < 0)}">
           <q-td key="type" :props="props">
-            {{props.row.trader.replace(/\b\w/g, l => l.toUpperCase())}}
+            {{props.row.logType}}
           </q-td>
           <q-td key="exchange" :props="props">
-            {{props.row.watch.exchange.toUpperCase()}}
+            {{props.row.config.watch.exchange.toUpperCase()}}
           </q-td>
           <q-td key="pair" :props="props">
-            {{props.row.watch.currency}} - {{props.row.watch.asset}}
+            {{props.row.config.watch.currency}} - {{props.row.config.watch.asset}}
+          </q-td>
+          <q-td key="status" :props="props">
+            <q-chip v-if="props.row.stopped" color="orange">Stopped</q-chip>
+            <q-chip v-if="props.row.errored" color="negative">Error</q-chip>
+            <q-chip v-if="props.row.active" color="positive">Running</q-chip>
           </q-td>
           <q-td key="lastupdate" :props="props">
-            {{props.row.lastCandle ? props.row.lastCandle.start : '' | formatDate}}
+            {{props.row.events.latest.candle ? props.row.events.latest.candle.start : '' | formatDate}}
           </q-td>
           <q-td key="duration" :props="props">
-            {{props.row.firstCandle && props.row.lastCandle ? timespan(props.row.lastCandle.start,
-            props.row.firstCandle.start) : ''}}
+            {{props.row.events.initial.candle && props.row.events.latest.candle ? timespan(props.row.events.latest.candle.start,
+            props.row.events.initial.candle.start) : ''}}
           </q-td>
           <q-td key="strategy" :props="props">
-            {{props.row.strat ? props.row.strat.name : ''}}
+            {{props.row.config.tradingAdvisor ? props.row.config.tradingAdvisor.method : ''}}
           </q-td>
           <q-td key="trades_rt" :props="props">
-            {{(props.row.trades.length || 0) + ' / ' + (props.row.roundtrips.length || 0)}}
+            {{(props.row.events.tradeCompleted ? props.row.events.tradeCompleted.length : 0) + ' / ' + (props.row.events.roundtrip ? props.row.events.roundtrip.length : 0)}}
           </q-td>
           <q-td key="success" :props="props">
-            {{props.row.roundtrips ? successRate(props.row.roundtrips) : '0.00 %'}}
+            {{props.row.events.roundtrip ? successRate(props.row.events.roundtrip) : '0.00 %'}}
           </q-td>
           <q-td
-            key="profit" :props="props">{{props.row.report ? round(props.row.report.profit) : 'N/A' }}
-            {{ props.row.report ? props.row.watch.currency : ''}}
+            key="profit" :props="props">{{props.row.events.latest.performanceReport ? round(props.row.events.latest.performanceReport.profit) : 'N/A' }}
+            {{ props.row.events.latest.performanceReport ? props.row.watch.currency : ''}}
           </q-td>
           <q-td class="bg-white" key="actions" :props="props">
-            <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/stratrunner/${props.row.id}`)"
+            <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/${props.row.id}`)"
                    icon="visibility" label="view"/>
             <!--<q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"/>-->
           </q-td>
@@ -132,7 +137,7 @@
           },
           {
             name: "duration",
-            label: "Duration"
+            label: "running since"
           },
           {
             name: "price",
@@ -156,6 +161,7 @@
             name: "pair",
             label: "Pair"
           },
+          {name: "status", label: "Status"},
           {
             name: "lastupdate",
             label: "Last update"
@@ -197,10 +203,22 @@
     },
     computed: {
       stratrunners: function () {
-        return this.$store.state.stratrunners.stratrunners;
+        return _.values(this.$store.getters['gekkos/list'])
+          .concat(_.values(this.$store.getters['gekkos/archive']))
+          .filter(g => {
+            if(g.logType === 'papertrader')
+              return true;
+
+            if(g.logType === 'tradebot')
+              return true;
+
+            return false;
+          })
       },
       watchers: function () {
-        return this.$store.state.watchers.watchers;
+        return _.values(this.$store.getters['gekkos/list'])
+          .concat(_.values(this.$store.getters['gekkos/archive']))
+          .filter(g => g.logType === 'watcher')
       }
     },
     methods: {
@@ -368,6 +386,19 @@
             }
           }
         }
+      },
+      status: state => {
+        if(state.errored)
+          return 'errored';
+        if(state.stopped)
+          return 'stopped';
+        if(state.active)
+          return 'running';
+
+        console.log('unknown state:', state);
+      },
+      report: state => {
+        return _.get(state, 'events.latest.performanceReport');
       },
       moment: mom => moment.utc(mom),
       round: n => (+n).toFixed(3),

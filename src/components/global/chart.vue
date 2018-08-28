@@ -217,50 +217,38 @@
         let ctx = this;
         // EXTEND DIMENSIONS WITH INDICATORS
         if (!_.isEmpty(this.indicators)) {
-          _.each(Object.keys(ctx.indicators), function (item) {
-            let ind = ctx.indicators[item];
+          this.indicators.forEach((item, idx)=>{
+            if(item.indicators){
+              _.each(Object.keys(item.indicators), function (indicator) {
+                let o = {
+                  name: indicator,
+                  group: indicator,
+                  type: 'number',
+                  displayName: indicator.charAt(0).toUpperCase() + indicator.substr(1),
+                  displayType: ctx.checkForDisplayType(indicator)
+                };
 
-            ind.forEach(function (indicatorResult, idx) {
-              if (!_.isEmpty(indicatorResult.result) || (!_.isNull(indicatorResult.result) && !_.isUndefined(indicatorResult.result))) {
-                if (_.isObject(indicatorResult.result)) {
-                  let k = Object.keys(indicatorResult.result);
-                  _.each(k, function (it) {
-                    let o = {};
-                    if (!(it === 'result')) {
-                      o['name'] = item + '_' + it;
-                      o['group'] = indicatorResult.indicator === null ? item : indicatorResult.indicator;
-                      o['type'] = 'number';
-                      o['displayName'] = item + ' (' + it + ', ' + indicatorResult.baseType + ')';
-                    } else {
-                      o['name'] = item;
-                      o['group'] = indicatorResult.indicator === null ? item : indicatorResult.indicator;
-                      o['type'] = 'number';
-                      o['displayName'] = item + ' (' + indicatorResult.baseType + ')';
-                    }
-
-                    o['displayType'] = ctx.checkForDisplayType((indicatorResult.indicator === null ? item : indicatorResult.indicator));
-
-                    if (!_.find(ctx.dimensions, {name: o.name}))
-                      ctx.dimensions.push(o);
-                  })
-                } else {
-                  let o = {};
-                  o['name'] = item;
-                  o['group'] = indicatorResult.indicator === null ? item : indicatorResult.indicator;
-                  o['type'] = "number";
-                  o['displayName'] = item + ' (native)';
-
-                  o['displayType'] = ctx.checkForDisplayType((indicatorResult.indicator === null ? item : indicatorResult.indicator));
-
-                  if (!_.find(ctx.dimensions, {name: o.name}))
-                    ctx.dimensions.push(o);
-                }
-              }
-            });
+                if(!_.find(ctx.dimensions, {name: o.name}))
+                  ctx.dimensions.push(o);
+              });
+            }
           });
         }
+
         // setup each Indicator (grouped) as one chart based on returned data from the backtest
         this.setGroups();
+      },
+      extendCandlesWithIndicatorValues(){
+        let ctx = this;
+        if (!_.isEmpty(this.indicators)) {
+          this.indicators.forEach((item, idx) => {
+            if (item.indicators) {
+              _.each(Object.keys(item.indicators), function (indicator) {
+                ctx.candles[idx][indicator] = item.indicators[indicator];
+              });
+            }
+          });
+        }
       },
       checkForDisplayType: function (resultName) {
         if (resultName) {
@@ -273,6 +261,9 @@
         return 'overlay';
       },
       updateCandles: function () {
+        // put all values into one array...
+        this.extendCandlesWithIndicatorValues();
+
         let options = {
           title: {
             left: 'center',
@@ -409,7 +400,7 @@
           let self = this;
           _.each(this.trades, function (item) {
             let tmp = {
-              coord: [item.date.toString(), item.price],
+              coord: [item.date, item.price],
               name: item.action,
               label: {
                 position: item.action === "sell" ? "top" : "bottom",
@@ -433,7 +424,7 @@
 
         // CREATE LINE FOR EACH INDICATOR AND DETERMINE AXIS FOR DISPLAY
         let group = _.groupBy(options.dimensions, 'group');
-        options.yAxis.push({scale:false}); // create a third yAxis // Grid Index 1 left
+        options.yAxis.push({scale: false}); // create a third yAxis // Grid Index 1 left
         options.yAxis.push({scale: true}); // create a fourth yAxis // Grid Index 1 right
         options.yAxis.push({scale: true}); // create a fifth yAxis // Grid Index 2 left
         let lastyAxisIndicator = 'left';

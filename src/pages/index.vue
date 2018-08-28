@@ -2,7 +2,10 @@
   <q-page class="flex flex-center q-pa-md">
     <div class="row">
        <div class="col-8">
-         <h1>Gekko</h1>
+         <div class="row items-center">
+           <div class="q-display-4 col">Gekko</div>
+           <div class="q-display-3 col">Gordon UI edition</div>
+         </div>
          <p>
            Gekko is a Bitcoin tranding bot and backtesting platform that
            connects to popular Bitcoin exchanges.

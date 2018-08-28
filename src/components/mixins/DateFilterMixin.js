@@ -6,6 +6,10 @@ export default {
       if(date === '') return ''
       return moment.utc(date).format('YYYY-MM-DD HH:mm');
     },
+    formatFromUnix: function(date){
+      if(date === '') return ''
+      return moment.unix(date).utc().format('YYYY-MM-DD HH:mm');
+    },
     humanizeMoment: function(duration) {
       return moment.duration(duration).humanize();
     },

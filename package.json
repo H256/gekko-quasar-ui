@@ -1,8 +1,8 @@
 {
-  "name": "gekkomat",
-  "version": "0.5.24",
+  "name": "gordonui",
+  "version": "0.6.5",
   "description": "Quasar Frontend for Gekko Trading Bot",
-  "productName": "Gekko Material UI",
+  "productName": "Gordon UI",
   "cordovaId": "org.cordova.quasar.app",
   "author": "H256 <hansi256@web.de>",
   "scripts": {
@@ -20,7 +20,7 @@
   "devDependencies": {
     "jade": "^1.11.0",
     "marked": "^0.3.19",
-    "quasar-cli": "^0.15.14",
+    "quasar-cli": "^0.15.18",
     "superagent": "^3.8.3",
     "superagent-no-cache": "^0.1.1"
   },

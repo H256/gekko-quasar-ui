@@ -59,9 +59,9 @@
     data: function () {
       return {
         // defaults:
-        exchange: 'poloniex',
-        currency: 'USDT',
-        asset: 'BTC',
+        exchange: 'binance',
+        currency: 'BTC',
+        asset: 'NEO',
       };
     },
     created: function () {
@@ -97,9 +97,9 @@
       assets: function () {
         let list = this.exchanges ? this.exchanges[this.exchange].markets[this.currency] : [];
         if (list) {
-          list = _.map(list, function (item) {
+          list = _.orderBy(_.map(list, function (item) {
             return {value: item, label: item}
-          })
+          }),['label'],['asc'])
           if (list.length)
             this.asset = list[0].value
         }
@@ -108,9 +108,9 @@
       currencies: function () {
         let list = this.exchanges ? _.keys(this.exchanges[this.exchange].markets) : [];
         if (list) {
-          list = _.map(list, function (item) {
+          list = _.orderBy(_.map(list, function (item) {
             return {value: item, label: item}
-          })
+          }),['label'], ['asc']);
           if (list.length)
             this.currency = list[0].value;
         }

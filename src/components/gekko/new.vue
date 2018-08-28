@@ -3,7 +3,7 @@
     <h3>Start a new gekko</h3>
     <gekko-config-builder v-on:config="updateConfig" />
     <div v-if="config.valid" class="row justify-center">
-      <q-btn color="primary" @click.prevent="start">Start</q-btn>
+      <q-btn color="primary" @click.prevent="start" :disabled="pendingStratrunner" :loading="pendingStratrunner && pendingStratrunner !== ''">Start</q-btn>
     </div>
   </q-page>
 </template>

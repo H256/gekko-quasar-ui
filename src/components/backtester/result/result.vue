@@ -4,7 +4,7 @@
       <h3>Backtest result</h3>
     </div>
     <div>
-      <result-summary :report="result.report"/>
+      <result-summary v-if="result && result.performanceReport" :report="result.performanceReport"/>
     </div>
     <div>
       <echart :candles="candles" :trades="trades" :indicators="indicators"></echart>
@@ -26,7 +26,7 @@
       </excel-json>
     </div>
     <div>
-      <roundtrip-table :roundtrips="result.roundtrips" :asset="result.report.asset" :currency="result.report.currency"/>
+      <roundtrip-table v-if="result && result.performanceReport" :roundtrips="result.roundtrips" :asset="result.performanceReport.asset" :currency="result.performanceReport.currency"/>
     </div>
   </div>
 </template>
@@ -45,13 +45,13 @@
     },
     computed: {
       candles: function () {
-        return this.result.candles || []
+        return this.result.stratCandles || []
       },
       trades: function () {
         return this.result.trades || []
       },
       indicators: function () {
-        return this.result.indicatorResults || []
+        return this.result.stratUpdates || []
       }
     },
     methods: {
