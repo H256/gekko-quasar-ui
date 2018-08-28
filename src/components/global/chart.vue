@@ -8,6 +8,7 @@
 <script>
   import _ from "lodash";
   import ECharts from 'vue-echarts'
+  import {result} from "../../store/backtest/getters";
 
   const userIndicators = (window.CONFIG.userChartConfig && window.CONFIG.userChartConfig.indicators) || [];
   const userPatterns = (window.CONFIG.userChartConfig && window.CONFIG.userChartConfig.patterns) || [];
@@ -215,48 +216,82 @@
       },
       extendDimensions() {
         let ctx = this;
+        let cnt = 0;
         // EXTEND DIMENSIONS WITH INDICATORS
         if (!_.isEmpty(this.indicators)) {
-          this.indicators.forEach((item, idx) => {
-            if (item.indicators) {
-              _.each(Object.keys(item.indicators), function (indicator) {
-                let o = {
-                  name: indicator,
-                  group: indicator.split('_')[0],
-                  type: 'number',
-                  displayName: indicator.charAt(0).toUpperCase() + indicator.substr(1),
-                  displayType: ctx.checkForDisplayType(indicator)
-                };
+          _.each(Object.keys(ctx.indicators), function (item) {
+            let ind = ctx.indicators[item];
+            _.each(ind.indicators, function (indicatorResult, key) {
+              if (!_.isEmpty(indicatorResult) || (!_.isNull(indicatorResult) && !_.isUndefined(indicatorResult))) {
+                if (_.isObject(indicatorResult)) {
+                  let k = Object.keys(indicatorResult);
+                  _.each(k, function (it) {
+                    let o = {};
+                    if (!(it === 'result')) {
+                      o['name'] = key + '_' + it;
+                      o['group'] = key;
+                      o['type'] = 'number';
+                      o['displayName'] = key;
+                    } else {
+                      o['name'] = it;
+                      o['group'] = it;
+                      o['type'] = 'number';
+                      o['displayName'] = key;
+                    }
 
-                if (!_.find(ctx.dimensions, {name: o.name}))
-                  ctx.dimensions.push(o);
-              });
-            }
+                    o['displayType'] = ctx.checkForDisplayType(key);
+
+                    if (!_.find(ctx.dimensions, {name: o.name}))
+                      ctx.dimensions.push(o);
+                  })
+                } else {
+                  let o = {};
+                  o['name'] = key;
+                  o['group'] = key;
+                  o['type'] = "number";
+                  o['displayName'] = key;
+
+                  o['displayType'] = ctx.checkForDisplayType(key);
+
+                  if (!_.find(ctx.dimensions, {name: o.name}))
+                    ctx.dimensions.push(o);
+                }
+              }
+            });
+
+            cnt++;
+
           });
         }
-
         // setup each Indicator (grouped) as one chart based on returned data from the backtest
         this.setGroups();
       },
       extendCandlesWithIndicatorValues() {
         let ctx = this;
         let dim = this.dimensions.map(d => d.name);
-        let cDim = Object.keys(this.candles[0]);
-        let diff = _.difference(dim, cDim);
+        if (this.candles[0]) {
+          let cDim = Object.keys(this.candles[0]);
+          let diff = _.difference(dim, cDim);
 
-        // patch candles with dimension
-        if (!_.isEmpty(this.indicators)) {
-          this.indicators.forEach((item, idx) => {
-            if (item.indicators) {
-              _.each(diff, function (dimension) {
-                if (!item.indicators[dimension]) {
-                    ctx.candles[idx][dimension] = null;
-                } else {
-                  ctx.candles[idx][dimension] = item.indicators[dimension]
+          // patch candles with dimension
+          if (!_.isEmpty(this.indicators)) {
+            _.each(ctx.candles, function (candle, index) { // indicator-array
+              let indicator = ctx.indicators[index].indicators;
+              _.each(indicator, function (value, key) { // loop indicators-object key-value pairs
+                if (_.isObject(value)) { // check if it's an object
+                  _.each(value, function (subValue, subKey) { // if so, loop all values
+                    candle[`${key}_${subKey}`] = subValue; // build correct key
+                  })
+                } else { // else just patch candle value
+                  candle[key] = value;
                 }
-              })
-            }
-          });
+              });
+              // patch remaining properties of candle
+              _.each(diff, function(value, idx) {
+                if(!candle[value]) candle[value] = null;
+              });
+            });
+          }
         }
       },
       checkForDisplayType: function (resultName) {
@@ -264,10 +299,11 @@
           let s = "";
           // emitter emits talib and tulip by name -> example bb_bbandsLower, rsi_result etc.
           if (resultName.indexOf('_') > 0) {
-            s = resultName.split('_')[0];
+            s = resultName.substring(0, resultName.lastIndexOf('_'));
           } else {
             s = resultName.toLowerCase();
           }
+          //console.log(s, "will be searched on chartindicator config", chartIndicators)
           if (chartIndicators.indexOf(s) >= 0) return 'indicator';
           if (chartOverlays.indexOf(s) >= 0) return 'overlay';
           if (chartPatterns.indexOf(s) >= 0) return 'pattern';

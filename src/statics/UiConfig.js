@@ -17,10 +17,21 @@ const CONFIG = {
       path: '/'
     },
     adapter: 'sqlite',
-    /*userChartConfig: {
-      patterns:['hasInvertedHammer']
-    }*/
-  }
+
+  /**
+   * Gordon UI - configure your additional Indicator names here
+   * (standard TA-Lib and Tulip ones are already defined)
+   * patterns: for Pattern-Recognizing indicators
+   * indicators: for RSI and so on - should not be displayed as Overlay
+   * overlays: all Indicators that can be put into the main-chart as overlay, for Example SMA, EMA, Bollinger-Bands etc.
+   * Example-Configuration done for tulip-macd - strat
+   */
+    userChartConfig: {
+      //patterns:['hasInvertedHammer']
+      indicators: ['mymacd', 'mymacdSignal', 'macdHistogram', 'mystdev'],
+      //overlays: []
+    }
+  };
 
   if(typeof window === 'undefined')
     module.exports = CONFIG;
