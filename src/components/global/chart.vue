@@ -171,8 +171,6 @@
     'willr'
   ];
 
-  console.log(chartIndicators)
-
   export default {
     name: "VueEchartWrapper",
     props: ["candles", "trades", "indicators"],
