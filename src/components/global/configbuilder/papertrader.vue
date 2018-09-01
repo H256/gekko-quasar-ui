@@ -2,10 +2,10 @@
 <div>
   <div class="row"><h4>Paper Trader</h4></div>
   <div class="row gutter-md">
-    <div class="col-3">
+    <div class="col">
       <q-btn @click.prevent="switchToggle" color="primary">Change paper trader settings</q-btn>
     </div>
-    <div class="col-3">
+    <div class="col">
       <q-field v-if="toggle === 'open'"
         label="Settings"
         orientation="vertical"

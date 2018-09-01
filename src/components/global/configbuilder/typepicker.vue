@@ -8,17 +8,19 @@
         type="radio"
         v-model="selectedTypeIndex"
         :options="types"
+        @input="emitType"
       />
     </div>
   </div>
 </template>
 
 <script>
+  import _ from 'lodash';
 export default {
   created: function() {
     this.types = [
-      { label: "Paper trader", value: 0, color: "blue" },
-      { label: "Market watcher", value: 1, color: "green" },
+      { label: "Market watcher", value: 0, color: "green" },
+      { label: "Paper trader", value: 1, color: "blue" },
       { label: "Tradebot", value: 2, color: "red" }
     ];
     this.emitType();
@@ -32,7 +34,7 @@ export default {
   },
   methods: {
     emitType: function() {
-      this.$emit("type", this.type);
+      this.$emit("type", this.type.value);
     }
   },
   watch: {
@@ -42,7 +44,8 @@ export default {
   },
   computed: {
     type: function() {
-      return this.types[this.selectedTypeIndex];
+      let idx = _.indexOf(this.types, {val: this.selectedTypeIndex});
+      return this.types[idx === -1 ? 0 : idx];
     }
   }
 };
