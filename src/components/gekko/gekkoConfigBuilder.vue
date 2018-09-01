@@ -9,8 +9,8 @@
         <type-picker v-on:type="updateType"/>
       </div>
     </div>
-    <strat-picker v-if="type !== 0" v-on:stratConfig="updateStrat"/>
-    <paper-trader v-if="type === 1" v-on:settings="updatePaperTrader"/>
+    <strat-picker v-if="!isMarketWatcher" v-on:stratConfig="updateStrat"/>
+    <paper-trader v-if="isPaperTrader" v-on:settings="updatePaperTrader"/>
   </div>
 </template>
 
@@ -61,7 +61,13 @@
     },
     computed: {
       isTradebot: function () {
-        return this.type === 2;
+        return this.type && this.type.label ? this.type.label.toLowerCase() === 'tradebot' : false;
+      },
+      isPaperTrader() {
+        return this.type && this.type.label ? this.type.label.toLowerCase() === 'paper trader' : false;
+      },
+      isMarketWatcher() {
+        return this.type && this.type.label ? this.type.label.toLowerCase() === 'market watcher' : false;
       },
       config: function () {
         let config = {};

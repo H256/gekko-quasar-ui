@@ -119,7 +119,7 @@ export default {
     start: function () {
       // if the user starts a tradebot we do some
       // checks first.
-      if (this.config.type === "tradebot") {
+      if (this.config.type === "tradebot" || (this.config.type.label && this.config.type.label.toLowerCase() === 'tradebot')) {
         if (this.existingTradebot) {
           let str = "You already have a tradebot running on this exchange";
           str += ", you can only run one tradebot per exchange.";
@@ -146,7 +146,7 @@ export default {
       //
       // however if the user selected type "market watcher"
       // the second part won't be created
-      if (this.config.type === "market watcher") {
+      if (this.config.type === "market watcher" || (this.config.type.label && this.config.type.label.toLowerCase() === 'market watcher')) {
         // check if the specified market is already being watched
         if (this.existingMarketWatcher) {
           this.$q.dialog({
