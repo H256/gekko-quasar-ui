@@ -25,10 +25,11 @@ const CONFIG = {
    * indicators: for RSI and so on - should not be displayed as Overlay
    * overlays: all Indicators that can be put into the main-chart as overlay, for Example SMA, EMA, Bollinger-Bands etc.
    * Example-Configuration done for tulip-macd - strat
+   * If name on chart contains an '_', add the name after the '_' to this array.
    */
     userChartConfig: {
       //patterns:['hasInvertedHammer']
-      indicators: ['mymacd', 'mymacdSignal', 'macdHistogram', 'mystdev'],
+      indicators: ['macd', 'macdSignal', 'macdHistogram', 'mystdev'],
       //overlays: []
     }
   };

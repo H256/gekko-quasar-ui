@@ -1,5 +1,5 @@
 <template>
-  <q-card class="q-ma-sm">
+  <q-card class="q-mr-md">
     <q-card-title class="bg-amber-8 text-white">Market</q-card-title>
     <q-card-separator/>
     <q-card-main>

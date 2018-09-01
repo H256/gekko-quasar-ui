@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="q-mb-xs">Backtest</h2>
+    <h3 class="q-mb-xs">Backtest</h3>
     <div class="row">
       <div class="col-12">
          <config-builder v-on:config="check" />

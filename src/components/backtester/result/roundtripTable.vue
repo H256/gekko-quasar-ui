@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Roundtrips</h3>
+    <h4>Roundtrips</h4>
     <div class="row" v-if="roundtrips && roundtrips.length">
       <div class="col">Percent Wins: <b>{{getPercentWinning().toFixed(2)}} %</b></div>
       <div class="col">Best Win: <b class="text-positive">{{getMostLeastProfitable().toFixed(2)}} %</b></div>

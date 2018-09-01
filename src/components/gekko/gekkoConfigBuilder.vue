@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h3>Market</h3>
-    <div class="row">
-      <div class="col-3">
+    <h4 class="q-mb-xs">Market</h4>
+    <div class="row items-center">
+      <div class="col">
         <market-picker v-on:market='updateMarketConfig' :only-tradable="isTradebot"/>
       </div>
-      <div class="col-2">
+      <div class="col">
         <type-picker v-on:type="updateType"/>
       </div>
     </div>

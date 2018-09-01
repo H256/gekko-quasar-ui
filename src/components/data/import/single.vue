@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div v-if='data && !data.done'>
-      <h3>Importing data</h3>
+      <h4>Importing data</h4>
       <div class="row">
         <div class="col-2">
            <strong>Market:</strong>
@@ -41,20 +41,20 @@
       </div>
       <div class="row q-pa-xs">
         <p>
-           <em> you don't have to wait until the import is done, you can already start <router-link to="/backtest">backtesting</router-link>.          
+           <em> you don't have to wait until the import is done, you can already start <router-link to="/backtest">backtesting</router-link>.
           </em>
         </p>
-      </div> 
+      </div>
     </div>
     <div v-if="data && data.done">
-        <h3>Import done!</h3>
-        <p>The import 
+        <h4>Import done!</h4>
+        <p>The import
           for <strong>{{data.watch.exchange}}: {{data.watch.currency}}-{{data.watch.asset}}</strong>
           is complete! <br>
           Go and <router-link to="/backtest">backtest</router-link> with your new data!</p>
     </div>
     <div v-if="!data">
-      <h2 class="text-negative">ERROR: Unknown import</h2>
+      <h3 class="text-negative">ERROR: Unknown import</h3>
       <p>The import could not be found!</p>
     </div>
   </q-page>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h3>Backtest result</h3>
+      <h4>Backtest result</h4>
     </div>
     <div>
       <result-summary v-if="result && result.performanceReport" :report="result.performanceReport"/>

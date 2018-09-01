@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div v-if="!data">
-      <h2 class="text-negative">ERROR: Unknown Gekko instance</h2>
+      <h3 class="text-negative">ERROR: Unknown Gekko instance</h3>
       <p>Gekko doesn't know what watcher this is!</p>
     </div>
     <template v-if="data">
@@ -11,7 +11,7 @@
       <q-alert v-if="data.errorMessage" class="q-pb-sm" type="negative" icon="error">
         <p>This Gekko crashed with the following error-message: <br> <br>{{ data.errorMessage }}</p>
       </q-alert>
-      <h3>Gekko {{type.toUpperCase()}}</h3>
+      <h4>Gekko {{type.toUpperCase()}}</h4>
       <div class="row">
         <div class="col-2">
           <strong>Exchange:</strong>
@@ -37,7 +37,7 @@
         <div class="col-10"><em>{{type}}</em></div>
       </div>
 
-      <h3>Runtime</h3>
+      <h4>Runtime</h4>
       <div class="row" v-if="isLoading">
         <div class="col-2 text-center">
           <q-spinner-bars size="36" color="tertiary"/>
@@ -89,7 +89,7 @@
       </q-alert>
 
       <template v-if="isStratrunner">
-        <h3>Strategy</h3>
+        <h4>Strategy</h4>
         <div class="row">
           <div class="col-2">
             <strong>Name:</strong>
@@ -107,7 +107,7 @@
       </template>
 
       <template v-if="isStratrunner">
-        <h3>Profit report</h3>
+        <h4>Profit report</h4>
         <div class="row">
           <div class="col-12">
             <p>

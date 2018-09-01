@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
-      <q-toolbar color="blue-grey-8">
+      <q-toolbar color="blue-grey-7">
         <q-btn
           flat
           dense
@@ -13,6 +13,19 @@
         <q-toolbar-title>
           Gordon UI
         </q-toolbar-title>
+        <q-tabs align="justify" color="blue-grey-7">
+          <q-route-tab slot="title" default icon="home" label="Home" to="/" exact></q-route-tab>
+          <q-route-tab slot="title" icon="cast connected" label="Live Gekkos" to="/live-gekkos" exact
+                       :count="stratrunners.length"></q-route-tab>
+          <q-route-tab slot="title" icon="timeline" label="Backtest" to="/backtest" exact></q-route-tab>
+          <q-route-tab slot="title" icon="storage" label="Data" to="/data" exact></q-route-tab>
+          <q-route-tab slot="title" icon="import export" label="Importer" to="/data/importer" exact
+                       :count="activeImports"></q-route-tab>
+          <q-route-tab slot="title" icon="settings" label="Config" to="/config" exact></q-route-tab>
+          <q-route-tab slot="title" icon="help" label="Documentation" to="/help"></q-route-tab>
+        </q-tabs>
+      </q-toolbar>
+      <q-toolbar v-if="currentWatchers.length > 0" color="blue-grey-8">
 
         <q-toolbar-title shrink v-if="currentWatchers.length > 0" class="text-right">Prices: <span slot="subtitle">(from Watchers)</span>
         </q-toolbar-title>
@@ -27,19 +40,7 @@
               </span>
             </span>
         </q-toolbar-title>
-
       </q-toolbar>
-      <q-tabs align="justify" color="blue-grey-7">
-        <q-route-tab slot="title" default icon="home" label="Home" to="/" exact></q-route-tab>
-        <q-route-tab slot="title" icon="cast connected" label="Live Gekkos" to="/live-gekkos" exact
-                     :count="stratrunners.length"></q-route-tab>
-        <q-route-tab slot="title" icon="timeline" label="Backtest" to="/backtest" exact></q-route-tab>
-        <q-route-tab slot="title" icon="storage" label="Data" to="/data" exact></q-route-tab>
-        <q-route-tab slot="title" icon="import export" label="Importer" to="/data/importer" exact
-                     :count="activeImports"></q-route-tab>
-        <q-route-tab slot="title" icon="settings" label="Config" to="/config" exact></q-route-tab>
-        <q-route-tab slot="title" icon="help" label="Documentation" to="/help"></q-route-tab>
-      </q-tabs>
     </q-layout-header>
 
     <q-layout-drawer
@@ -166,5 +167,4 @@
 </script>
 
 <style>
-
 </style>

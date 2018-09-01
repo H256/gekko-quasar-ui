@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h2>Local Data</h2>
+      <h3>Local Data</h3>
       <p>
         Gekko needs local market data in order to backtest strategies. The local
         data can also be used in a warmup period when running a strategy against a

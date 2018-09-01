@@ -1,6 +1,6 @@
 <template>
 <div>
-  <h3>Config</h3>
+  <h4>Config</h4>
   <h4>API keys</h4>
   <div class="row">
     <q-list striped class="col-12">

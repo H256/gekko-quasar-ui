@@ -8,7 +8,7 @@
       no-backdrop-dismiss
     >
       <div class="q-pa-md">
-        <h2 class="text-negative">Disconnected</h2>
+        <h3 class="text-negative">Disconnected</h3>
         <p>Something happened to either Gekko or the connection. <br>
           Please check the terminals where Gekko is running <em>or</em> your network connection.
         </p>

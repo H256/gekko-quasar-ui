@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Select a dataset {{selectedText}}</h3>
+    <h4>Select a dataset {{selectedText}}</h4>
     <div class="text-center" v-if="datasetScanstate === 'idle'">
       <q-btn color="primary" @click.prevent="scan">Scan available data</q-btn>
     </div>

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h3>Type</h3>
+  <div class="group">
+    <h4>Type</h4>
     <p>What do you want to do with gekko?</p>
     <div class="row">
       <q-option-group

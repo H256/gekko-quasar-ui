@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div>
-      <h2>Live Gekko</h2>
+    <div class="group q-mb-md">
+      <h3>Live Gekko</h3>
       <p>Run your strategy against a live market!</p>
     </div>
-    <div>
-      <h3>Market watchers</h3>
+    <div class="group q-mb-md">
+      <h4>Market watchers</h4>
       <p v-if="!watchers.length">You are currently not watching any markets.</p>
       <q-table v-if="watchers.length"
                :columns="watchColumns"
@@ -34,7 +34,8 @@
             props.row.latestUpdate) : ''}}
           </q-td>
           <q-td key="price" :props="props">
-            {{props.row.events.latest.candle ? props.row.events.latest.candle.close + ' ' + props.row.config.watch.currency : ''}}
+            {{props.row.events.latest.candle ? props.row.events.latest.candle.close + ' ' +
+            props.row.config.watch.currency : ''}}
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/${props.row.id}`)"
@@ -44,8 +45,8 @@
         </q-tr>
       </q-table>
     </div>
-    <div>
-      <h3>Strategy Runners</h3>
+    <div class="group q-mb-md">
+      <h4>Strategy Runners</h4>
       <p v-if="!stratrunners.length">You are currently not running any strategies.</p>
       <q-table v-if="stratrunners.length"
                :columns="stratColumns"
@@ -76,20 +77,23 @@
             {{props.row.events.latest.candle ? props.row.events.latest.candle.start : '' | formatDate}}
           </q-td>
           <q-td key="duration" :props="props">
-            {{props.row.events.initial.candle && props.row.events.latest.candle ? timespan(props.row.events.latest.candle.start,
+            {{props.row.events.initial.candle && props.row.events.latest.candle ?
+            timespan(props.row.events.latest.candle.start,
             props.row.events.initial.candle.start) : ''}}
           </q-td>
           <q-td key="strategy" :props="props">
             {{props.row.config.tradingAdvisor ? props.row.config.tradingAdvisor.method : ''}}
           </q-td>
           <q-td key="trades_rt" :props="props">
-            {{(props.row.events.tradeCompleted ? props.row.events.tradeCompleted.length : 0) + ' / ' + (props.row.events.roundtrip ? props.row.events.roundtrip.length : 0)}}
+            {{(props.row.events.tradeCompleted ? props.row.events.tradeCompleted.length : 0) + ' / ' +
+            (props.row.events.roundtrip ? props.row.events.roundtrip.length : 0)}}
           </q-td>
           <q-td key="success" :props="props">
             {{props.row.events.roundtrip ? successRate(props.row.events.roundtrip) : '0.00 %'}}
           </q-td>
           <q-td
-            key="profit" :props="props">{{props.row.events.latest.performanceReport ? round(props.row.events.latest.performanceReport.profit) : 'N/A' }}
+            key="profit" :props="props">{{props.row.events.latest.performanceReport ?
+            round(props.row.events.latest.performanceReport.profit) : 'N/A' }}
             {{ props.row.events.latest.performanceReport ? props.row.watch.currency : ''}}
           </q-td>
           <q-td class="bg-white" key="actions" :props="props">
@@ -100,8 +104,8 @@
         </q-tr>
       </q-table>
     </div>
-    <div>
-      <h2>Start a new live Gekko</h2>
+    <div class="group q-mb-md">
+      <h3>Start a new live Gekko</h3>
       <q-btn color="amber-8" @click.prevent="$router.push('/live-gekkos/new')">Start a new live Gekko!</q-btn>
     </div>
   </div>
@@ -206,10 +210,10 @@
         return _.values(this.$store.getters['gekkos/list'])
           .concat(_.values(this.$store.getters['gekkos/archive']))
           .filter(g => {
-            if(g.logType === 'papertrader')
+            if (g.logType === 'papertrader')
               return true;
 
-            if(g.logType === 'tradebot')
+            if (g.logType === 'tradebot')
               return true;
 
             return false;
@@ -388,11 +392,11 @@
         }
       },
       status: state => {
-        if(state.errored)
+        if (state.errored)
           return 'errored';
-        if(state.stopped)
+        if (state.stopped)
           return 'stopped';
-        if(state.active)
+        if (state.active)
           return 'running';
 
         console.log('unknown state:', state);

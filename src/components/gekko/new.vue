@@ -1,8 +1,8 @@
 <template>
   <q-page padding>
-    <h3>Start a new gekko</h3>
+    <h4 class="q-ma-xs">Start a new gekko</h4>
     <gekko-config-builder v-on:config="updateConfig" />
-    <div v-if="config.valid" class="row justify-center">
+    <div v-if="config.valid" class="row justify-center q-mt-md">
       <q-btn color="primary" @click.prevent="start" :disabled="pendingStratrunner" :loading="pendingStratrunner && pendingStratrunner !== ''">Start</q-btn>
     </div>
   </q-page>

@@ -1,6 +1,6 @@
 <template>
   <div v-if="candles.length">
-    <h3>Market graph</h3>
+    <h4>Market graph</h4>
     <chart :options="dynOptions" auto-resize ref="chart" class="full-width" :class="dynStyle"></chart>
   </div>
 </template>

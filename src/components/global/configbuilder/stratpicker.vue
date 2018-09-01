@@ -1,11 +1,11 @@
 <template>
 <div>
-  <div class="row gutter-md">
-    <div class="col-4"><h3>Strategy</h3></div>
-    <div class="col-3"><h3>Parameters</h3></div>
+  <div class="row gutter-xs">
+    <div class="col"><h4>Strategy</h4></div>
+    <div class="col"><h4>Parameters</h4></div>
   </div>
-  <div class="row gutter-md">
-    <div class="col-4">
+  <div class="row gutter-xs">
+    <div class="col">
       <q-field
       label="Strategy"
       orientation="vertical"
@@ -20,14 +20,14 @@
 
       />
       </q-field>
-      <div class="row q-mt-md gutter-sm">
-        <q-field class="col-6"
+      <div class="row q-mt-md gutter-xs">
+        <q-field class="col"
           label="Candle Size"
           orientation="vertical"
           helper="input a candle size">
           <q-input v-model="rawCandleSize" type="number" />
         </q-field>
-        <q-field class="col-6"
+        <q-field class="col"
           label="Unit"
           orientation="vertical"
           helper="Candlesize unit"
@@ -42,7 +42,6 @@
       <q-field
         :label="'Warmup period (in ' + rawCandleSize + ' ' + singularCandleSizeUnit + ' candles):'"
         orientation="vertical"
-        class="q-mt-md"
         :helper="'(will use ' + warmupHumanized +' of data as history)'">
           <q-input
             v-model="historySize"
@@ -51,18 +50,17 @@
             />
       </q-field>
     </div>
-    <div class="col-3">
+    <div class="col">
       <q-field
         :label=" strategy + ' Parameters:'"
         orientation="vertical"
         :error="!!rawStratParamsError"
         :error-label="rawStratParamsError.message"
-        class="q-mt-md"
         helper="Adjust parameters here">
           <q-input
             v-model="rawStratParams"
             type="textarea"
-            rows="12"
+            rows="10"
             :max-height="100"
             :inverted="!!rawStratParamsError"
             />
