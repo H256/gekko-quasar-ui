@@ -1,7 +1,7 @@
 <template>
   <div v-if="candles.length">
     <h4>Market graph</h4>
-    <chart :options="dynOptions" auto-resize ref="chart" class="full-width" :class="dynStyle"></chart>
+    <chart :options="dynOptions" auto-resize ref="chart" class="full-width" ></chart>
   </div>
 </template>
 
@@ -188,7 +188,7 @@
     },
     data() {
       return {
-        dynStyle: 'oneAxis',
+        dynHeight: 300,
         marketLineThreshold: 500,
         selectedIndicator: null,
         indicatorChartGroups: [],
@@ -533,12 +533,15 @@
         switch (options.xAxis.length) {
           case 2:
             this.dynStyle = 'twoAxis';
+            this.dynHeight = 500;
             break;
           case 3:
             this.dynStyle = 'threeAxis';
+            this.dynHeight = 600;
             break;
           default:
             this.dynStyle = 'oneAxis';
+            this.dynHeight = 300;
             break;
         }
 
@@ -587,6 +590,12 @@
               break;
           }
         }
+        // dirty workaround fix :(
+        if(this.$refs.chart && this.$refs.chart.$el && this.$refs.chart.$el.style) {
+          this.$refs.chart.$el.style.height = this.dynHeight + "px";
+          //this.$refs.chart.$el.style.width = "100%";
+        }
+
         return options;
       }
     },
@@ -611,17 +620,3 @@
     }
   };
 </script>
-
-<style>
-  .oneAxis {
-    height: 300px;
-  }
-
-  .twoAxis {
-    height: 500px;
-  }
-
-  .threeAxis {
-    height: 600px;
-  }
-</style>
