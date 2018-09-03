@@ -108,6 +108,9 @@
           <em>Use Gekko and Gordon UI at your own risk!</em>
           <div v-if="version.gekko" slot="subtitle">Using Gekko v {{version.gekko}}</div>
         </q-toolbar-title>
+        <q-toolbar-title>
+          <div slot="subtitle">Icons by <a href="http://cryptoicons.co/">crypticons.co</a></div>
+        </q-toolbar-title>
       </q-toolbar>
     </q-layout-footer>
   </q-layout>
