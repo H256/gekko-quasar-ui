@@ -409,7 +409,7 @@
       }
     },
     methods: {
-      humanizeDuration: n => humanizeDuration(n),
+      round: n => (+n).toFixed(5),
       moment: mom => moment.utc(mom),
       fmt: mom => moment.utc(mom).format("YYYY-MM-DD HH:mm"),
       getCandles: async function () {
