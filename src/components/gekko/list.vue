@@ -23,13 +23,13 @@
           <q-td key="pair" :props="props">
             <!--{{props.row.config.watch.currency}} - {{props.row.config.watch.asset}}-->
             <q-chip class="q-mb-xs"
-                    :avatar="'statics/crypto_icons/color/' + props.row.config.watch.currency + '.svg'"
+                    :avatar="'statics/crypto_icons/color/' + props.row.config.watch.currency.toLowerCase() + '.svg'"
                     square dense color="transparent" text-color="black"
             >{{props.row.config.watch.currency}}
             </q-chip>
             -
             <q-chip class="q-mb-xs"
-                    :avatar="'statics/crypto_icons/color/' + props.row.config.watch.asset + '.svg'"
+                    :avatar="'statics/crypto_icons/color/' + props.row.config.watch.asset.toLowerCase() + '.svg'"
                     square dense color="transparent" text-color="black"
             >{{props.row.config.watch.asset}}
             </q-chip>
@@ -78,13 +78,13 @@
           </q-td>
           <q-td key="pair" :props="props">
             <q-chip class="q-mb-xs"
-                    :avatar="'statics/crypto_icons/color/' + props.row.config.watch.currency + '.svg'"
+                    :avatar="'statics/crypto_icons/color/' + props.row.config.watch.currency.toLowerCase() + '.svg'"
                     square dense color="transparent" text-color="black"
             >{{props.row.config.watch.currency}}
             </q-chip>
             -
             <q-chip class="q-mb-xs"
-                    :avatar="'statics/crypto_icons/color/' + props.row.config.watch.asset + '.svg'"
+                    :avatar="'statics/crypto_icons/color/' + props.row.config.watch.asset.toLowerCase() + '.svg'"
                     square dense color="transparent" text-color="black"
             >{{props.row.config.watch.asset}}
             </q-chip>

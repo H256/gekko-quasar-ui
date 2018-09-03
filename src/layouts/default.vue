@@ -31,11 +31,11 @@
         </q-toolbar-title>
         <q-toolbar-title shrink v-for="(w,idx) in currentWatchers" :key="w.id" v-if="w.events.latest.candle">
           {{w.events.latest.candle.close}}
-          <img class="crypto-icon-16" :src="'statics/crypto_icons/white/' + w.config.watch.currency + '.svg'"
+          <img class="crypto-icon-16" :src="'statics/crypto_icons/white/' + w.config.watch.currency.toLowerCase() + '.svg'"
                :alt="w.config.watch.currency" :title="w.config.watch.currency">
 
           <span slot="subtitle">
-              <img class="crypto-icon-16 q-icon q-mr-xs" :src="'statics/crypto_icons/white/' + w.config.watch.asset + '.svg'"
+              <img class="crypto-icon-16 q-icon q-mr-xs" :src="'statics/crypto_icons/white/' + w.config.watch.asset.toLowerCase() + '.svg'"
                    :alt="w.config.watch.asset" :title="w.config.watch.asset">
             {{w.config.watch.exchange}}
             </span>
