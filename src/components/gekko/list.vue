@@ -24,13 +24,13 @@
             <!--{{props.row.config.watch.currency}} - {{props.row.config.watch.asset}}-->
             <q-chip class="q-mb-xs"
                     :avatar="'statics/crypto_icons/color/' + props.row.config.watch.currency + '.svg'"
-                    square dense color="white" text-color="black"
+                    square dense color="transparent" text-color="black"
             >{{props.row.config.watch.currency}}
             </q-chip>
             -
             <q-chip class="q-mb-xs"
                     :avatar="'statics/crypto_icons/color/' + props.row.config.watch.asset + '.svg'"
-                    square dense color="white" text-color="black"
+                    square dense color="transparent" text-color="black"
             >{{props.row.config.watch.asset}}
             </q-chip>
           </q-td>
@@ -79,13 +79,13 @@
           <q-td key="pair" :props="props">
             <q-chip class="q-mb-xs"
                     :avatar="'statics/crypto_icons/color/' + props.row.config.watch.currency + '.svg'"
-                    square dense color="white" text-color="black"
+                    square dense color="transparent" text-color="black"
             >{{props.row.config.watch.currency}}
             </q-chip>
             -
             <q-chip class="q-mb-xs"
                     :avatar="'statics/crypto_icons/color/' + props.row.config.watch.asset + '.svg'"
-                    square dense color="white" text-color="black"
+                    square dense color="transparent" text-color="black"
             >{{props.row.config.watch.asset}}
             </q-chip>
           </q-td>
@@ -115,7 +115,7 @@
           <q-td
             key="profit" :props="props">{{props.row.events.latest.performanceReport ?
             round(props.row.events.latest.performanceReport.profit) : 'N/A' }}
-            {{ props.row.events.latest.performanceReport ? props.row.watch.currency : ''}}
+            {{ props.row.events.latest.performanceReport ? props.row.config.watch.currency : ''}}
           </q-td>
           <q-td class="bg-white" key="actions" :props="props">
             <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/${props.row.id}`)"
