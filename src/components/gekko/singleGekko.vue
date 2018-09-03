@@ -11,151 +11,160 @@
       <q-alert v-if="data.errorMessage" class="q-pb-sm" type="negative" icon="error">
         <p>This Gekko crashed with the following error-message: <br> <br>{{ data.errorMessage }}</p>
       </q-alert>
-      <h4>Gekko {{type.toUpperCase()}}</h4>
+      <!-- Main info and runtime -->
       <div class="row">
-        <div class="col-2">
-          <strong>Exchange:</strong>
+        <div class="col">
+          <h4>Gekko {{type.toUpperCase()}}</h4>
+          <div class="row">
+            <div class="col">
+              <strong>Exchange:</strong>
+            </div>
+            <div class="col">{{data.config.watch.exchange}}</div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <strong>Currency</strong>
+            </div>
+            <div class="col">{{data.config.watch.currency}}</div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <strong>Asset:</strong>
+            </div>
+            <div class="col">{{data.config.watch.asset}}</div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <strong>Type:</strong>
+            </div>
+            <div class="col"><em>{{type}}</em></div>
+          </div>
         </div>
-        <div class="col-10">{{data.config.watch.exchange}}</div>
-      </div>
-      <div class="row">
-        <div class="col-2">
-          <strong>Currency</strong>
+        <div class="col">
+          <h4>Runtime</h4>
+          <div class="row" v-if="isLoading">
+            <div class="col text-center">
+              <q-spinner-bars size="36" color="tertiary"/>
+            </div>
+          </div>
+          <div class="row" v-if="!isLoading && initialEvents.candle">
+            <div class="col">
+              <strong>Watching since:</strong>
+            </div>
+            <div class="col">{{fmt(initialEvents.candle.start)}}</div>
+          </div>
+          <div class="row" v-if="!isLoading && latestEvents.candle">
+            <div class="col">
+              <strong>Received data until:</strong>
+            </div>
+            <div class="col">{{fmt(latestEvents.candle.start)}}</div>
+          </div>
+          <div class="row" v-if="!isLoading && data.events.initial.candle">
+            <div class="col">
+              <strong>Data spanning:</strong>
+            </div>
+            <div class="col">{{dataSpanning}}</div>
+          </div>
+          <template v-if="isStratrunner">
+            <div class="row" v-if="!isLoading && trades.length">
+              <div class="col">
+                <strong>Amount of trades:</strong>
+              </div>
+              <div class="col">{{trades.length}}</div>
+            </div>
+            <div class="row" v-if="!isLoading && config.tradingAdvisor">
+              <div class="col">
+                <strong>Candle size:</strong>
+              </div>
+              <div class="col">{{config.tradingAdvisor.candleSize || 'n/a'}}</div>
+            </div>
+            <div class="row" v-if="!isLoading && config.tradingAdvisor">
+              <div class="col">
+                <strong>History size:</strong>
+              </div>
+              <div class="col">{{config.tradingAdvisor.historySize || 'n/a'}}</div>
+            </div>
+          </template>
         </div>
-        <div class="col-10">{{data.config.watch.currency}}</div>
-      </div>
-      <div class="row">
-        <div class="col-2">
-          <strong>Asset:</strong>
-        </div>
-        <div class="col-10">{{data.config.watch.asset}}</div>
-      </div>
-      <div class="row">
-        <div class="col-2">
-          <strong>Type:</strong>
-        </div>
-        <div class="col-10"><em>{{type}}</em></div>
       </div>
 
-      <h4>Runtime</h4>
-      <div class="row" v-if="isLoading">
-        <div class="col-2 text-center">
-          <q-spinner-bars size="36" color="tertiary"/>
-        </div>
-      </div>
-      <div class="row" v-if="!isLoading && initialEvents.candle">
-        <div class="col-2">
-          <strong>Watching since:</strong>
-        </div>
-        <div class="col-10">{{fmt(initialEvents.candle.start)}}</div>
-      </div>
-      <div class="row" v-if="!isLoading && latestEvents.candle">
-        <div class="col-2">
-          <strong>Received data until:</strong>
-        </div>
-        <div class="col-10">{{fmt(latestEvents.candle.start)}}</div>
-      </div>
-      <div class="row" v-if="!isLoading && data.events.initial.candle">
-        <div class="col-2">
-          <strong>Data spanning:</strong>
-        </div>
-        <div class="col-10">{{dataSpanning}}</div>
-      </div>
-
-      <template v-if="isStratrunner">
-        <div class="row" v-if="!isLoading && trades.length">
-          <div class="col-2">
-            <strong>Amount of trades:</strong>
-          </div>
-          <div class="col-10">{{trades.length}}</div>
-        </div>
-        <div class="row" v-if="!isLoading && config.tradingAdvisor">
-          <div class="col-2">
-            <strong>Candle size:</strong>
-          </div>
-          <div class="col-10">{{config.tradingAdvisor.candleSize || 'n/a'}}</div>
-        </div>
-        <div class="row" v-if="!isLoading && config.tradingAdvisor">
-          <div class="col-2">
-            <strong>History size:</strong>
-          </div>
-          <div class="col-10">{{config.tradingAdvisor.historySize || 'n/a'}}</div>
-        </div>
-      </template>
       <q-alert v-if="warmupRemaining" class="q-pa-md" type="warning" icon="warning">
         <p>This stratrunner is still warming up for the next <br>
           {{ warmupRemaining.replace(',', ' and ') }} <br>
           , it will not trade until it is warmed up.</p>
       </q-alert>
 
+      <!-- Strategy and profit Report -->
       <template v-if="isStratrunner">
-        <h4>Strategy</h4>
         <div class="row">
-          <div class="col-2">
-            <strong>Name:</strong>
+          <div class="col">
+            <h4>Strategy</h4>
+            <div class="row">
+              <div class="col">
+                <strong>Name:</strong>
+              </div>
+              <div class="col">{{ stratName }}</div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <strong>Parameters:</strong>
+              </div>
+              <div class="col">
+                <pre>{{ stratParams }}</pre>
+              </div>
+            </div>
           </div>
-          <div class="col-10">{{ stratName }}</div>
+          <div class="col"><h4>Profit report</h4>
+            <div class="row">
+              <div class="col">
+                <p>
+                  <em v-if="isArchived && !report">
+                    This Gekko never executed a trade.
+                  </em>
+                  <em v-if="!isArchived && !report">
+                    Waiting for at least one trade.
+                  </em>
+                </p>
+              </div>
+            </div>
+            <template v-if="report">
+              <div class="row">
+                <div class="col">
+                  <strong>Start balance:</strong>
+                </div>
+                <div class="col"> {{ round(report.startBalance) }}</div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <strong>Current balance:</strong>
+                </div>
+                <div class="col"> {{ round(report.balance) }}</div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <strong>Market:</strong>
+                </div>
+                <div class="col"> {{ round(report.market / 100 * report.startPrice) }} {{ config.watch.currency }}
+                  ({{ round(report.market) }} %)
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <strong>Profit:</strong>
+                </div>
+                <div class="col"> {{ round(report.profit) }} {{ config.watch.currency }}
+                  ({{ round(report.relativeProfit) }} %)
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <strong>Alpha:</strong>
+                </div>
+                <div class="col"> {{ round(report.alpha) }} {{ config.watch.currency }}</div>
+              </div>
+            </template>
+          </div>
         </div>
-        <div class="row">
-          <div class="col-2">
-            <strong>Parameters:</strong>
-          </div>
-          <div class="col-10">
-            <pre>{{ stratParams }}</pre>
-          </div>
-        </div>
-      </template>
-
-      <template v-if="isStratrunner">
-        <h4>Profit report</h4>
-        <div class="row">
-          <div class="col-12">
-            <p>
-              <em v-if="isArchived && !report">
-                This Gekko never executed a trade.
-              </em>
-              <em v-if="!isArchived && !report">
-                Waiting for at least one trade.
-              </em>
-            </p>
-          </div>
-        </div>
-        <template v-if="report">
-          <div class="row">
-            <div class="col-2">
-              <strong>Start balance:</strong>
-            </div>
-            <div class="col-10"> {{ round(report.startBalance) }}</div>
-          </div>
-          <div class="row">
-            <div class="col-2">
-              <strong>Current balance:</strong>
-            </div>
-            <div class="col-10"> {{ round(report.balance) }}</div>
-          </div>
-          <div class="row">
-            <div class="col-2">
-              <strong>Market:</strong>
-            </div>
-            <div class="col-10"> {{ round(report.market / 100 * report.startPrice) }} {{ config.watch.currency }}
-              ({{ round(report.market) }} %)
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-2">
-              <strong>Profit:</strong>
-            </div>
-            <div class="col-10"> {{ round(report.profit) }} {{ config.watch.currency }}
-              ({{ round(report.relativeProfit) }} %)
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-2">
-              <strong>Alpha:</strong>
-            </div>
-            <div class="col-10"> {{ round(report.alpha) }} {{ config.watch.currency }}</div>
-          </div>
-        </template>
       </template>
 
       <q-alert v-if="isStratrunner && !watcher && !isArchived" class="q-pa-md" type="warning" icon="warning">
@@ -164,6 +173,7 @@
       </q-alert>
 
       <div class="row">
+
         <div class="col-12 text-center">
           <q-btn
             color="orange"
@@ -171,6 +181,7 @@
             @click.native="stopGekko"
             label="Stop Gekko"
             :disabled="isArchived"
+            class="q-ma-xs"
           />
           <q-btn
             color="negative"
@@ -178,8 +189,9 @@
             @click.native="deleteGekko"
             label="Delete Gekko"
             :disabled="!isArchived"
+            class="q-ma-xs"
           />
-          <p v-if="isStratrunner && watcher && !isArchived" class="q-pa-md"><em>This Gekko gets market data from
+          <p v-if="isStratrunner && watcher && !isArchived" class="q-ma-sm"><em>This Gekko gets market data from
             <router-link :to="'/live-gekkos/' + watcher.id">this</router-link>
             market watcher.</em></p>
         </div>
