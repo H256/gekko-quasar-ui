@@ -27,7 +27,7 @@
             </div>
             <div class="col">
               <q-chip class="q-mb-xs"
-                :avatar="'assets/crypto_icons/color/' + data.config.watch.currency + '.svg'"
+                :avatar="'statics/crypto_icons/color/' + data.config.watch.currency + '.svg'"
                 square small color="white" text-color="black"
               >
                 {{data.config.watch.currency}}
@@ -41,7 +41,7 @@
             </div>
             <div class="col">
               <q-chip class="q-mb-xs"
-                :avatar="'assets/crypto_icons/color/' + data.config.watch.asset + '.svg'"
+                :avatar="'statics/crypto_icons/color/' + data.config.watch.asset + '.svg'"
                 square small color="white" text-color="black"
               >
                 {{data.config.watch.asset}}
