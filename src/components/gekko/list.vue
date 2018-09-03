@@ -21,7 +21,18 @@
             {{props.row.config.watch.exchange}}
           </q-td>
           <q-td key="pair" :props="props">
-            {{props.row.config.watch.currency}} - {{props.row.config.watch.asset}}
+            <!--{{props.row.config.watch.currency}} - {{props.row.config.watch.asset}}-->
+            <q-chip class="q-mb-xs"
+                    :avatar="'assets/crypto_icons/color/' + props.row.config.watch.currency + '.svg'"
+                    square dense color="white" text-color="black"
+            >{{props.row.config.watch.currency}}
+            </q-chip>
+            -
+            <q-chip class="q-mb-xs"
+                    :avatar="'assets/crypto_icons/color/' + props.row.config.watch.asset + '.svg'"
+                    square dense color="white" text-color="black"
+            >{{props.row.config.watch.asset}}
+            </q-chip>
           </q-td>
           <q-td key="startedat" :props="props">
             {{props.row.start ? props.row.start : '' | formatDate}}
@@ -66,12 +77,22 @@
             {{props.row.config.watch.exchange.toUpperCase()}}
           </q-td>
           <q-td key="pair" :props="props">
-            {{props.row.config.watch.currency}} - {{props.row.config.watch.asset}}
+            <q-chip class="q-mb-xs"
+                    :avatar="'assets/crypto_icons/color/' + props.row.config.watch.currency + '.svg'"
+                    square dense color="white" text-color="black"
+            >{{props.row.config.watch.currency}}
+            </q-chip>
+            -
+            <q-chip class="q-mb-xs"
+                    :avatar="'assets/crypto_icons/color/' + props.row.config.watch.asset + '.svg'"
+                    square dense color="white" text-color="black"
+            >{{props.row.config.watch.asset}}
+            </q-chip>
           </q-td>
           <q-td key="status" :props="props">
-            <q-chip v-if="props.row.stopped" color="orange">Stopped</q-chip>
-            <q-chip v-if="props.row.errored" color="negative">Error</q-chip>
-            <q-chip v-if="props.row.active" color="positive">Running</q-chip>
+            <q-chip square dense icon="stop" v-if="props.row.stopped" color="orange">Stopped</q-chip>
+            <q-chip square dense icon="error" v-if="props.row.errored" color="negative">Error</q-chip>
+            <q-chip square dense icon="play_arrow" v-if="props.row.active" color="positive">Running</q-chip>
           </q-td>
           <q-td key="lastupdate" :props="props">
             {{props.row.events.latest.candle ? props.row.events.latest.candle.start : '' | formatDate}}

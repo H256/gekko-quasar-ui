@@ -15,25 +15,41 @@
       <div class="row">
         <div class="col">
           <h4>Gekko {{type.toUpperCase()}}</h4>
-          <div class="row">
+          <div class="row gutter-xs">
             <div class="col">
               <strong>Exchange:</strong>
             </div>
             <div class="col">{{data.config.watch.exchange}}</div>
           </div>
-          <div class="row">
+          <div class="row gutter-xs">
             <div class="col">
-              <strong>Currency</strong>
+              <strong>Currency:</strong>
             </div>
-            <div class="col">{{data.config.watch.currency}}</div>
+            <div class="col">
+              <q-chip class="q-mb-xs"
+                :avatar="'assets/crypto_icons/color/' + data.config.watch.currency + '.svg'"
+                square small color="white" text-color="black"
+              >
+                {{data.config.watch.currency}}
+              </q-chip>
+            </div>
+            <!--<div class="col">{{data.config.watch.currency}}</div>-->
           </div>
-          <div class="row">
+          <div class="row gutter-xs">
             <div class="col">
               <strong>Asset:</strong>
             </div>
-            <div class="col">{{data.config.watch.asset}}</div>
+            <div class="col">
+              <q-chip class="q-mb-xs"
+                :avatar="'assets/crypto_icons/color/' + data.config.watch.asset + '.svg'"
+                square small color="white" text-color="black"
+              >
+                {{data.config.watch.asset}}
+              </q-chip>
+            </div>
+            <!--<div class="col">{{data.config.watch.asset}}</div>-->
           </div>
-          <div class="row">
+          <div class="row gutter-xs">
             <div class="col">
               <strong>Type:</strong>
             </div>
@@ -42,43 +58,43 @@
         </div>
         <div class="col">
           <h4>Runtime</h4>
-          <div class="row" v-if="isLoading">
+          <div class="row gutter-xs" v-if="isLoading">
             <div class="col text-center">
               <q-spinner-bars size="36" color="tertiary"/>
             </div>
           </div>
-          <div class="row" v-if="!isLoading && initialEvents.candle">
+          <div class="row gutter-xs" v-if="!isLoading && initialEvents.candle">
             <div class="col">
               <strong>Watching since:</strong>
             </div>
             <div class="col">{{fmt(initialEvents.candle.start)}}</div>
           </div>
-          <div class="row" v-if="!isLoading && latestEvents.candle">
+          <div class="row gutter-xs" v-if="!isLoading && latestEvents.candle">
             <div class="col">
               <strong>Received data until:</strong>
             </div>
             <div class="col">{{fmt(latestEvents.candle.start)}}</div>
           </div>
-          <div class="row" v-if="!isLoading && data.events.initial.candle">
+          <div class="row gutter-xs" v-if="!isLoading && data.events.initial.candle">
             <div class="col">
               <strong>Data spanning:</strong>
             </div>
             <div class="col">{{dataSpanning}}</div>
           </div>
           <template v-if="isStratrunner">
-            <div class="row" v-if="!isLoading && trades.length">
+            <div class="row gutter-xs" v-if="!isLoading && trades.length">
               <div class="col">
                 <strong>Amount of trades:</strong>
               </div>
               <div class="col">{{trades.length}}</div>
             </div>
-            <div class="row" v-if="!isLoading && config.tradingAdvisor">
+            <div class="row gutter-xs" v-if="!isLoading && config.tradingAdvisor">
               <div class="col">
                 <strong>Candle size:</strong>
               </div>
               <div class="col">{{config.tradingAdvisor.candleSize || 'n/a'}}</div>
             </div>
-            <div class="row" v-if="!isLoading && config.tradingAdvisor">
+            <div class="row gutter-xs" v-if="!isLoading && config.tradingAdvisor">
               <div class="col">
                 <strong>History size:</strong>
               </div>

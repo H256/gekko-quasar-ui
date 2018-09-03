@@ -31,13 +31,13 @@
         </q-toolbar-title>
         <q-toolbar-title shrink v-for="(w,idx) in currentWatchers" :key="w.id" v-if="w.events.latest.candle">
           {{w.events.latest.candle.close}}
-          <span class="text-amber">
-              {{w.config.watch.currency}}
-            </span>
+          <img class="crypto-icon-16" :src="'assets/crypto_icons/white/' + w.config.watch.currency + '.svg'"
+               :alt="w.config.watch.currency" :title="w.config.watch.currency">
+
           <span slot="subtitle">
-              {{w.config.watch.exchange}}
-              <span class="text-amber-4">{{w.config.watch.asset}}
-              </span>
+              <img class="crypto-icon-16 q-icon q-mr-xs" :src="'assets/crypto_icons/white/' + w.config.watch.asset + '.svg'"
+                   :alt="w.config.watch.asset" :title="w.config.watch.asset">
+            {{w.config.watch.exchange}}
             </span>
         </q-toolbar-title>
       </q-toolbar>
@@ -78,6 +78,12 @@
         <q-item @click.native="openURL('https://github.com/Gab0/japonicus')">
           <q-item-side icon="code"/>
           <q-item-main label="Japonicus" sublabel="Genetic algorithm backtester for gekko"/>
+        </q-item>
+        <q-item-separator/>
+        <q-list-header>Other resources</q-list-header>
+        <q-item @click.native="openURL('http://cryptoicons.co/')">
+          <q-item-side icon="face"/>
+          <q-item-main label="Atomiclabs' Cryptocurrency Icons" sublabel="http://cryptoicons.co/"/>
         </q-item>
         <q-item-separator/>
         <q-list-header>Quasar Framework resources</q-list-header>
