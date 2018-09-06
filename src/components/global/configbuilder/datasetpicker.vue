@@ -31,11 +31,12 @@
       </q-table>
       <div class="text-center q-pa-sm" v-if="datasets.length">
         <q-btn
+          class="q-ma-xs"
           color="primary"
           icon="av timer"
           @click.prevent="openRange"
           :disabled="!this.selectedRow || this.selectedRow.length === 0">Adjust range</q-btn>
-        <q-btn color="amber" icon="refresh" @click.prevent="scan">reload datasets</q-btn>
+        <q-btn class="q-ma-xs" color="amber" icon="refresh" @click.prevent="scan">reload datasets</q-btn>
       </div>
       <div class="row" v-if="rangeVisible"><p class="caption">Adjust the dataset range to your liking</p></div>
       <div class="row gutter-md" v-if="rangeVisible">

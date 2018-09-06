@@ -12,7 +12,7 @@
 
 
         <q-tab-pane name="running-imports">
-          <div class="row">
+          <div class="row justify-center">
           <q-alert v-if="imports.length === 0"
                    type="warning"
                    icon="warning"
@@ -24,7 +24,7 @@
             <q-card
               v-for="_import in imports"
               :key="_import.id"
-              class="col text-center q-mr-md q-mt-sm"
+              class="col-3 text-center q-mr-md q-mt-sm"
             >
               <q-card-title class="bg-teal-2">
                 {{ _import.watch.exchange }}

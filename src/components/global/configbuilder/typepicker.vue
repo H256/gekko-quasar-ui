@@ -1,14 +1,16 @@
 <template>
   <div class="group">
-    <h4>Type</h4>
-    <p>What do you want to do with gekko?</p>
+    <div class="row">
+      <p>What type of gekko do you want?</p>
+    </div>
     <div class="row">
       <q-option-group
         color="tertiary"
         type="radio"
+        inline
         v-model="selectedTypeIndex"
         :options="types"
-      />
+      ></q-option-group>
     </div>
   </div>
 </template>

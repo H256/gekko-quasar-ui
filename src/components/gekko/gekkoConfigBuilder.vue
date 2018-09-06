@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h4 class="q-mb-xs">Market</h4>
-    <div class="row items-center">
-      <div class="col">
-        <market-picker v-on:market='updateMarketConfig' :only-tradable="isTradebot"/>
-      </div>
-      <div class="col">
+    <h4 class="q-mb-xs">Type & Market</h4>
+    <div class="row q-mb-md">
         <type-picker v-on:type="updateType"/>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <market-picker v-on:market='updateMarketConfig' :only-tradable="isTradebot"/>
       </div>
     </div>
     <strat-picker v-if="!isMarketWatcher" v-on:stratConfig="updateStrat"/>
