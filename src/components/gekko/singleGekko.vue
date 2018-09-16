@@ -100,6 +100,15 @@
               </div>
               <div class="col">{{config.tradingAdvisor.historySize || 'n/a'}}</div>
             </div>
+            <div class="row gutter-xs" v-if="!isLoading && latestEvents.advice">
+              <div class="col">
+                <strong>Last Advice</strong>
+              </div>
+              <div class="col">
+                <b>{{latestEvents.advice.recommendation}}</b>
+                <small> since {{moment().utc(this.latestEvents.advice.start).format('YYYY-MM-DD hh:mm')}}</small>
+              </div>
+            </div>
           </template>
         </div>
       </div>
@@ -125,6 +134,8 @@
               <div class="col">
                 <strong>Parameters:</strong>
               </div>
+            </div>
+            <div class="row">
               <div class="col">
                 <pre>{{ stratParams }}</pre>
               </div>
@@ -230,6 +241,7 @@
 
 <script>
   import Vue from 'vue';
+  // TODO: use DateFilterMixin for date-formatting
   import moment from "moment";
   import humanizeDuration from "humanize-duration";
 
