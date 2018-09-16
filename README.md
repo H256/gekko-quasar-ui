@@ -5,9 +5,7 @@ It's based off the original code from the [Gekko trading bot](https://gekko.wizb
 
 Use this parallel to the original Gekko-UI (or compile and replace the original).
 
-*Sidenote: This repository should work with all Gekkos > version 0.6. It's still somekind of messy imho - but it works :)*
-
-**for an experimental Gekko with this UI and indicator display see here [Gekko trading bot fork](https://github.com/h256/gekko)**
+*Sidenote: This repository should work with all Gekkos > version 0.6. It's still somehow messy imho - but it works :)*
 
 ## Some Features:
 - "Tickers" for all running live market-watchers in the top toolbar
@@ -45,7 +43,7 @@ To install, follow these steps:
 5. Modify the first line in `web/server.js` so that it looks like this `const config = require('./vue/statics/UiConfig');`
 6. Modify ~line 87 in web -> server.js:
 replace
-``` 
+```
 app
   .use(cors())
   .use(serve(WEBROOT + 'vue/dist'))
