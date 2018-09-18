@@ -10,7 +10,7 @@ Use this parallel to the original Gekko-UI (or compile and replace the original)
 ## Some Features:
 - "Tickers" for all running live market-watchers in the top toolbar
 - Searchable tables for datasets
-- *DISABLED UNTIL WORKING RELIABLY:* Stop running instances from within the Live-Gekko-Dashboard
+- Stop running instances from within the Live-Gekko-Views
 - EChart-Candlestick charts for market and backtest-graphs
 - some stats for roundtrips
 - Material design UI
@@ -24,15 +24,20 @@ Use this parallel to the original Gekko-UI (or compile and replace the original)
 
 ### Dev-Mode
 Needed:
-  - Node >= 7.0
+  - NodeJS >= 7.0
   - running Gekko Instance started as --ui
+
+*Side-Note: I'm running on Windows 10 - so here it's working. Linux sometimes gave me headaches while installing dependencies...*
 
 To install, follow these steps:
 
-1. Install Quasar-CLI via npm `npm install -g quasar-cli`
+1. Install Quasar-CLI via npm `npm install -g quasar-cli`, to make sure, everything is allright, follow the official installation guide to Quasar https://quasar-framework.org/guide/index.html#Development-with-Quasar-CLI-Recommended .
 2. Clone this repo to some location on your harddrive (should work from any directory in DEV-Mode).
 3. Fire up your gekko in UI-Mode.
-4. CD into cloned repository and start the UI with `quasar dev`
+4. CD into cloned repository and run `npm install`.
+5. Start the UI with `quasar dev`
+
+*Note: If it complains about missing modules, make sure, vue-cli and quasar-cli are properly installed.*
 
 ### Compile for replacing the original Gekko-UI
 1. Clone this repo.
