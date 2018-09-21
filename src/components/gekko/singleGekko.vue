@@ -20,10 +20,45 @@
           <strong><em>{{data.config.watch.currency}} - {{data.config.watch.asset}}</em></strong>
         </div>
       </div>
+
       <div class="row">
+        <div class="col-12 text-center">
+          <q-btn
+            color="orange"
+            icon="stop"
+            @click.native="stopGekko"
+            label="Stop Gekko"
+            :disabled="isArchived"
+            class="q-ma-xs"
+          />
+          <q-btn
+            color="negative"
+            icon="delete"
+            @click.native="deleteGekko"
+            label="Delete Gekko"
+            :disabled="!isArchived"
+            class="q-ma-xs"
+          />
+          <p v-if="isStratrunner && watcher && !isArchived" class="q-ma-sm"><em>This Gekko gets market data from
+            <router-link :to="'/live-gekkos/' + watcher.id">this</router-link>
+            market watcher.</em></p>
+        </div>
+
+      </div>
+
+      <q-tabs align="justify" animated color="blue-grey-8">
+        <q-tab default slot="title" label="runtime" name="runtime-tab" icon="timer"/>
+        <q-tab v-if="isStratrunner" slot="title" label="profit" name="profit-tab" icon="trending_up"/>
+        <q-tab slot="title" label="strategy" name="strategy-tab" icon="multiline_chart" />
+
         <!-- Runtime info -->
-        <div class="col">
-          <div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Runtime</div>
+        <q-tab-pane name="runtime-tab" class="bg-blue-grey-1">
+          <q-alert v-if="warmupRemaining" class="q-pa-md" type="warning" icon="warning">
+            <p>This stratrunner is still warming up for the next <br>
+              {{ warmupRemaining.replace(',', ' and ') }} <br>
+              , it will not trade until it is warmed up.</p>
+          </q-alert>
+          <!--<div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Runtime</div>-->
           <div class="row gutter-xs" v-if="isLoading">
             <div class="col text-center">
               <q-spinner-bars size="36" color="tertiary"/>
@@ -74,10 +109,10 @@
               </div>
             </div>
           </template>
-        </div>
+        </q-tab-pane>
         <!-- Profit Report -->
-        <div class="col" v-if="isStratrunner">
-          <div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Profit report</div>
+        <q-tab-pane v-if="isStratrunner" name="profit-tab" class="bg-blue-grey-1">
+          <!--<div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Profit report</div>-->
           <div class="row">
             <div class="col">
               <p>
@@ -126,82 +161,51 @@
               <div class="col"> {{ round(report.alpha) }} {{ config.watch.currency }}</div>
             </div>
           </template>
-        </div>
-      </div>
-
-      <q-alert v-if="warmupRemaining" class="q-pa-md" type="warning" icon="warning">
-        <p>This stratrunner is still warming up for the next <br>
-          {{ warmupRemaining.replace(',', ' and ') }} <br>
-          , it will not trade until it is warmed up.</p>
-      </q-alert>
-
-      <!-- Strategy and profit Report -->
-      <template v-if="isStratrunner">
-        <div class="row">
-          <div class="col">
-            <div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Strategy</div>
+        </q-tab-pane>
+        <!-- Strategy info -->
+        <q-tab-pane name="strategy-tab"  class="bg-blue-grey-1">
+          <template v-if="isStratrunner">
             <div class="row">
               <div class="col">
-                <strong>Name:</strong>
+                <!--<div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Strategy</div>-->
+                <div class="row">
+                  <div class="col">
+                    <strong>Name:</strong>
+                  </div>
+                  <div class="col">{{ stratName }}</div>
+                </div>
+                <div class="row" v-if="!isLoading && config.tradingAdvisor">
+                  <div class="col">
+                    <strong>Candle size:</strong>
+                  </div>
+                  <div class="col">{{config.tradingAdvisor.candleSize || 'n/a'}} <em>minutes</em></div>
+                </div>
+                <div class="row" v-if="!isLoading && config.tradingAdvisor">
+                  <div class="col">
+                    <strong>History size:</strong>
+                  </div>
+                  <div class="col">{{config.tradingAdvisor.historySize || 'n/a'}} <em>minutes</em></div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <strong>Parameters:</strong>
+                  </div>
+                  <div class="col">
+                    <q-scroll-area style="height: 200px;" class="bg-blue-grey-11">
+                      <pre>{{ stratParams }}</pre>
+                    </q-scroll-area>
+                  </div>
+                </div>
               </div>
-              <div class="col">{{ stratName }}</div>
             </div>
-            <div class="row" v-if="!isLoading && config.tradingAdvisor">
-              <div class="col">
-                <strong>Candle size:</strong>
-              </div>
-              <div class="col">{{config.tradingAdvisor.candleSize || 'n/a'}} <em>minutes</em></div>
-            </div>
-            <div class="row" v-if="!isLoading && config.tradingAdvisor">
-              <div class="col">
-                <strong>History size:</strong>
-              </div>
-              <div class="col">{{config.tradingAdvisor.historySize || 'n/a'}} <em>minutes</em></div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <strong>Parameters:</strong>
-              </div>
-              <div class="col">
-                <q-scroll-area style="height: 150px;">
-                  <pre>{{ stratParams }}</pre>
-                </q-scroll-area>
-              </div>
-            </div>
-          </div>
-        </div>
-      </template>
+          </template>
+        </q-tab-pane>
+      </q-tabs>
 
       <q-alert v-if="isStratrunner && !watcher && !isArchived" class="q-pa-md" type="warning" icon="warning">
         <p>WARNING: stale Gekko, not attached to a watcher, please report an
           <a href="https://github.com/askmike/gekko/issues">issue</a> here.</p>
       </q-alert>
-
-      <div class="row">
-
-        <div class="col-12 text-center">
-          <q-btn
-            color="orange"
-            icon="stop"
-            @click.native="stopGekko"
-            label="Stop Gekko"
-            :disabled="isArchived"
-            class="q-ma-xs"
-          />
-          <q-btn
-            color="negative"
-            icon="delete"
-            @click.native="deleteGekko"
-            label="Delete Gekko"
-            :disabled="!isArchived"
-            class="q-ma-xs"
-          />
-          <p v-if="isStratrunner && watcher && !isArchived" class="q-ma-sm"><em>This Gekko gets market data from
-            <router-link :to="'/live-gekkos/' + watcher.id">this</router-link>
-            market watcher.</em></p>
-        </div>
-
-      </div>
 
       <div class="row" v-if="!isLoading">
         <div class="col-12">
