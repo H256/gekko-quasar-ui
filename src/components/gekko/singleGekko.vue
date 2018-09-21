@@ -12,11 +12,12 @@
         <p>This Gekko crashed with the following error-message: <br> <br>{{ data.errorMessage }}</p>
       </q-alert>
       <!-- Main info -->
-      <div class="row">
-        <div class="q-display-1">Gekko <strong>{{type.toUpperCase()}}</strong>, on <strong>{{data.config.watch.exchange}}</strong> - trading <img
-          :src="'statics/crypto_icons/color/' + data.config.watch.currency.toLowerCase() + '.svg'">
-          {{data.config.watch.currency}} - <img
-            :src="'statics/crypto_icons/color/' + data.config.watch.asset.toLowerCase() + '.svg'">{{data.config.watch.asset}}
+      <div class="row items-center justify-center"
+           :class="{'bg-green-11': (latestEvents.performanceReport && latestEvents.performanceReport.profit > 0), 'bg-red-11': (latestEvents.performanceReport && latestEvents.performanceReport.profit < 0)}"
+      >
+        <div class="q-display-1">
+          Gekko <strong>{{type.toUpperCase()}}</strong>, on <strong>{{data.config.watch.exchange}}</strong> - trading
+          <strong><em>{{data.config.watch.currency}} - {{data.config.watch.asset}}</em></strong>
         </div>
       </div>
       <div class="row">
@@ -75,7 +76,7 @@
           </template>
         </div>
         <!-- Profit Report -->
-        <div class="col"  v-if="isStratrunner">
+        <div class="col" v-if="isStratrunner">
           <div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Profit report</div>
           <div class="row">
             <div class="col">
@@ -163,7 +164,7 @@
               </div>
               <div class="col">
                 <q-scroll-area style="height: 150px;">
-                <pre>{{ stratParams }}</pre>
+                  <pre>{{ stratParams }}</pre>
                 </q-scroll-area>
               </div>
             </div>
