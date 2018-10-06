@@ -80,6 +80,7 @@ export default {
             type: "negative",
             message: "Error during backtest-fetching of data."
           });
+          this.backtestState = "error";
         });
     },
     startLiveGekko(isPaperTrader){
