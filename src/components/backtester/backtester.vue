@@ -51,7 +51,9 @@ export default {
 
   },
   computed: {
-    backtestResult() {return this.$store.getters['backtest/result']}
+    backtestResult() {
+      return this.$store.getters['backtest/result']
+    }
   },
   methods: {
     check: function(config) {

@@ -1,14 +1,14 @@
 <template>
   <div v-if="candles.length">
     <h4>Market graph</h4>
-    <chart :options="dynOptions" auto-resize ref="chart" class="full-width" ></chart>
+    <chart :options="dynOptions" auto-resize ref="chart" class="full-width"></chart>
   </div>
 </template>
 
 <script>
   import _ from "lodash";
   import ECharts from 'vue-echarts'
-  import {result} from "../../store/backtest/getters";
+  import moment from 'moment';
 
   const userIndicators = (window.CONFIG.userChartConfig && window.CONFIG.userChartConfig.indicators) || [];
   const userPatterns = (window.CONFIG.userChartConfig && window.CONFIG.userChartConfig.patterns) || [];
@@ -199,7 +199,7 @@
           {name: "open", type: "number", displayName: "Open"},
           {name: "close", type: "number", displayName: "Close"},
           {name: "volume", type: "number", displayName: "Volume"},
-          {name: "start", displayName: "Start"}
+          {name: "start", type: "category", displayName: "Start"}
         ],
         upColor: "#ec0000",
         //upBorderColor: "#8A0000",
@@ -318,6 +318,9 @@
               type: "cross"
             }
           },
+          axisPointer: {
+            link: {xAxisIndex: 'all'}
+          },
           xAxis: [],
           yAxis: [],
           dataZoom: [
@@ -431,7 +434,7 @@
           }
         );
 
-        options.xAxis.push({type: "time"});
+        options.xAxis.push({type: 'category'});
         options.yAxis.push({scale: true});
         options.yAxis.push({scale: true, show: false});
 
@@ -483,7 +486,7 @@
                   else if (sItem.displayType === 'indicator') {
                     // push to grid axis
                     if (options.xAxis.length < 3) {
-                      options.xAxis.push({type: "time"});
+                      options.xAxis.push({type: "category", axisLabel:{show:false}});
                     }
                     xAxisIndex = 1;
                     yAxisIndex = lastyAxisIndicator === 'left' ? 2 : 3;
@@ -494,7 +497,7 @@
                   }
                   else if (sItem.displayType === 'pattern') {
                     if (options.xAxis.length < 3) {
-                      options.xAxis.push({type: "time"});
+                      options.xAxis.push({type: "category", axisLabel:{show:false}})
                     }
                     xAxisIndex = 2;
                     yAxisIndex = 4;
@@ -591,7 +594,7 @@
           }
         }
         // dirty workaround fix :(
-        if(this.$refs.chart && this.$refs.chart.$el && this.$refs.chart.$el.style) {
+        if (this.$refs.chart && this.$refs.chart.$el && this.$refs.chart.$el.style) {
           this.$refs.chart.$el.style.height = this.dynHeight + "px";
           //this.$refs.chart.$el.style.width = "100%";
         }
