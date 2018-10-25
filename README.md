@@ -88,4 +88,4 @@ If you like the ported UI, drop me some coins for coffee ;)
 ![image7](img/gekko-quasar-7.png?raw=true "Screenshot 7")
 ![image8](img/gekko-quasar-8.png?raw=true "Screenshot 8")
 ![image9](img/gekko-quasar-9.png?raw=true "Screenshot 9")
-![image10](img/gekko-quasar-10.png?raw=true "Screenshot 10")
+
