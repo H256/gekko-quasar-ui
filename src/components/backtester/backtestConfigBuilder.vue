@@ -88,7 +88,7 @@ export default {
       );
 
       config.valid = this.validConfig(config);
-      config.backtestResultExporter.enabled = true; // this is gloabally switching resultExporter on?
+      config.backtestResultExporter.enabled = true; // this is globally switching resultExporter on?
 
       return config;
     }

@@ -178,13 +178,16 @@
                   <div class="col">
                     <strong>Candle size:</strong>
                   </div>
-                  <div class="col">{{config.tradingAdvisor.candleSize || 'n/a'}} <em>minutes</em></div>
+                  <div class="col"><strong>{{config.tradingAdvisor.candleSize || 'n/a'}}</strong> minutes</div>
                 </div>
                 <div class="row" v-if="!isLoading && config.tradingAdvisor">
                   <div class="col">
                     <strong>History size:</strong>
                   </div>
-                  <div class="col">{{config.tradingAdvisor.historySize || 'n/a'}} <em>minutes</em></div>
+                  <div class="col">
+                    <strong>{{historySize}}</strong>
+                    minutes {{historyFormula}}
+                    </div>
                 </div>
                 <div class="row">
                   <div class="col">
@@ -251,6 +254,12 @@
     computed: {
       id() {
         return this.$route.params.id;
+      },
+      historySize(){
+        return (this.config.tradingAdvisor.candleSize || 0) * (this.config.tradingAdvisor.historySize || 0)
+      },
+      historyFormula(){
+        return `(${this.config.tradingAdvisor.historySize} x ${this.config.tradingAdvisor.candleSize} min.)`
       },
       gekkos() {
         return this.$store.getters['gekkos/list'];
