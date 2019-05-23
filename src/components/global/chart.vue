@@ -344,6 +344,7 @@
         let highest = Number.NEGATIVE_INFINITY;
         let tmpLow, tmpHigh;
         for (let i = this.candles.length - 1; i >= 0; i--) {
+          this.candles[i].start = moment(this.candles[i].start).format('YYYY-MM-DD HH:mm:ss')
           tmpLow = this.candles[i].low;
           tmpHigh = this.candles[i].low;
           if (tmpLow < lowest) lowest = tmpLow;
@@ -444,8 +445,9 @@
         if (this.trades && this.trades.length) {
           let self = this;
           _.each(this.trades, function (item) {
+            const formatedDate = moment(item.date).format('YYYY-MM-DD HH:mm:ss')
             let tmp = {
-              coord: [item.date, item.price],
+              coord: [formatedDate, item.price],
               name: item.action,
               label: {
                 position: item.action === "sell" ? "top" : "bottom",
