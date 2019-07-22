@@ -445,7 +445,7 @@
         if (this.trades && this.trades.length) {
           let self = this;
           _.each(this.trades, function (item) {
-            const formatedDate = moment(item.date).format('YYYY-MM-DD HH:mm:ss')
+            const formatedDate = moment(item.date).format('YYYY-MM-DD HH:mm:00')
             let tmp = {
               coord: [formatedDate, item.price],
               name: item.action,
