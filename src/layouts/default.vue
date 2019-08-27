@@ -13,35 +13,40 @@
         <q-toolbar-title>
           Gordon UI
         </q-toolbar-title>
-        <q-tabs align="justify" color="blue-grey-7">
-          <q-route-tab default icon="home" label="Home" to="/" exact></q-route-tab>
-          <q-route-tab icon="cast connected" label="Live Gekkos" to="/live-gekkos" exact
-                       :count="stratrunners.length"></q-route-tab>
+        <q-space></q-space>
+        <q-tabs shrink stretch>
+          <q-route-tab icon="home" default label="Home" to="/" exact></q-route-tab>
+          <q-route-tab icon="cast_connected" label="Live Gekkos" to="/live-gekkos" exact>
+            <q-badge color="green" floating v-if="stratrunners.length">{{stratrunners.length}}</q-badge>
+          </q-route-tab>
           <q-route-tab icon="timeline" label="Backtest" to="/backtest" exact></q-route-tab>
           <q-route-tab icon="storage" label="Data" to="/data" exact></q-route-tab>
-          <q-route-tab icon="import export" label="Importer" to="/data/importer" exact
-                       :count="activeImports"></q-route-tab>
+          <q-route-tab icon="import_export" label="Importer" to="/data/importer" exact>
+            <q-badge color="blue" floating v-if="activeImports > 0">{{activeImports}}</q-badge>
+          </q-route-tab>
           <q-route-tab icon="settings" label="Config" to="/config" exact></q-route-tab>
           <q-route-tab icon="help" label="Documentation" to="/help"></q-route-tab>
         </q-tabs>
       </q-toolbar>
-      <q-toolbar v-if="currentWatchers.length > 0" color="blue-grey-8">
-
-        <q-toolbar-title shrink v-if="currentWatchers.length > 0" class="text-right">Prices: <span slot="subtitle">(from Watchers)</span>
-        </q-toolbar-title>
-        <q-toolbar-title shrink v-for="(w,idx) in currentWatchers" :key="w.id" v-if="w.events.latest.candle">
-          {{w.events.latest.candle.close}}
-          <img class="crypto-icon-16"
-               :src="'statics/crypto_icons/white/' + w.config.watch.currency.toLowerCase() + '.svg'"
-               :alt="w.config.watch.currency" :title="w.config.watch.currency">
-
-          <span slot="subtitle">
-              <img class="crypto-icon-16 q-icon q-mr-xs"
-                   :src="'statics/crypto_icons/white/' + w.config.watch.asset.toLowerCase() + '.svg'"
-                   :alt="w.config.watch.asset" :title="w.config.watch.asset">
+      <q-toolbar v-if="currentWatchers.length > 0" class="bg-blue-grey-8">
+        <div v-if="currentWatchers.length > 0">
+          <div class="text-h6">Prices:</div>
+          <div class="text-subtitle">(from Watchers)</div>
+        </div>
+        <q-space></q-space>
+        <div class="q-mx-xs" v-for="(w,idx) in currentWatchers" :key="'prices-' + w.id" v-if="w.events.latest.candle">
+          <div class="text-h6">{{w.events.latest.candle.close}}
+            <img class="crypto-icon-16"
+                 :src="'statics/crypto_icons/white/' + w.config.watch.currency.toLowerCase() + '.svg'"
+                 :alt="w.config.watch.currency" :title="w.config.watch.currency">
+          </div>
+          <div class="text-subtitle">
+            <img class="crypto-icon-16 q-icon q-mr-xs"
+                 :src="'statics/crypto_icons/white/' + w.config.watch.asset.toLowerCase() + '.svg'"
+                 :alt="w.config.watch.asset" :title="w.config.watch.asset">
             {{w.config.watch.exchange}}
-            </span>
-        </q-toolbar-title>
+          </div>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -139,12 +144,8 @@
     <q-footer reveal>
       <q-toolbar class="bg-blue-grey-7">
         <div>
-          <div class="text-h6">
-            Gordon UI v {{version.ui}}
-          </div>
-          <div class="text-subtitle">
-            Running on Quasar v{{ $q.version }}
-          </div>
+          <div class="text-h6">Gordon UI v {{version.ui}}</div>
+          <div class="text-subtitle">Running on Quasar v{{ $q.version }}</div>
         </div>
         <q-space></q-space>
         <div>
