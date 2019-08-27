@@ -2,62 +2,76 @@
   <q-page padding>
     <div class="text-h5">Import data</div>
     <div class="subheading">The importer can download historical market data directly from the exchange.</div>
-    <div class="row justify-center q-pa-md">
-      <q-btn color="amber" label="Start Import" @click.prevent="run"/>
+    <div class="row justify-center q-pa-md" v-if="this.config.importer">
+      <q-btn color="blue-grey-7" label="Start Import" @click.prevent="run"/>
     </div>
     <div>
-      <q-tabs v-model="currentTab" align="justify" color="blue-grey-5 text-white full-width">
-        <q-tab icon="av timer" slot="title" name="running-imports" label="Running imports"></q-tab>
-        <q-tab icon="add" slot="title" name="start-new" label="Start new import"></q-tab>
-
-
-        <q-tab-pane name="running-imports">
+      <q-tabs
+        v-model="currentTab"
+        class="text-grey"
+        active-color="blue-grey"
+        indicator-color="blue-grey"
+      >
+        <q-tab icon="av_timer" name="running-imports" label="Running imports"/>
+        <q-tab icon="add" name="start-new" label="Start new import"/>
+      </q-tabs>
+      <q-separator></q-separator>
+      <q-tab-panels v-model="currentTab" animated>
+        <q-tab-panel name="running-imports">
           <div class="row justify-center">
-          <q-banner v-if="imports.length === 0"
-                   class="bg-warning"
-                   icon="warning"
-          >
-            You currently don't have any imports running.
-          </q-banner>
-
-
+            <q-banner
+              v-if="imports.length === 0"
+              class="bg-warning"
+              icon="warning"
+            >
+              You currently don't have any imports running.
+            </q-banner>
             <q-card
               v-for="_import in imports"
               :key="_import.id"
-              class="col-3 text-center q-mr-md q-mt-sm"
+              class="col-lg-1 col-md-12 text-center q-mr-md q-mt-sm"
             >
               <q-card-section class="bg-teal-2">
-                <div class="text-h6">
-                  {{ _import.watch.exchange }}
+                <div class="text-h6 text-uppercase">
+                  {{ _import.watch.currency }}-{{ _import.watch.asset }}
                 </div>
                 <div class="text-subtitle-2">
-                  {{ _import.watch.currency }}-{{ _import.watch.asset }}
+                  {{ _import.watch.exchange }}
                 </div>
               </q-card-section>
               <q-separator></q-separator>
               <q-card-section>
-                <q-knob
+                <q-circular-progress
                   :class="{'text-teal': !_import.done, 'text-positive': _import.done}"
                   :min="0"
                   :max="100"
+                  :thickness="0.2"
+                  size="102px"
+                  class="q-ma-md"
+                  show-value
                   :value="+progress(_import)">
                   <q-icon size="64px" v-if="_import.done" color="positive" name="done"></q-icon>
                   <span v-if="!_import.done" class="text-h6">{{+progress(_import)}} %</span>
-                </q-knob>
+                </q-circular-progress>
               </q-card-section>
               <q-separator></q-separator>
               <q-card-actions align="center">
-                <q-btn color="teal" flat @click="$router.push('/data/importer/import/' + _import.id)">open import</q-btn>
+                <q-btn
+                  color="teal"
+                  flat
+                  @click="$router.push('/data/importer/import/' + _import.id)"
+                >
+                  open import
+                </q-btn>
               </q-card-actions>
             </q-card>
           </div>
-        </q-tab-pane>
+        </q-tab-panel>
 
-        <q-tab-pane name="start-new">
+        <q-tab-panel name="start-new">
           <import-config-builder v-on:config="updateConfig"></import-config-builder>
-        </q-tab-pane>
-
-      </q-tabs>
+        </q-tab-panel>
+      </q-tab-panels>
     </div>
   </q-page>
 
@@ -130,11 +144,11 @@
             this.$q.dialog({
               title: "Error",
               message:
-              "Your date from is too old for " +
-              this.config.watch.exchange +
-              ". It supports only the last " +
-              exchange.exchangeMaxHistoryAge +
-              " days.."
+                "Your date from is too old for " +
+                this.config.watch.exchange +
+                ". It supports only the last " +
+                exchange.exchangeMaxHistoryAge +
+                " days.."
             });
             return;
           }

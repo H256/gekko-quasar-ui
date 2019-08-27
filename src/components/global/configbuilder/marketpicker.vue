@@ -1,6 +1,6 @@
 <template>
   <q-card class="q-mr-md">
-    <q-card-section class="bg-amber-8 text-white">
+    <q-card-section class="bg-blue-grey-8 text-white">
       <div class="text-h6">Market</div>
     </q-card-section>
     <q-separator/>
@@ -13,37 +13,25 @@
     </q-card-section>
     <q-separator/>
     <q-card-section>
-      <q-field
-        v-if="currencies"
+      <q-select
         label="Currency"
-        helper="Pick a currency"
-        :label-width="3"
-      >
-        <q-select
-          filter
-          autofocus-filter
-          v-model="currency"
-          :options="currencies"
-          radio
-        />
-      </q-field>
+        hint="Pick a currency as base"
+        v-model="currency"
+        :options="currencies"
+        map-options
+        emit-value
+      />
     </q-card-section>
     <q-separator></q-separator>
     <q-card-section>
-      <q-field
-        v-if="currencies"
+      <q-select
         label="Asset"
-        helper="Pick an asset"
-        :label-width="3"
-      >
-        <q-select
-          filter
-          autofocus-filter
-          v-model="asset"
-          :options="assets"
-          radio
-        />
-      </q-field>
+        hint="Pick an asset"
+        v-model="asset"
+        :options="assets"
+        map-options
+        emit-value
+      />
     </q-card-section>
   </q-card>
 </template>

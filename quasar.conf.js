@@ -63,6 +63,7 @@ module.exports = function (ctx) {
         "QOptionGroup",
         "QPage",
         "QPageContainer",
+        "QPopupProxy",
         "QLinearProgress",
         "QCircularProgress",
         "QRadio",

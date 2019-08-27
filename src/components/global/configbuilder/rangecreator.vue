@@ -1,27 +1,45 @@
 <template>
   <q-card class="q-ma-sm">
-    <q-card-section class="bg-amber-8 text-white">
+    <q-card-section class="bg-blue-grey-8 text-white">
       <div class="text-h6">Daterange</div>
     </q-card-section>
     <q-separator/>
     <q-card-section>
-      <q-field
-        label="From"
-        helper="Pick a start date and time"
-        :label-width="3"
-      >
-        <q-datetime type="datetime" class="no-margin" v-model="from"></q-datetime>
-      </q-field>
+      <q-input filled dense v-model="from" label="From" hint="Pick a start date and time">
+        <template v-slot:prepend>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy transition-show="scale" transition-hide="scale">
+              <q-date v-model="from" mask="YYYY-MM-DD HH:mm" />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+        <template v-slot:append>
+          <q-icon name="access_time" class="cursor-pointer">
+            <q-popup-proxy transition-show="scale" transition-hide="scale">
+              <q-time v-model="from" mask="YYYY-MM-DD HH:mm" format24h />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
     </q-card-section>
     <q-separator></q-separator>
     <q-card-section>
-      <q-field
-        label="To"
-        helper="Pick an end date and time"
-        :label-width="3"
-      >
-        <q-datetime type="datetime" class="no-margin" v-model="to"></q-datetime>
-      </q-field>
+        <q-input filled dense v-model="to" label="To" hint="Pick an end date and time">
+          <template v-slot:prepend>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy transition-show="scale" transition-hide="scale">
+                <q-date v-model="to" mask="YYYY-MM-DD HH:mm" />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+          <template v-slot:append>
+            <q-icon name="access_time" class="cursor-pointer">
+              <q-popup-proxy transition-show="scale" transition-hide="scale">
+                <q-time v-model="to" mask="YYYY-MM-DD HH:mm" format24h />
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
     </q-card-section>
   </q-card>
 </template>
