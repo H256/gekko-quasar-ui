@@ -7,7 +7,7 @@
 
     <div class="q-mb-md">
       <div class="text-h4">Market watchers</div>
-      <q-banner rounded class="bg-secondary text-white" v-if="!watchers.length">
+      <q-banner rounded class="bg-blue-grey-3 text-white" v-if="!watchers.length">
         <template v-slot:avatar>
           <q-icon name="info" color="white"/>
         </template>
@@ -65,7 +65,7 @@
     </div>
     <div class="q-mb-md">
       <div class="text-h4">Strategy Runners</div>
-      <q-banner rounded class="bg-secondary text-white" v-if="!stratrunners.length">
+      <q-banner rounded class="bg-blue-grey-3 text-white" v-if="!stratrunners.length">
         <template v-slot:avatar>
           <q-icon name="info" color="white"/>
         </template>
