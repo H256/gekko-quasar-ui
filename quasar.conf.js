@@ -2,8 +2,8 @@
 
 module.exports = function (ctx) {
   return {
-    // app plugins (/src/plugins)
-    plugins: [
+    // app boot (/src/boot)
+    boot: [
       'i18n',
       'eventbus'
     ],
@@ -11,11 +11,8 @@ module.exports = function (ctx) {
       'app.styl'
     ],
     extras: [
-      ctx.theme.mat ? 'roboto-font' : null,
-      'material-icons'
-      // 'ionicons',
-      // 'mdi',
-      //'fontawesome'
+      'material-icons',
+      'fontawesome-v5'
     ],
     supportIE: true,
     vendor: {
@@ -40,60 +37,56 @@ module.exports = function (ctx) {
     // framework: 'all' --- includes everything; for dev only!
     framework: {
       components: [
-        "QAlert",
+        "QBanner",
         "QBtn",
         'QCard',
-        'QCardTitle',
-        'QCardMain',
-        'QCardMedia',
-        'QCardSeparator',
         'QCardActions',
+        "QCardSection",
         'QCheckbox',
         "QChip",
-        "QDatetime",
+        "QDate",
+        "QDialog",
         "QField",
         "QIcon",
         "QInput",
         "QItem",
-        "QItemMain",
-        "QItemSeparator",
-        "QItemSide",
-        "QItemTile",
+        "QItemLabel",
+        "QItemSection",
         "QKnob",
         "QLayout",
-        "QLayoutDrawer",
-        "QLayoutFooter",
-        "QLayoutHeader",
+        "QDrawer",
+        "QFooter",
+        "QHeader",
         "QList",
-        "QListHeader",
-        "QModal",
-        "QModalLayout",
         "QOptionGroup",
         "QPage",
         "QPageContainer",
-        "QProgress",
+        "QLinearProgress",
+        "QCircularProgress",
         "QRadio",
         "QRouteTab",
         "QScrollArea",
-        "QSearch",
         "QSelect",
+        "QSeparator",
         "QSpinner",
         "QSpinnerBars",
         "QSpinnerDots",
         "QSpinnerRadio",
         "QTab",
-        "QTabPane",
+        "QTabPanel",
+        "QTabPanels",
         "QTable",
         "QTd",
         "QTr",
         "QTabs",
+        "QTime",
         "QToolbar",
         "QToolbarTitle"
       ],
       directives: [
         'Ripple'
       ],
-      // Quasar plugins
+      // Quasar boot
       plugins: [
         'Notify',
         'Dialog'

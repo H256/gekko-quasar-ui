@@ -4,25 +4,25 @@
   <h4>API keys</h4>
   <div class="row">
     <q-list striped class="col-12">
-      <q-list-header>Available API Keys</q-list-header>
-      <q-item-separator></q-item-separator>
+      <q-item-label header>Available API Keys</q-item-label>
+      <q-separator></q-separator>
       <q-item v-if="!apiKeySets.length">
-        <q-item-main>You do not have any API Keys setup.</q-item-main>
+        <q-item-label>You do not have any API Keys setup.</q-item-label>
       </q-item>
       <q-item v-else v-for="exchange in apiKeySets" :key="exchange">
-        <q-item-side>
-          <q-item-tile>
+        <q-item-section>
+          <q-item-section>
             <q-icon name="vpn key"></q-icon>
-          </q-item-tile>
-        </q-item-side>
-        <q-item-main>
-          <q-item-tile label>{{exchange}}</q-item-tile>
-        </q-item-main>
-        <q-item-side right>
-          <q-item-tile>
+          </q-item-section>
+        </q-item-section>
+        <q-item-label>
+          <q-item-section label>{{exchange}}</q-item-section>
+        </q-item-label>
+        <q-item-section right>
+          <q-item-section>
             <q-btn round size="sm" color="red" icon="delete forever" @click.prevent="removeApiKey(exchange)" />
-          </q-item-tile>
-        </q-item-side>
+          </q-item-section>
+        </q-item-section>
       </q-item>
     </q-list>
   </div>

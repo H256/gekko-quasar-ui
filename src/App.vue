@@ -1,7 +1,7 @@
 <template>
   <div id="q-app">
     <router-view/>
-    <q-modal
+    <q-dialog
       v-model="connected"
       no-route-dismiss
       no-esc-dismiss
@@ -18,7 +18,7 @@
           <q-spinner-radio color="secondary" size="48px"/>
         </div>
       </div>
-    </q-modal>
+    </q-dialog>
   </div>
 </template>
 

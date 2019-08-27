@@ -20,8 +20,8 @@
           <p class="text-center q-pa-sm">Searching for available Datasets...</p>
         </div>
         <div v-else-if="datasetScanstate === 'scanned'">
-          <q-alert v-if="unscannableMakets.length"
-                   type="warning"
+          <q-banner v-if="unscannableMakets.length"
+                   class="bg-warning"
                    :actions="[{label: viewUnscannable ? 'Hide Details' : 'Show Details', handler: ()=>{ toggleUnscannable(); }}]"
           >
             <b class="text-weight-bold">Some markets were unscannable</b>
@@ -37,7 +37,7 @@
                 </li>
               </ol>
             </div>
-          </q-alert>
+          </q-banner>
           <br>
           <q-table v-if="datasets.length"
                    title="Local Datasets"
@@ -49,12 +49,17 @@
                    separator="vertical"
           >
             <template slot="top-right" slot-scope="props">
-              <q-search
+              <q-input
+                debounce="300"
                 hide-underline
                 color="secondary"
                 v-model="dsFilter"
                 class="col-6"
-              />
+              >
+                <template v-slot:append>
+                  <q-icon name="search" />
+                </template>
+              </q-input>
             </template>
           </q-table>
           <p v-if="!datasets.length">

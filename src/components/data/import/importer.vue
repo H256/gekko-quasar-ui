@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <div class="q-headline">Import data</div>
+    <div class="text-h5">Import data</div>
     <div class="subheading">The importer can download historical market data directly from the exchange.</div>
     <div class="row justify-center q-pa-md">
       <q-btn color="amber" label="Start Import" @click.prevent="run"/>
@@ -13,12 +13,12 @@
 
         <q-tab-pane name="running-imports">
           <div class="row justify-center">
-          <q-alert v-if="imports.length === 0"
-                   type="warning"
+          <q-banner v-if="imports.length === 0"
+                   class="bg-warning"
                    icon="warning"
           >
             You currently don't have any imports running.
-          </q-alert>
+          </q-banner>
 
 
             <q-card
@@ -26,24 +26,26 @@
               :key="_import.id"
               class="col-3 text-center q-mr-md q-mt-sm"
             >
-              <q-card-title class="bg-teal-2">
-                {{ _import.watch.exchange }}
-                <span slot="subtitle">
-                {{ _import.watch.currency }}-{{ _import.watch.asset }}
-              </span>
-              </q-card-title>
-              <q-card-separator></q-card-separator>
-              <q-card-main>
+              <q-card-section class="bg-teal-2">
+                <div class="text-h6">
+                  {{ _import.watch.exchange }}
+                </div>
+                <div class="text-subtitle-2">
+                  {{ _import.watch.currency }}-{{ _import.watch.asset }}
+                </div>
+              </q-card-section>
+              <q-separator></q-separator>
+              <q-card-section>
                 <q-knob
                   :class="{'text-teal': !_import.done, 'text-positive': _import.done}"
                   :min="0"
                   :max="100"
                   :value="+progress(_import)">
                   <q-icon size="64px" v-if="_import.done" color="positive" name="done"></q-icon>
-                  <span v-if="!_import.done" class="q-title">{{+progress(_import)}} %</span>
+                  <span v-if="!_import.done" class="text-h6">{{+progress(_import)}} %</span>
                 </q-knob>
-              </q-card-main>
-              <q-card-separator></q-card-separator>
+              </q-card-section>
+              <q-separator></q-separator>
               <q-card-actions align="center">
                 <q-btn color="teal" flat @click="$router.push('/data/importer/import/' + _import.id)">open import</q-btn>
               </q-card-actions>

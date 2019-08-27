@@ -36,8 +36,8 @@
         <q-spinner-dots color="secondary" :size="66"></q-spinner-dots>
       </div>
       <div class="row justify-center q-pa-sm" v-if="data && !data.done && progress">
-          <p class="q-display-1">{{progress}} %</p>
-          <q-progress :percentage="progress" :color="colorString" stripe animate height="24px"></q-progress>
+          <p class="text-h4">{{progress}} %</p>
+          <q-linear-progress :percentage="progress" :color="colorString" stripe animate height="24px"></q-linear-progress>
       </div>
       <div class="row q-pa-xs">
         <p>

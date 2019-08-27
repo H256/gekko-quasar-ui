@@ -1,16 +1,18 @@
 <template>
   <q-card class="q-mr-md">
-    <q-card-title class="bg-amber-8 text-white">Market</q-card-title>
-    <q-card-separator/>
-    <q-card-main>
+    <q-card-section class="bg-amber-8 text-white">
+      <div class="text-h6">Market</div>
+    </q-card-section>
+    <q-separator/>
+    <q-card-section>
       <exchange-picker
         v-on:exchange="setExchange($event)"
         :onlyTradable="onlyTradable"
         :onlyImportable="onlyImportable"
       />
-    </q-card-main>
-    <q-card-separator/>
-    <q-card-main>
+    </q-card-section>
+    <q-separator/>
+    <q-card-section>
       <q-field
         v-if="currencies"
         label="Currency"
@@ -25,9 +27,9 @@
           radio
         />
       </q-field>
-    </q-card-main>
-    <q-card-separator></q-card-separator>
-    <q-card-main>
+    </q-card-section>
+    <q-separator></q-separator>
+    <q-card-section>
       <q-field
         v-if="currencies"
         label="Asset"
@@ -42,7 +44,7 @@
           radio
         />
       </q-field>
-    </q-card-main>
+    </q-card-section>
   </q-card>
 </template>
 
@@ -99,7 +101,7 @@
         if (list) {
           list = _.orderBy(_.map(list, function (item) {
             return {value: item, label: item}
-          }),['label'],['asc'])
+          }), ['label'], ['asc'])
           if (list.length)
             this.asset = list[0].value
         }
@@ -110,7 +112,7 @@
         if (list) {
           list = _.orderBy(_.map(list, function (item) {
             return {value: item, label: item}
-          }),['label'], ['asc']);
+          }), ['label'], ['asc']);
           if (list.length)
             this.currency = list[0].value;
         }

@@ -73,8 +73,8 @@
           <q-td key="type" :props="props">
             {{props.row.logType}}
           </q-td>
-          <q-td key="exchange" :props="props">
-            {{props.row.config.watch.exchange.toUpperCase()}}
+          <q-td key="exchange" :props="props" class="text-uppercase">
+            {{props.row.config.watch.exchange}}
           </q-td>
           <q-td key="pair" :props="props">
             <q-chip class="q-mb-xs"

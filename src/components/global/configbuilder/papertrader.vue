@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="row"><h4>Paper Trader</h4></div>
-  <div class="row gutter-md">
+  <div class="row q-guttermd">
     <div class="col">
       <q-btn @click.prevent="switchToggle" color="primary">Change paper trader settings</q-btn>
     </div>

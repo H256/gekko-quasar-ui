@@ -1,10 +1,10 @@
 <template>
 <div>
-  <div class="row gutter-xs">
+  <div class="row q-gutterxs">
     <div class="col"><h4>Strategy</h4></div>
     <div class="col"><h4>Parameters</h4></div>
   </div>
-  <div class="row gutter-xs">
+  <div class="row q-gutterxs">
     <div class="col">
       <q-field
       label="Strategy"
@@ -20,7 +20,7 @@
 
       />
       </q-field>
-      <div class="row q-mt-md gutter-xs">
+      <div class="row q-mt-md q-gutterxs">
         <q-field class="col"
           label="Candle Size"
           orientation="vertical"

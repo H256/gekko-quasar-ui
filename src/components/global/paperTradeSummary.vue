@@ -9,7 +9,7 @@
     <dt>End Balance</dt>
     <dd>{{round(report.balance)}} {{report.currency}}</dd>
     <dt>Simulated profit</dt>
-    <dd class="q-title" :class="profitClass">{{round(report.relativeProfit)}} %</dd>
+    <dd class="text-h6" :class="profitClass">{{round(report.relativeProfit)}} %</dd>
   </dl>
 </template>
 

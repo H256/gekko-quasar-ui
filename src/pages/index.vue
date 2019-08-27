@@ -3,8 +3,8 @@
     <div class="row">
        <div class="col-8">
          <div class="row items-center">
-           <div class="q-display-4 col">Gekko</div>
-           <div class="q-display-3 col">Gordon UI edition</div>
+           <div class="text-h1 col">Gekko</div>
+           <div class="text-h2 col">Gordon UI edition</div>
          </div>
          <p>
            Gekko is a Bitcoin tranding bot and backtesting platform that

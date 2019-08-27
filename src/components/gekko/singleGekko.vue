@@ -5,18 +5,18 @@
       <p>Gekko doesn't know what watcher this is!</p>
     </div>
     <template v-if="data">
-      <q-alert v-if="isArchived" class="q-pb-sm" type="warning" icon="warning">
+      <q-banner v-if="isArchived" class="q-pb-sm bg-warning" icon="warning">
         This is an archived Gekko. It's currently not running anymore.
-      </q-alert>
-      <q-alert v-if="data.errorMessage" class="q-pb-sm" type="negative" icon="error">
+      </q-banner>
+      <q-banner v-if="data.errorMessage" class="q-pb-sm bg-negative" icon="error">
         <p>This Gekko crashed with the following error-message: <br> <br>{{ data.errorMessage }}</p>
-      </q-alert>
+      </q-banner>
       <!-- Main info -->
       <div class="row items-center justify-center"
            :class="{'bg-green-11': (latestEvents.performanceReport && latestEvents.performanceReport.profit > 0), 'bg-red-11': (latestEvents.performanceReport && latestEvents.performanceReport.profit < 0)}"
       >
-        <div class="q-display-1">
-          Gekko <strong>{{type.toUpperCase()}}</strong>, on <strong>{{data.config.watch.exchange}}</strong> - trading
+        <div class="text-h4 text-uppercase">
+          Gekko <strong>{{type}}</strong>, on <strong>{{data.config.watch.exchange}}</strong> - trading
           <strong><em>{{data.config.watch.currency}} - {{data.config.watch.asset}}</em></strong>
         </div>
       </div>
@@ -47,43 +47,43 @@
       </div>
 
       <q-tabs align="justify" animated color="blue-grey-8">
-        <q-tab default slot="title" label="runtime" name="runtime-tab" icon="timer"/>
-        <q-tab v-if="isStratrunner" slot="title" label="profit" name="profit-tab" icon="trending_up"/>
-        <q-tab slot="title" label="strategy" name="strategy-tab" icon="multiline_chart" />
+        <q-tab default label="runtime" name="runtime-tab" icon="timer"/>
+        <q-tab v-if="isStratrunner" label="profit" name="profit-tab" icon="trending_up"/>
+        <q-tab label="strategy" name="strategy-tab" icon="multiline_chart" />
 
         <!-- Runtime info -->
         <q-tab-pane name="runtime-tab" class="bg-blue-grey-1">
-          <q-alert v-if="warmupRemaining" class="q-pa-md" type="warning" icon="warning">
+          <q-banner v-if="warmupRemaining" class="q-pa-md bg-warning" icon="warning">
             <p>This stratrunner is still warming up for the next <br>
               {{ warmupRemaining.replace(',', ' and ') }} <br>
               , it will not trade until it is warmed up.</p>
-          </q-alert>
-          <!--<div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Runtime</div>-->
-          <div class="row gutter-xs" v-if="isLoading">
+          </q-banner>
+          <!--<div class="text-h4 q-pt-sm q-pb-sm bg-grey-2">Runtime</div>-->
+          <div class="row q-gutterxs" v-if="isLoading">
             <div class="col text-center">
-              <q-spinner-bars size="36" color="tertiary"/>
+              <q-spinner-bars size="36" color="accent"/>
             </div>
           </div>
-          <div class="row gutter-xs" v-if="!isLoading && initialEvents.candle">
+          <div class="row q-gutterxs" v-if="!isLoading && initialEvents.candle">
             <div class="col">
               <strong>Watching since:</strong>
             </div>
             <div class="col">{{fmt(initialEvents.candle.start)}}</div>
           </div>
-          <div class="row gutter-xs" v-if="!isLoading && latestEvents.candle">
+          <div class="row q-gutterxs" v-if="!isLoading && latestEvents.candle">
             <div class="col">
               <strong>Received data until:</strong>
             </div>
             <div class="col">{{fmt(latestEvents.candle.start)}}</div>
           </div>
-          <div class="row gutter-xs" v-if="!isLoading && data.events.initial.candle">
+          <div class="row q-gutterxs" v-if="!isLoading && data.events.initial.candle">
             <div class="col">
               <strong>Data spanning:</strong>
             </div>
             <div class="col">{{dataSpanning}}</div>
           </div>
           <template v-if="isStratrunner">
-            <div class="row gutter-xs" v-if="!isLoading && trades.length">
+            <div class="row q-gutterxs" v-if="!isLoading && trades.length">
               <div class="col">
                 <strong>Amount of trades:</strong>
               </div>
@@ -91,7 +91,7 @@
                 {{trades.length}}
               </div>
             </div>
-            <div class="row gutter-xs">
+            <div class="row q-gutterxs">
               <div class="col">
                 <strong>Latest Trade:</strong>
               </div>
@@ -100,7 +100,7 @@
                 <br>at <strong>{{lastCompletedTrade.effectivePrice.toFixed(8)}}</strong> {{data.config.watch.currency}}
               </div>
             </div>
-            <div class="row gutter-xs" v-if="!isLoading && latestEvents.advice">
+            <div class="row q-gutterxs" v-if="!isLoading && latestEvents.advice">
               <div class="col">
                 <strong>Last Advice</strong>
               </div>
@@ -112,7 +112,7 @@
         </q-tab-pane>
         <!-- Profit Report -->
         <q-tab-pane v-if="isStratrunner" name="profit-tab" class="bg-blue-grey-1">
-          <!--<div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Profit report</div>-->
+          <!--<div class="text-h4 q-pt-sm q-pb-sm bg-grey-2">Profit report</div>-->
           <div class="row">
             <div class="col">
               <p>
@@ -167,7 +167,7 @@
           <template v-if="isStratrunner">
             <div class="row">
               <div class="col">
-                <!--<div class="q-display-1 q-pt-sm q-pb-sm bg-grey-2">Strategy</div>-->
+                <!--<div class="text-h4 q-pt-sm q-pb-sm bg-grey-2">Strategy</div>-->
                 <div class="row">
                   <div class="col">
                     <strong>Name:</strong>
@@ -205,14 +205,14 @@
         </q-tab-pane>
       </q-tabs>
 
-      <q-alert v-if="isStratrunner && !watcher && !isArchived" class="q-pa-md" type="warning" icon="warning">
+      <q-banner v-if="isStratrunner && !watcher && !isArchived" class="q-pa-md bg-warning" icon="warning">
         <p>WARNING: stale Gekko, not attached to a watcher, please report an
           <a href="https://github.com/askmike/gekko/issues">issue</a> here.</p>
-      </q-alert>
+      </q-banner>
 
       <div class="row" v-if="!isLoading">
         <div class="col-12">
-          <q-spinner-bars v-if="candleFetch === 'fetching'" color="tertiary" size="48"/>
+          <q-spinner-bars v-if="candleFetch === 'fetching'" color="accent" size="48"/>
           <echart v-if="candleFetch === 'fetched'" :candles="candles" :trades="trades" height="500"/>
         </div>
       </div>

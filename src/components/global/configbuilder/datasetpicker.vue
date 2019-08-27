@@ -21,12 +21,17 @@
       separator="vertical"
       >
         <template slot="top-right" slot-scope="props">
-          <q-search
+          <q-input
+            debounce="300"
             hide-underline
             color="secondary"
             v-model="dsFilter"
             class="col-6"
-          />
+          >
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
         </template>
       </q-table>
       <div class="text-center q-pa-sm" v-if="datasets.length">
@@ -39,7 +44,7 @@
         <q-btn class="q-ma-xs" color="amber" icon="refresh" @click.prevent="scan">reload datasets</q-btn>
       </div>
       <div class="row" v-if="rangeVisible"><p class="caption">Adjust the dataset range to your liking</p></div>
-      <div class="row gutter-md" v-if="rangeVisible">
+      <div class="row q-guttermd" v-if="rangeVisible">
         <div class="col-6">
           <q-field class="col-6" label="From:" :label-width="1" orientation="vertical">
             <q-datetime v-model="customFrom" :min="minSelectableRange" :max="maxSelectableRange" type="datetime" format-model="auto"></q-datetime>

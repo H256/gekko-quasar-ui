@@ -5,7 +5,7 @@
     </div>
     <div class="row">
       <q-option-group
-        color="tertiary"
+        color="accent"
         type="radio"
         inline
         v-model="selectedTypeIndex"
