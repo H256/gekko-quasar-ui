@@ -11,6 +11,7 @@ module.exports = function (ctx) {
       'app.styl'
     ],
     extras: [
+      'roboto-font',
       'material-icons',
       'fontawesome-v5'
     ],
@@ -38,6 +39,7 @@ module.exports = function (ctx) {
     framework: {
       components: [
         "QBanner",
+        "QBadge",
         "QBtn",
         'QCard',
         'QCardActions',

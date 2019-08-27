@@ -1,20 +1,27 @@
 <template>
   <div>
-    <div class="group q-mb-md">
-      <h3>Live Gekko</h3>
-      <p>Run your strategy against a live market!</p>
+    <div class="q-mb-md">
+      <div class="text-h3">Live Gekkos</div>
+      <div class="text-subtitle">Run your strategy against a live market!</div>
     </div>
-    <div class="group q-mb-md">
-      <h4>Market watchers</h4>
-      <p v-if="!watchers.length">You are currently not watching any markets.</p>
-      <q-table v-if="watchers.length"
-               :columns="watchColumns"
-               row-key="id"
-               :data="watchers"
-               :pagination="{rowsPerPage: 0}"
-               color="primary"
-               separator="horizontal"
-               hide-bottom
+
+    <div class="q-mb-md">
+      <div class="text-h4">Market watchers</div>
+      <q-banner rounded class="bg-secondary text-white" v-if="!watchers.length">
+        <template v-slot:avatar>
+          <q-icon name="info" color="white"/>
+        </template>
+        You are currently not watching any markets.
+      </q-banner>
+      <q-table
+        v-if="watchers.length"
+        :columns="watchColumns"
+        row-key="id"
+        :data="watchers"
+        :pagination="{rowsPerPage: 0}"
+        color="primary"
+        separator="horizontal"
+        hide-bottom
       >
         <q-tr slot="body" slot-scope="props" :props="props">
           <q-td key="exchange" :props="props">
@@ -56,17 +63,23 @@
         </q-tr>
       </q-table>
     </div>
-    <div class="group q-mb-md">
-      <h4>Strategy Runners</h4>
-      <p v-if="!stratrunners.length">You are currently not running any strategies.</p>
-      <q-table v-if="stratrunners.length"
-               :columns="stratColumns"
-               row-key="id"
-               :data="stratrunners"
-               :pagination="{rowsPerPage: 0}"
-               color="primary"
-               separator="horizontal"
-               hide-bottom
+    <div class="q-mb-md">
+      <div class="text-h4">Strategy Runners</div>
+      <q-banner rounded class="bg-secondary text-white" v-if="!stratrunners.length">
+        <template v-slot:avatar>
+          <q-icon name="info" color="white"/>
+        </template>
+        You are currently not running any strategies.
+      </q-banner>
+      <q-table
+        v-if="stratrunners.length"
+        :columns="stratColumns"
+        row-key="id"
+        :data="stratrunners"
+        :pagination="{rowsPerPage: 0}"
+        color="primary"
+        separator="horizontal"
+        hide-bottom
       >
         <q-tr slot="body" slot-scope="props" :props="props"
               :class="{'bg-green-11': (props.row.events.latest.performanceReport && props.row.events.latest.performanceReport.profit > 0), 'bg-red-11': (props.row.events.latest.performanceReport && props.row.events.latest.performanceReport.profit < 0)}">
@@ -90,9 +103,9 @@
             </q-chip>
           </q-td>
           <q-td key="status" :props="props">
-            <q-chip square dense icon="stop" v-if="props.row.stopped" color="orange">Stopped</q-chip>
-            <q-chip square dense icon="error" v-if="props.row.errored" color="negative">Error</q-chip>
-            <q-chip square dense icon="play_arrow" v-if="props.row.active" color="positive">Running</q-chip>
+            <q-chip square dense icon="stop" v-if="props.row.stopped" text-color="white" color="orange">Stopped</q-chip>
+            <q-chip square dense icon="error" v-if="props.row.errored" text-color="white" color="negative">Error</q-chip>
+            <q-chip square dense icon="play_arrow" v-if="props.row.active" text-color="white" color="positive">Running</q-chip>
           </q-td>
           <q-td key="lastupdate" :props="props">
             {{props.row.events.latest.candle ? props.row.events.latest.candle.start : '' | formatDate}}
@@ -120,13 +133,13 @@
           <q-td class="bg-white" key="actions" :props="props">
             <q-btn size="sm" color="secondary" @click="$router.push(`live-gekkos/${props.row.id}`)"
                    icon="visibility" label="view"/>
-            <!--<q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"/>-->
+<!--            <q-btn size="sm" color="negative" icon="stop" label="stop" @click="stopGekko(props.row.id)"/>-->
           </q-td>
         </q-tr>
       </q-table>
     </div>
-    <div class="group q-mb-md">
-      <h3>Start a new live Gekko</h3>
+    <div>
+      <div class="text-h3 q-mb-sm">Start a new live Gekko</div>
       <q-btn color="amber-8" @click.prevent="$router.push('/live-gekkos/new')">Start a new live Gekko!</q-btn>
     </div>
   </div>
@@ -144,77 +157,26 @@
         timer: false,
         now: moment(),
         watchColumns: [
-          {
-            name: "exchange",
-            label: "Exchange"
-          },
-          {
-            name: "pair",
-            label: "Pair"
-          },
-          {
-            name: "startedat",
-            label: "Started at"
-          },
-          {
-            name: "lastupdate",
-            label: "Last update"
-          },
-          {
-            name: "duration",
-            label: "running since"
-          },
-          {
-            name: "price",
-            label: "Price"
-          },
-          {
-            name: "actions",
-            label: "Actions"
-          }
+          {name: "exchange", label: "Exchange"},
+          {name: "pair", label: "Pair"},
+          {name: "startedat", label: "Started at"},
+          {name: "lastupdate", label: "Last update"},
+          {name: "duration", label: "running since"},
+          {name: "price", label: "Price"},
+          {name: "actions", label: "Actions"}
         ],
         stratColumns: [
-          {
-            name: "type",
-            label: "Type"
-          },
-          {
-            name: "exchange",
-            label: "Exchange"
-          },
-          {
-            name: "pair",
-            label: "Pair"
-          },
+          {name: "type", label: "Type"},
+          {name: "exchange", label: "Exchange"},
+          {name: "pair", label: "Pair"},
           {name: "status", label: "Status"},
-          {
-            name: "lastupdate",
-            label: "Last update"
-          },
-          {
-            name: "duration",
-            label: "Duration"
-          },
-          {
-            name: "strategy",
-            label: "Strategy"
-          },
-          {
-            name: "trades_rt",
-            label: "Trades/RT"
-          },
-          {
-            name: "success",
-            label: "Successful"
-          },
-          {
-            name: "profit",
-            label: "Profit"
-          },
-          {
-            name: "actions",
-            label: "Actions"
-          }
+          {name: "lastupdate", label: "Last update"},
+          {name: "duration", label: "Duration"},
+          {name: "strategy", label: "Strategy"},
+          {name: "trades_rt", label: "Trades/RT"},
+          {name: "success", label: "Successful"},
+          {name: "profit", label: "Profit"},
+          {name: "actions", label: "Actions"}
         ]
       };
     },
@@ -231,13 +193,14 @@
         return _.values(this.$store.getters['gekkos/list'])
           .concat(_.values(this.$store.getters['gekkos/archive']))
           .filter(g => {
-            if (g.logType === 'papertrader')
-              return true;
-
-            if (g.logType === 'tradebot')
-              return true;
-
-            return false;
+            switch (g.logType) {
+              case 'papertrader':
+                return true;
+              case 'tradebot':
+                return true;
+              default:
+                return false;
+            }
           })
       },
       watchers: function () {
