@@ -68,6 +68,7 @@ module.exports = function (ctx) {
         "QScrollArea",
         "QSelect",
         "QSeparator",
+        "QSpace",
         "QSpinner",
         "QSpinnerBars",
         "QSpinnerDots",
