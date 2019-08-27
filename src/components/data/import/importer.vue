@@ -151,7 +151,7 @@
             console.error(error);
             this.$q.notify({
               message: "An error occured while trying to start the import!",
-              type: "negative"
+              color: "negative"
             });
           });
       }
