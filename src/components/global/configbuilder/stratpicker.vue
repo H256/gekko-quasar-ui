@@ -50,6 +50,7 @@
           hint="Adjust parameters here"
           rows="10"
           :max-height="100"
+          class="text-italic"
           :filled="!!rawStratParamsError"
           :error="!!rawStratParamsError"
           :error-label="rawStratParamsError.message"
