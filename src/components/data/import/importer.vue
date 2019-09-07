@@ -1,8 +1,8 @@
 <template>
   <q-page padding>
-    <div class="text-h5">Import data</div>
+    <div class="text-h4 q-mb-md">Import data</div>
     <div class="subheading">The importer can download historical market data directly from the exchange.</div>
-    <div class="row justify-center q-pa-md" v-if="this.config.importer">
+    <div class="row justify-center q-pa-md">
       <q-btn color="blue-grey-7" label="Start Import" @click.prevent="run"/>
     </div>
     <div>

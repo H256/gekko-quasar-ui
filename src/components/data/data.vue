@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div class="text-h3">Local Data</div>
+      <div class="text-h4 q-mb-md">Local Data</div>
       <p>
         Gekko needs local market data in order to backtest strategies. <br> The local
         data can also be used in a warmup period when running a strategy against a
@@ -77,7 +77,7 @@
       </q-tab-panel>
       <q-tab-panel name="import-data">
         <div class="row justify-center">
-          <div>
+          <div class="text-center">
             <p>You can easily import more market data directly from exchanges using the importer.</p>
             <q-btn color="primary" label="Go to the importer!" @click.prevent="$router.push('data/importer')"/>
           </div>

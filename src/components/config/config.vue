@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="text-h4 q-mb-md">Configuration</div>
+    <p>Configure API Keys and other stuff here.</p>
     <div class="text-h5">API Keys</div>
     <div class="row">
       <div class="col">

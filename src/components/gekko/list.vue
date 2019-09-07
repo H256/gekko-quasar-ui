@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="q-mb-md">
-      <div class="text-h3">Live Gekkos</div>
+      <div class="text-h4 q-mb-md">Live Gekkos</div>
       <div class="text-subtitle">Run your strategy against a live market!</div>
     </div>
 
     <div class="q-mb-md">
-      <div class="text-h4">Market watchers</div>
+      <div class="text-h5">Market watchers</div>
       <q-banner rounded class="bg-blue-grey-3 text-white" v-if="!watchers.length">
         <template v-slot:avatar>
           <q-icon name="info" color="white"/>
@@ -64,7 +64,7 @@
       </q-table>
     </div>
     <div class="q-mb-md">
-      <div class="text-h4">Strategy Runners</div>
+      <div class="text-h5">Strategy Runners</div>
       <q-banner rounded class="bg-blue-grey-3 text-white" v-if="!stratrunners.length">
         <template v-slot:avatar>
           <q-icon name="info" color="white"/>
@@ -139,7 +139,7 @@
       </q-table>
     </div>
     <div>
-      <div class="text-h3 q-mb-sm">Start a new live Gekko</div>
+      <div class="text-h4 q-mb-sm">Start a new live Gekko</div>
       <q-btn color="amber-8" @click.prevent="$router.push('/live-gekkos/new')">Start a new live Gekko!</q-btn>
     </div>
   </div>

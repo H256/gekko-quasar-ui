@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h3 class="q-mb-xs">Backtest</h3>
+    <h3 class="text-h4 q-mb-md">Backtest</h3>
+    <p>Backtest you strategies against historical data here.</p>
     <div class="row">
       <div class="col-12">
          <config-builder v-on:config="check" />
