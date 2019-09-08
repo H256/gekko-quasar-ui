@@ -1,19 +1,33 @@
 <template>
   <q-page padding>
     <div v-if="!data">
-      <h3 class="text-negative">ERROR: Unknown Gekko instance</h3>
+      <div class="text-h4 text-negative">ERROR: Unknown Gekko instance</div>
       <p>Gekko doesn't know what watcher this is!</p>
     </div>
     <template v-if="data">
-      <q-banner v-if="isArchived" class="q-pb-sm bg-warning" icon="warning">
+      <q-banner
+        rounded
+        v-if="isArchived"
+        class="q-mb-sm bg-warning"
+      >
+        <template v-slot:avatar>
+          <q-icon name="info" color="white"/>
+        </template>
         This is an archived Gekko. It's currently not running anymore.
       </q-banner>
-      <q-banner v-if="data.errorMessage" class="q-pb-sm bg-negative" icon="error">
+      <q-banner
+        v-if="data.errorMessage"
+        class="q-mb-sm bg-negative"
+      >
+        <template v-slot:avatar>
+          <q-icon name="error" color="white"/>
+        </template>
         <p>This Gekko crashed with the following error-message: <br> <br>{{ data.errorMessage }}</p>
       </q-banner>
       <!-- Main info -->
-      <div class="row items-center justify-center"
-           :class="{'bg-green-11': (latestEvents.performanceReport && latestEvents.performanceReport.profit > 0), 'bg-red-11': (latestEvents.performanceReport && latestEvents.performanceReport.profit < 0)}"
+      <div
+        class="row items-center justify-center"
+        :class="{'bg-green-11': (latestEvents.performanceReport && latestEvents.performanceReport.profit > 0), 'bg-red-11': (latestEvents.performanceReport && latestEvents.performanceReport.profit < 0)}"
       >
         <div class="text-h4 text-uppercase">
           Gekko <strong>{{type}}</strong>, on <strong>{{data.config.watch.exchange}}</strong> - trading
@@ -39,20 +53,35 @@
             :disabled="!isArchived"
             class="q-ma-xs"
           />
-          <p v-if="isStratrunner && watcher && !isArchived" class="q-ma-sm"><em>This Gekko gets market data from
-            <router-link :to="'/live-gekkos/' + watcher.id">this</router-link>
-            market watcher.</em></p>
+          <p
+            v-if="isStratrunner && watcher && !isArchived"
+            class="q-ma-sm"
+          >
+            <em>This Gekko gets market data from
+              <router-link :to="'/live-gekkos/' + watcher.id">this</router-link>
+              market watcher.</em>
+          </p>
         </div>
-
       </div>
 
-      <q-tabs align="justify" animated color="blue-grey-8">
+      <q-tabs
+        v-model="currentTab"
+        class="bg-blue-grey-8 text-blue-grey-1"
+        active-color="blue-grey-1"
+        indicator-color="blue-grey-1"
+      >
         <q-tab default label="runtime" name="runtime-tab" icon="timer"/>
         <q-tab v-if="isStratrunner" label="profit" name="profit-tab" icon="trending_up"/>
-        <q-tab label="strategy" name="strategy-tab" icon="multiline_chart" />
-
+        <q-tab v-if="isStratrunner" label="strategy" name="strategy-tab" icon="multiline_chart"/>
+      </q-tabs>
+      <q-separator></q-separator>
+      <q-tab-panels
+        v-model="currentTab"
+        animated
+        class="q-mb-md"
+      >
         <!-- Runtime info -->
-        <q-tab-pane name="runtime-tab" class="bg-blue-grey-1">
+        <q-tab-panel name="runtime-tab" class="bg-blue-grey-1">
           <q-banner v-if="warmupRemaining" class="q-pa-md bg-warning" icon="warning">
             <p>This stratrunner is still warming up for the next <br>
               {{ warmupRemaining.replace(',', ' and ') }} <br>
@@ -109,9 +138,9 @@
               </div>
             </div>
           </template>
-        </q-tab-pane>
+        </q-tab-panel>
         <!-- Profit Report -->
-        <q-tab-pane v-if="isStratrunner" name="profit-tab" class="bg-blue-grey-1">
+        <q-tab-panel v-if="isStratrunner" name="profit-tab" class="bg-blue-grey-1">
           <!--<div class="text-h4 q-pt-sm q-pb-sm bg-grey-2">Profit report</div>-->
           <div class="row">
             <div class="col">
@@ -161,9 +190,9 @@
               <div class="col"> {{ round(report.alpha) }} {{ config.watch.currency }}</div>
             </div>
           </template>
-        </q-tab-pane>
+        </q-tab-panel>
         <!-- Strategy info -->
-        <q-tab-pane name="strategy-tab"  class="bg-blue-grey-1">
+        <q-tab-panel name="strategy-tab" class="bg-blue-grey-1">
           <template v-if="isStratrunner">
             <div class="row">
               <div class="col">
@@ -187,7 +216,7 @@
                   <div class="col">
                     <strong>{{historySize}}</strong>
                     minutes {{historyFormula}}
-                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col">
@@ -202,8 +231,8 @@
               </div>
             </div>
           </template>
-        </q-tab-pane>
-      </q-tabs>
+        </q-tab-panel>
+      </q-tab-panels>
 
       <q-banner v-if="isStratrunner && !watcher && !isArchived" class="q-pa-md bg-warning" icon="warning">
         <p>WARNING: stale Gekko, not attached to a watcher, please report an
@@ -226,6 +255,7 @@
 
 <script>
   import Vue from 'vue';
+  import {mapGetters} from 'vuex';
   // TODO: use DateFilterMixin for date-formatting
   import moment from "moment";
   import humanizeDuration from "humanize-duration";
@@ -249,27 +279,26 @@
       return {
         candleFetch: "idle",
         candles: [],
+        currentTab: "runtime-tab"
       };
     },
     computed: {
+      ...mapGetters('gekkos', {
+        gekkos: 'list',
+        archivedGekkos: 'archive'
+      }),
       id() {
         return this.$route.params.id;
       },
-      historySize(){
+      historySize() {
         return (this.config.tradingAdvisor.candleSize || 0) * (this.config.tradingAdvisor.historySize || 0)
       },
-      historyFormula(){
+      historyFormula() {
         return `(${this.config.tradingAdvisor.historySize} x ${this.config.tradingAdvisor.candleSize} min.)`
       },
-      gekkos() {
-        return this.$store.getters['gekkos/list'];
-      },
-      archivedGekkos() {
-        return this.$store.getters['gekkos/archive'];
-      },
       watchers() {
-        return _.values(this.$store.getters['gekkos/list'])
-          .concat(_.values(this.$store.getters['gekkos/archive']))
+        return _.values(this.gekkos)
+          .concat(_.values(this.archivedGekkos))
           .filter(g => g.logType === 'watcher')
       },
       data: function () {
@@ -366,10 +395,9 @@
           return true;
         if (!_.get(this.data, 'events.initial.candle'))
           return true;
-        if (!_.get(this.data, 'events.latest.candle'))
-          return true;
+        return !_.get(this.data, 'events.latest.candle');
 
-        return false;
+
       },
       watcher: function () {
         if (!this.isStratrunner) {
@@ -458,8 +486,7 @@
             c.start = moment.unix(c.start).utc().format();
             return c;
           });
-        }
-        catch (ex) {
+        } catch (ex) {
           console.log("Error on getting candle Data", ex);
           return;
         }
@@ -467,10 +494,12 @@
       },
       stopGekko() {
         if (this.hasLeechers) {
-          return this.$q.dialog({
+          this.$q.dialog({
             title: 'Dependant Gekkos found',
             message: 'This Gekko is fetching market data für multiple stratrunners. Stop these first!',
             type: 'warning'
+          }).onOk(() => {
+            return true;
           })
         }
 
@@ -479,25 +508,26 @@
           message: 'Are you sure you wand to stop this Gekko?',
           ok: 'Yes',
           cancel: 'No'
-        }).then(async () => {
+        }).onOk(async () => {
           try {
             let stopRes = await this.$axios.post(`${this.$store.state.config.apiBaseUrl}stopGekko`, {id: this.data.id})
             this.$q.notify('Gekko has been stopped.')
-          }
-          catch (ex) {
+          } catch (ex) {
             this.$q.notify('Error - could not stop Gekko.');
             console.log("Error stopping gekko", ex);
           }
-        }).catch(() => {
+        }).onCancel(() => {
           return;
         })
       },
       deleteGekko() {
         if (!this.isArchived) {
-          return this.$q.dialog({
+          this.$q.dialog({
             title: 'Still running!',
             message: 'This Gekko is still running. Stop it first!',
             type: 'warning'
+          }).onOk(() => {
+            return true;
           })
         }
 
@@ -506,17 +536,16 @@
           message: 'Are you sure you wand to delete this Gekko?',
           ok: 'Yes',
           cancel: 'No'
-        }).then(async () => {
+        }).onOk(async () => {
           try {
             let deleteRes = await this.$axios.post(`${this.$store.state.config.apiBaseUrl}deleteGekko`, {id: this.data.id})
             this.$q.notify('Gekko has been deleted. Redirecting...')
             this.$router.push({path: '/live-gekkos/'});
-          }
-          catch (ex) {
+          } catch (ex) {
             this.$q.notify('Error - could not delete Gekko.');
             console.log("Error deleteing gekko", ex);
           }
-        }).catch(() => {
+        }).onCancel(() => {
           return;
         })
       }
