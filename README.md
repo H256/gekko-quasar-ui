@@ -1,6 +1,6 @@
 # Gordon-UI for Gekko trading bot
 
-This is my personal try to port the original Gekko UI to the Quasar Framework.
+This is my personal try to port the original Gekko UI to the Quasar Framework 1.0.
 It's based off the original code from the [Gekko trading bot](https://gekko.wizb.it/) UI.
 
 Use this parallel to the original Gekko-UI (or compile and replace the original).
@@ -15,8 +15,7 @@ Use this parallel to the original Gekko-UI (or compile and replace the original)
 - some stats for roundtrips
 - Material design UI
 - Enhanced information for running live-bots (differentiate between live-bot and paper-trader at a glance)
-- *DISABLED UNTIL WORKING RELIABLY:* Start Live Gekkos directly from backtester including current selected settings
-- when present: **render indicator results to market chart!**
+- when present: **render indicator results to market chart**
 - download backtest data as excel and csv
 - and more...
 
@@ -24,15 +23,15 @@ Use this parallel to the original Gekko-UI (or compile and replace the original)
 
 ### Dev-Mode
 Needed:
-  - NodeJS >= 7.0
-  - running Gekko Instance started as --ui
+  - NodeJS >= 7.6
+  - running Gekko Instance started as `node gekko --ui`
 
 *Side-Note: I'm running on Windows 10 - so here it's working. Linux sometimes gave me headaches while installing dependencies...*
 
 To install, follow these steps:
 
-1. Install Quasar-CLI via npm `npm install -g quasar-cli`, to make sure, everything is allright, follow the official installation guide to Quasar https://quasar-framework.org/guide/index.html#Development-with-Quasar-CLI-Recommended .
-2. Clone this repo to some location on your harddrive (should work from any directory in DEV-Mode).
+1. Install Quasar-CLI via npm `npm install -g @quasar/cli`, to make sure, everything is alright, follow the official installation guide to Quasar https://quasar.dev/quasar-cli/installation .
+2. Clone this repo to some location on your hardline (should work from any directory in DEV-Mode).
 3. Fire up your gekko in UI-Mode.
 4. CD into cloned repository and run `npm install`.
 5. Start the UI with `quasar dev`

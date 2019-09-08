@@ -30,7 +30,7 @@
            <p v-else class="text-positive"><b>{{props.value}} %</b><q-icon name="arrow upward" color="positive" size="1.2em" /></p>
         </q-td>
     </q-table>
-    <!--<div class="text-center" v-if="!roundtrips.length"><p class="q-title">Not enough data to display!</p></div>-->
+    <!--<div class="text-center" v-if="!roundtrips.length"><p class="text-h6">Not enough data to display!</p></div>-->
   </div>
 </template>
 

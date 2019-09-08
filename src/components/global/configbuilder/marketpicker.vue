@@ -1,48 +1,38 @@
 <template>
   <q-card class="q-mr-md">
-    <q-card-title class="bg-amber-8 text-white">Market</q-card-title>
-    <q-card-separator/>
-    <q-card-main>
+    <q-card-section class="bg-blue-grey-8 text-white">
+      <div class="text-h6">Market</div>
+    </q-card-section>
+    <q-separator/>
+    <q-card-section>
       <exchange-picker
         v-on:exchange="setExchange($event)"
         :onlyTradable="onlyTradable"
         :onlyImportable="onlyImportable"
       />
-    </q-card-main>
-    <q-card-separator/>
-    <q-card-main>
-      <q-field
-        v-if="currencies"
+    </q-card-section>
+    <q-separator/>
+    <q-card-section>
+      <q-select
         label="Currency"
-        helper="Pick a currency"
-        :label-width="3"
-      >
-        <q-select
-          filter
-          autofocus-filter
-          v-model="currency"
-          :options="currencies"
-          radio
-        />
-      </q-field>
-    </q-card-main>
-    <q-card-separator></q-card-separator>
-    <q-card-main>
-      <q-field
-        v-if="currencies"
+        hint="Pick a currency as base"
+        v-model="currency"
+        :options="currencies"
+        map-options
+        emit-value
+      />
+    </q-card-section>
+    <q-separator></q-separator>
+    <q-card-section>
+      <q-select
         label="Asset"
-        helper="Pick an asset"
-        :label-width="3"
-      >
-        <q-select
-          filter
-          autofocus-filter
-          v-model="asset"
-          :options="assets"
-          radio
-        />
-      </q-field>
-    </q-card-main>
+        hint="Pick an asset"
+        v-model="asset"
+        :options="assets"
+        map-options
+        emit-value
+      />
+    </q-card-section>
   </q-card>
 </template>
 
@@ -99,7 +89,7 @@
         if (list) {
           list = _.orderBy(_.map(list, function (item) {
             return {value: item, label: item}
-          }),['label'],['asc'])
+          }), ['label'], ['asc'])
           if (list.length)
             this.asset = list[0].value
         }
@@ -110,7 +100,7 @@
         if (list) {
           list = _.orderBy(_.map(list, function (item) {
             return {value: item, label: item}
-          }),['label'], ['asc']);
+          }), ['label'], ['asc']);
           if (list.length)
             this.currency = list[0].value;
         }

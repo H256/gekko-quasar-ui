@@ -1,17 +1,24 @@
 <template>
   <div>
     <div>
-      <h3>Local Data</h3>
+      <div class="text-h4 q-mb-md">Local Data</div>
       <p>
-        Gekko needs local market data in order to backtest strategies. The local
+        Gekko needs local market data in order to backtest strategies. <br> The local
         data can also be used in a warmup period when running a strategy against a
         live market.
       </p>
     </div>
-    <q-tabs v-model="selectedTab">
-      <q-tab default slot="title" icon="storage" name="available-data" label="Available Data"/>
-      <q-tab slot="title" name="import-data" icon="import export" label="Import more"/>
-      <q-tab-pane name="available-data">
+    <q-tabs
+      v-model="selectedTab"
+      class="text-grey"
+      active-color="blue-grey"
+      indicator-color="blue-grey"
+    >
+      <q-tab default icon="storage" name="available-data" label="Available Data"/>
+      <q-tab name="import-data" icon="import_export" label="Import more"/>
+    </q-tabs>
+    <q-tab-panels v-model="selectedTab" animated>
+      <q-tab-panel name="available-data">
         <div v-if="datasetScanstate === 'idle'">
           <q-btn color="primary" label="Scan available data" @click.prevent="scan"/>
         </div>
@@ -20,9 +27,9 @@
           <p class="text-center q-pa-sm">Searching for available Datasets...</p>
         </div>
         <div v-else-if="datasetScanstate === 'scanned'">
-          <q-alert v-if="unscannableMakets.length"
-                   type="warning"
-                   :actions="[{label: viewUnscannable ? 'Hide Details' : 'Show Details', handler: ()=>{ toggleUnscannable(); }}]"
+          <q-banner v-if="unscannableMakets.length"
+                    class="bg-warning"
+                    :actions="[{label: viewUnscannable ? 'Hide Details' : 'Show Details', handler: ()=>{ toggleUnscannable(); }}]"
           >
             <b class="text-weight-bold">Some markets were unscannable</b>
             <div v-if="viewUnscannable">
@@ -37,36 +44,46 @@
                 </li>
               </ol>
             </div>
-          </q-alert>
+          </q-banner>
           <br>
-          <q-table v-if="datasets.length"
-                   title="Local Datasets"
-                   row-key="id"
-                   :data="datasets"
-                   :columns="tblColumns"
-                   dense
-                   :filter="dsFilter"
-                   separator="vertical"
+          <q-table
+            v-if="datasets.length"
+            title="Local Datasets"
+            row-key="id"
+            :data="datasets"
+            :columns="tblColumns"
+            dense
+            :filter="dsFilter"
+            separator="vertical"
           >
             <template slot="top-right" slot-scope="props">
-              <q-search
+              <q-input
+                debounce="300"
                 hide-underline
                 color="secondary"
                 v-model="dsFilter"
                 class="col-6"
-              />
+              >
+                <template v-slot:append>
+                  <q-icon name="search"/>
+                </template>
+              </q-input>
             </template>
           </q-table>
           <p v-if="!datasets.length">
             It looks like you don't have any local data yet.
           </p>
         </div>
-      </q-tab-pane>
-      <q-tab-pane name="import-data">
-        <p>You can easily import more market data directly from exchanges using the importer.</p>
-        <q-btn color="primary" label="Go to the importer!" @click.prevent="$router.push('data/importer')"/>
-      </q-tab-pane>
-    </q-tabs>
+      </q-tab-panel>
+      <q-tab-panel name="import-data">
+        <div class="row justify-center">
+          <div class="text-center">
+            <p>You can easily import more market data directly from exchanges using the importer.</p>
+            <q-btn color="primary" label="Go to the importer!" @click.prevent="$router.push('data/importer')"/>
+          </div>
+        </div>
+      </q-tab-panel>
+    </q-tab-panels>
   </div>
 </template>
 

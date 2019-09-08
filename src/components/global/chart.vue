@@ -1,12 +1,23 @@
 <template>
-  <div v-if="candles.length">
-    <h4>Market graph</h4>
-    <chart :options="dynOptions" auto-resize ref="chart" class="full-width"></chart>
-  </div>
+   <chart :options="dynOptions" v-if="candles.length" auto-resize ref="chart" class="full-width"></chart>
 </template>
 
 <script>
   import _ from "lodash";
+  // import individual components to save build size...
+  import 'echarts/lib/chart/line'
+  import 'echarts/lib/chart/bar'
+  import 'echarts/lib/chart/candlestick'
+  import 'echarts/lib/component/tooltip'
+  import 'echarts/lib/component/dataZoom'
+  import 'echarts/lib/component/legend'
+  import 'echarts/lib/component/axis'
+  import 'echarts/lib/component/axisPointer'
+  import 'echarts/lib/component/title'
+  import 'echarts/lib/component/dataset'
+  import 'echarts/lib/component/markPoint'
+  import 'echarts/lib/component/markLine'
+
   import ECharts from 'vue-echarts'
   import moment from 'moment';
 

@@ -1,32 +1,60 @@
 <template>
-  <div>
-    <div>
-      <h4>Backtest result</h4>
-    </div>
+  <div class="q-my-md">
+    <div class="text-h5 q-mb-md">Backtest result</div>
     <div>
       <result-summary v-if="result && result.performanceReport" :report="result.performanceReport"/>
     </div>
-    <div>
-      <echart :candles="candles" :trades="trades" :indicators="indicators"></echart>
+    <div v-if="candles.length">
+      <q-card flat bordered class="q-my-md">
+        <q-card-section class="bg-cyan-1">
+          <div class="text-h6">Market graph</div>
+        </q-card-section>
+        <q-separator></q-separator>
+        <q-card-section>
+          <echart :candles="candles" :trades="trades" :indicators="indicators"></echart>
+        </q-card-section>
+        <q-separator></q-separator>
+        <q-card-actions align="around">
+          <excel-json
+            :data="genExportable()"
+            name="Backtest-Result.csv"
+            type="csv"
+          >
+            <q-btn flat icon="file_download" label="backtest CSV" color="amber"></q-btn>
+          </excel-json>
+          <excel-json
+            :data="genExportable()"
+            name="Backtest-Result.xls"
+            type="xls"
+          >
+            <q-btn flat icon="file_download" label="backtest XLS" color="amber"></q-btn>
+          </excel-json>
+          <excel-json
+            v-if="result.roundtrips && result.roundtrips.length"
+            :data="result.roundtrips"
+            name="Backtest-Roundtrips.xls"
+            type="xls"
+          >
+            <q-btn flat icon="file_download" label="roundtrips XLS" color="teal"></q-btn>
+          </excel-json>
+          <excel-json
+            v-if="result.roundtrips && result.roundtrips.length"
+            :data="result.roundtrips"
+            name="Backtest-Roundtrips.csv"
+            type="csv"
+          >
+            <q-btn flat icon="file_download" label="roundtrips csv" color="teal"></q-btn>
+          </excel-json>
+        </q-card-actions>
+      </q-card>
     </div>
-    <div class="row justify-center">
-      <excel-json class="column q-pa-sm" :data="genExportable()" name="Backtest-Result.csv" type="csv">
-        <q-btn icon="file download" label="backtest CSV" color="amber"></q-btn>
-      </excel-json>
-      <excel-json class="column q-pa-sm" :data="genExportable()" name="Backtest-Result.xls" type="xls">
-        <q-btn icon="file download" label="backtest XLS" color="amber"></q-btn>
-      </excel-json>
-      <excel-json v-if="result.roundtrips && result.roundtrips.length" class="column q-pa-sm" :data="result.roundtrips"
-                  name="Backtest-Roundtrips.xls" type="xls">
-        <q-btn icon="file download" label="roundtrips XLS" color="teal"></q-btn>
-      </excel-json>
-      <excel-json v-if="result.roundtrips && result.roundtrips.length" class="column q-pa-sm" :data="result.roundtrips"
-                  name="Backtest-Roundtrips.csv" type="csv">
-        <q-btn icon="file download" label="roundtrips csv" color="teal"></q-btn>
-      </excel-json>
-    </div>
     <div>
-      <roundtrip-table v-if="result && result.performanceReport" :roundtrips="result.roundtrips" :asset="result.performanceReport.asset" :currency="result.performanceReport.currency"/>
+      <roundtrip-table
+        v-if="result && result.performanceReport"
+        :roundtrips="result.roundtrips"
+        :asset="result.performanceReport.asset"
+        :currency="result.performanceReport.currency"
+      />
     </div>
   </div>
 </template>
