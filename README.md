@@ -1,6 +1,7 @@
+## UPDATE 2019-09-08: UI is now ported to Quasar Framework 1.0 ##
 # Gordon-UI for Gekko trading bot
 
-This is my personal try to port the original Gekko UI to the Quasar Framework 1.0.
+This is my personal try to port the original Gekko UI to the *Quasar Framework 1.0*.
 It's based off the original code from the [Gekko trading bot](https://gekko.wizb.it/) UI.
 
 Use this parallel to the original Gekko-UI (or compile and replace the original).
