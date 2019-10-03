@@ -55,7 +55,10 @@
     'wcprice',
     'wilders',
     'wma',
-    'zlema'
+    'zlema',
+    'short',
+    'medium',
+    'long'
   ];
   const chartPatterns = [
     ...userPatterns,
@@ -704,6 +707,16 @@
               scale: true
           }); // create a eighth yAxis // Grid Index 3 right
 
+          // push date to x-axis for the four x-axis that exist (0,1,2,3)
+          while (options.xAxis.length < 4) {
+            options.xAxis.push({
+              type: "category",
+              axisLabel: {
+                show: false
+              }
+            });
+          }
+
           //group by 'group' as only indicators have a group
           let groupArray = _.groupBy(options.dimensions, 'group');
 
@@ -727,16 +740,6 @@
                                   yAxisIndex = 0;
 
                               } else if (indicator.displayType === 'indicator') {
-
-                                  // push date to x-axis for the four x-axis that exist (0,1,2,3)
-                                  if (options.xAxis.length < 4) {
-                                      options.xAxis.push({
-                                          type: "category",
-                                          axisLabel: {
-                                              show: false
-                                          }
-                                      });
-                                  }
 
                                   let group = indicator.group;
 
