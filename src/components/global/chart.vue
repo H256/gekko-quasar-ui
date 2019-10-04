@@ -25,13 +25,17 @@
   const userPatterns = (window.CONFIG.userChartConfig && window.CONFIG.userChartConfig.patterns) || [];
   const userOverlays = (window.CONFIG.userChartConfig && window.CONFIG.userChartConfig.overlays) || [];
 
+  let patternsArray = [];
+
   const chartOverlays = [
     ...userOverlays,
+    'ovr',
     'avgprice',
     'bbands',
     'dema',
     'ema',
     'hma',
+    'ht_trendline',
     'kama',
     'linreg',
     'ma',
@@ -51,7 +55,10 @@
     'wcprice',
     'wilders',
     'wma',
-    'zlema'
+    'zlema',
+    'short',
+    'medium',
+    'long'
   ];
   const chartPatterns = [
     ...userPatterns,
@@ -119,6 +126,7 @@
   ];
   const chartIndicators = [
     ...userIndicators,
+    'ind',
     'ad',
     'adosc',
     'adx',
@@ -139,6 +147,11 @@
     'emv',
     'fisher',
     'fosc',
+    'ht_dcperiod',
+    'ht_dcphase',
+    'ht_phasor',
+    'ht_sine',
+    'ht_trendmode',
     'kvo',
     'linregintercept',
     'linregslope',
@@ -212,427 +225,648 @@
           {name: "volume", type: "number", displayName: "Volume"},
           {name: "start", type: "category", displayName: "Start"}
         ],
-        upColor: "#ec0000",
-        //upBorderColor: "#8A0000",
-        downColor: "#00da3c",
-        // downBorderColor: "#008F28"
+        upColor: "#00da3c",
+        downColor: "#ec0000",
       };
     },
     methods: {
-      setGroups() {
-        this.indicatorChartGroups = _.filter(Object.keys(_.groupBy(this.dimensions, 'group')), function (i) {
-          return i !== 'undefined'
-        });
-      },
+
       extendDimensions() {
-        let ctx = this;
-        let cnt = 0;
-        // EXTEND DIMENSIONS WITH INDICATORS
-        if (!_.isEmpty(this.indicators)) {
-          _.each(Object.keys(ctx.indicators), function (item) {
-            let ind = ctx.indicators[item];
-            _.each(ind.indicators, function (indicatorResult, key) {
-              if (!_.isEmpty(indicatorResult) || (!_.isNull(indicatorResult) && !_.isUndefined(indicatorResult))) {
-                if (_.isObject(indicatorResult)) {
-                  let k = Object.keys(indicatorResult);
-                  _.each(k, function (it) {
-                    let o = {};
-                    if (!(it === 'result')) {
-                      o['name'] = key + '_' + it;
-                      o['group'] = key;
-                      o['type'] = 'number';
-                      o['displayName'] = key;
-                    } else {
-                      o['name'] = it;
-                      o['group'] = it;
-                      o['type'] = 'number';
-                      o['displayName'] = key;
-                    }
 
-                    o['displayType'] = ctx.checkForDisplayType(it);
+          let ctx = this;
 
-                    if (!_.find(ctx.dimensions, {name: o.name}))
-                      ctx.dimensions.push(o);
-                  })
-                } else {
-                  let o = {};
-                  o['name'] = key;
-                  o['group'] = key;
-                  o['type'] = "number";
-                  o['displayName'] = key;
-
-                  o['displayType'] = ctx.checkForDisplayType(key);
-
-                  if (!_.find(ctx.dimensions, {name: o.name}))
-                    ctx.dimensions.push(o);
-                }
-              }
-            });
-
-            cnt++;
-
-          });
-        }
-        // setup each Indicator (grouped) as one chart based on returned data from the backtest
-        this.setGroups();
-      },
-      extendCandlesWithIndicatorValues() {
-        let ctx = this;
-        let dim = this.dimensions.map(d => d.name);
-        if (this.candles[0]) {
-          let cDim = Object.keys(this.candles[0]);
-          let diff = _.difference(dim, cDim);
-
-          // patch candles with dimension
+          // EXTEND DIMENSIONS WITH INDICATORS
           if (!_.isEmpty(this.indicators)) {
-            _.each(ctx.candles, function (candle, index) { // indicator-array
-              let indicator = ctx.indicators[index].indicators;
-              _.each(indicator, function (value, key) { // loop indicators-object key-value pairs
-                if (_.isObject(value)) { // check if it's an object
-                  _.each(value, function (subValue, subKey) { // if so, loop all values
-                    candle[`${key}_${subKey}`] = subValue; // build correct key
-                  })
-                } else { // else just patch candle value
-                  candle[key] = value;
-                }
+              //the key is just a number which represents the the location in the array
+              //each location in the array contains all the indicators for each time step as an Object
+              _.each(Object.keys(ctx.indicators), function(arrayIndexNumber) {
+                  //ind is the Object at a particular timestep
+                  //it contains all the indicators for that timestep
+                  let ind = ctx.indicators[arrayIndexNumber];
+                  //For each extracted timestep iterate over each indicator within that timestep
+                  //indicatorResult is either an object containing more than one indicator (like + and - lines for example)
+                  //or a number in the case where the indicator which only has one line to plot
+                  //indicatorName is Example: this.addTalibIndicator('smaFast', 'sma', params);
+                  //smaFast is the indicatorName
+                  _.each(ind.indicators, function(indicatorResult, indicatorName) {
+
+                      //the indicator name i.e. the first element in the brackets of the following in the strategy:
+                      //this.addTalibIndicator('sma_Fast', 'sma', smaFastParams);
+                      //should always have the indicator type as detailed in the second element in the brackets
+                      //If you wish to have more than one of that type of indicator (for example mulitple sma indicators)
+                      //then you will have to specify a unique name. This should always be in this format (i.e using a hyphen separator):
+                      //indicatorname-uniquename
+                      //the code below splits the above to ensure the indicator name is consistent with the lists of indicator names used to 
+                      //plot the indicator in the right place on the charts
+
+                      //this is an array with the split of the string occuring at a double underscore
+                      let indicatorSplit = indicatorName.split(/\_(?=\_)/);
+                      //this is the part before a double underscore
+                      let indicatorFirstPart = indicatorName.split(/\_(?=\_)/)[0];
+
+                      let displayType = ctx.checkForDisplayType(indicatorFirstPart);
+
+                      //Special grouping / assignments
+                      let fixedGroup = false;
+                      let groupNumber = 1;
+
+                      switch (indicatorFirstPart) {
+                          case "topleft":
+                              indicatorFirstPart = "ind";
+                              fixedGroup = true;
+                              groupNumber = 1;
+                              break;
+                          case "topright":
+                              indicatorFirstPart = "ind";
+                              fixedGroup = true;
+                              groupNumber = 2;
+                              break;
+                          case "midleft":
+                              indicatorFirstPart = "ind";
+                              fixedGroup = true;
+                              groupNumber = 3;
+                              break;
+                          case "midright":
+                              indicatorFirstPart = "ind";
+                              fixedGroup = true;
+                              groupNumber = 4;
+                              break;
+                          case "botleft":
+                              indicatorFirstPart = "ind";
+                              fixedGroup = true;
+                              groupNumber = 5;
+                              break;
+                          case "botright":
+                              indicatorFirstPart = "ind";
+                              fixedGroup = true;
+                              groupNumber = 6;
+                              break;
+                          default:
+                              break;
+                      }
+
+
+
+
+                      if (!_.isEmpty(indicatorResult) || (!_.isNull(indicatorResult) && !_.isUndefined(indicatorResult))) {
+
+                          //Check if the indicator is an object
+                          //This will happen when the indicator returns more than one set of data
+                          //for example a line for plus and a line for minus
+                          if (_.isObject(indicatorResult)) {
+
+                              //the indicatorName is the first parameter in the brackets of the indicator when added in the strategy
+                              //e.g. this.addTalibIndicator('sma__Fast', 'sma', smaFastParams);
+                              //in the above case "indicatorName" would be "sma__Fast"
+                              //
+                              //the "subName" value is the different parts of the object returned for each "indicatorName"
+                              //for example ht_sine produces:
+                              //indicatorName: ht_sine subName: outSine
+                              //and 
+                              //indicatorName: ht_sine subName: outLeadSine
+                              _.each(indicatorResult, function(result, subName) {
+
+                                  let name = indicatorName + '_' + subName;
+                                  let dimensionsArray = ctx.dimensions;
+                                  ctx.createIndicator(result, name, displayType, fixedGroup, groupNumber, dimensionsArray);
+
+                              });
+
+                              //otherwise there is just one return value and hence it is not an object
+                          } else {
+
+                              let name = indicatorName;
+                              let dimensionsArray = ctx.dimensions;
+                              ctx.createIndicator(indicatorResult, name, displayType, fixedGroup, groupNumber, dimensionsArray);
+
+                          }
+                      }
+
+
+                  });
               });
-              // patch remaining properties of candle
-              _.each(diff, function (value, idx) {
-                if (!candle[value]) candle[value] = null;
-              });
-            });
           }
-        }
       },
-      checkForDisplayType: function (resultName) {
-        if (resultName) {
-          if (chartIndicators.indexOf(resultName) >= 0) return 'indicator';
-          if (chartOverlays.indexOf(resultName) >= 0) return 'overlay';
-          if (chartPatterns.indexOf(resultName) >= 0) return 'pattern';
-        }
-        // defaults to overlay
-        return 'overlay';
-      },
-      updateCandles: function () {
-        // put all values into one array...
-        this.extendCandlesWithIndicatorValues();
 
-        let options = {
-          title: {
-            left: 'center',
-            text: "Market including trades"
-          },
-          renderer: 'svg',
-          tooltip: {
-            trigger: "axis",
-            axisPointer: {
-              type: "cross"
-            }
-          },
-          axisPointer: {
-            link: {xAxisIndex: 'all'}
-          },
-          xAxis: [],
-          yAxis: [],
-          dataZoom: [
-            {
-              id: "dataZoomX",
-              type: "slider",
-              xAxisIndex: [0],
-              filterMode: "filter"
-            },
-            /*{
-              id: "dataZoomY",
-              type: "slider",
-              yAxisIndex: [0],
-              filterMode: "empty"
-            }*/
-          ]
-        };
+      createIndicator: function(result, name, displayType, fixedGroup, groupNumber, dimensionsArray) {
 
-        const tradeMarkings = [];
-        let lowest = Number.POSITIVE_INFINITY;
-        let highest = Number.NEGATIVE_INFINITY;
-        let tmpLow, tmpHigh;
-        for (let i = this.candles.length - 1; i >= 0; i--) {
-          this.candles[i].start = moment(this.candles[i].start).format('YYYY-MM-DD HH:mm:ss')
-          tmpLow = this.candles[i].low;
-          tmpHigh = this.candles[i].low;
-          if (tmpLow < lowest) lowest = tmpLow;
-          if (tmpHigh > highest) highest = tmpHigh;
-        }
+          let o = {};
+          o['displayType'] = displayType;
+          o['name'] = name;
+          o['type'] = 'number';
+          if (fixedGroup) {
+              o['group_fixed'] = true;
+              o['group'] = groupNumber;
+          } else {
+              o['group_fixed'] = false;
+              o['group'] = 1;
+          }
+          o['max'] = result;
+          o['min'] = result;
 
-        options.dataset = {};
-        options.dataset.source = this.candles;
+          //if it already exists in the dimensions array don't add it
+          //otherwise add it
 
-        //options.dataZoom[1].startValue = lowest;
-        //options.dataZoom[1].endValue = highest;
+          let objectIndex = _.findIndex(dimensionsArray, {
+              name: o.name
+          });
 
-        options.dataZoom[0].start = 80;
-        options.dataZoom[0].end = 100;
+          //if it already exists in the dimensions array don't add it
+          //otherwise add it (-1 index means it doesn't exist)
+          if (objectIndex === -1) {
 
-        options.legend = {
-          top: 30,
-          data: ["Market", "Volume"]
-        };
+              dimensionsArray.push(o);
 
-        options.series = [];
-        // if the backtester yielded more than X candles switch to line instead of candlesticks
-        if (this.candles.length > this.marketLineThreshold) {
-          options.series.push(
-            {
-              name: 'Market',
-              type: "line",
-              encode: {
-                x: "start",
-                y: ["close"],
-                tooltip: ["open", "close", "high", "low"]
-              },
-              showSymbol: false,
-              itemStyle: {
-                normal: {
-                  color: '#000',
-                  lineStyle: {
-                    type: 'solid',
-                    width: '1'
+          } else {
+
+              //if it already exists update the min and max values if required
+
+              let indic = dimensionsArray[objectIndex];
+              if (indic.max < o.max) {
+
+                  dimensionsArray[objectIndex].max = o.max;
+
+              } else if (indic.min < o.min) {
+
+                  dimensionsArray[objectIndex].min = o.min;
+
+              }
+
+              //set the group based on the max and min values
+
+              if (o.displayType === 'indicator' && !fixedGroup) {
+
+                  indic = dimensionsArray[objectIndex];
+                  let max = indic.max;
+                  let min = indic.min;
+                  let currentGroup = indic.group;
+
+
+                  if (max > 10000 || min < -10000) {
+                      dimensionsArray[objectIndex].group = 6;
+                  } else if (((max > 1000 && max <= 10000) || (min < -1000 && min >= -10000)) && currentGroup < 5) {
+                      dimensionsArray[objectIndex].group = 5;
+                  } else if (((max > 100 && max <= 1000) || (min < -100 && min >= -1000)) && currentGroup < 4) {
+                      dimensionsArray[objectIndex].group = 4;
+                  } else if (((max > 50 && max <= 100) || (min < -50 && min >= -100)) && currentGroup < 3) {
+                      dimensionsArray[objectIndex].group = 3;
+                  } else if (((max > 1 && max <= 50) || (min < -1 && min >= -50)) && currentGroup < 2) {
+                      dimensionsArray[objectIndex].group = 2;
                   }
-                },
+
+              }
+
+          }
+
+      },
+
+
+
+      extendCandlesWithIndicatorValues() {
+          let ctx = this;
+          //this is list of all the names of the:
+          // candles (low,high,open,close,volume,start) and
+          // indicators, overlays and patterns (sma, obv, shootingstar etc.)
+          let dim = this.dimensions.map(d => d.name);
+
+          if (this.candles[0]) {
+              //this is just the candles (low,high,open,close,volume,start)
+              let cDim = Object.keys(this.candles[0]);
+              //this is just the indicators, overlays and patterns
+              let diff = _.difference(dim, cDim);
+
+              //set an array that conatains only the names of the patterns that will be plotted
+              let patterns = [];
+              let counter = 0;
+              _.each(diff, function(data, index) {
+                  let firstPart = data.split(/\_/)[0];
+                  if (chartPatterns.indexOf(firstPart) >= 0) {
+                      patterns[counter] = data;
+                      counter++;
+                  }
+              });
+
+              // patch candles with dimension
+              if (!_.isEmpty(this.indicators)) {
+                  //loop through the candles array
+                  _.each(ctx.candles, function(candle, index) {
+                      //extract from the indicator array the data at the same timestep
+                      let indicator = ctx.indicators[index].indicators;
+
+                      //loop through the indicator values at that timestep
+                      _.each(indicator, function(value, key) {
+                          //check if it's an object (it will be an object if the indicator plots more than one line)
+                          //for example plus and minus oscillators that use crossing as a signal to buy or sell
+                          if (_.isObject(value)) {
+
+                              _.each(value, function(subValue, subKey) {
+                                  //add the indicator to the candle array
+                                  candle[`${key}_${subKey}`] = subValue; // build correct key
+
+                              })
+
+                          } else {
+
+                              //add the indicator to the candle array
+                              candle[key] = value;
+
+                          }
+
+                      });
+                      //if a value is not returned for a particular time step then set it to null
+                      //this ensures a value is not presented
+                      //for example a lot of the time the patterns don't return a value as the pattern 
+                      //doesn't exist for that timestep. Setting null ensures nothing is plotted
+                      _.each(diff, function(indicatorName, index) {
+
+                          if (!candle[indicatorName]) candle[indicatorName] = null;
+
+                      });
+
+                      _.each(patterns, function(patternName, index) {
+
+                          if (candle[patternName] != null) {
+
+                              let nameSlice = patternName.slice(3);
+                              let finalName = nameSlice.split(/\_/)[0];
+
+                              //change the value of the pattern value in the candle array to the 'high' from the candle
+                              candle[patternName] = candle['high'];
+
+                              //add pattern value to pattern array
+                              let pattern = {};
+                              pattern['name'] = finalName;
+                              pattern['value'] = candle['high'];
+                              pattern['date'] = moment(candle['start']).format('YYYY-MM-DD HH:mm:ss');
+                              patternsArray.push(pattern);
+
+                          }
+
+
+
+                      });
+                  });
+              }
+          }
+      },
+
+
+
+      checkForDisplayType: function(resultName) {
+          if (resultName) {
+              if (chartIndicators.indexOf(resultName) >= 0) return 'indicator';
+              if (chartOverlays.indexOf(resultName) >= 0) return 'overlay';
+              if (chartPatterns.indexOf(resultName) >= 0) return 'pattern';
+          }
+          // defaults to indicator
+          return 'indicator';
+      },
+
+
+      updateCandles: function() {
+          // put all values into one array...
+          this.extendCandlesWithIndicatorValues();
+
+          let options = {
+              title: {
+                  left: 'center',
+                  text: "Market including trades"
               },
-              xAxisIndex: 0,
-              yAxisIndex: 0
-            }
-          );
-        } else {
-          options.series.push(
-            {
+              renderer: 'svg',
+              tooltip: {
+                  trigger: "axis",
+                  axisPointer: {
+                      type: "cross"
+                  }
+              },
+              axisPointer: {
+                  link: {
+                      xAxisIndex: 'all'
+                  }
+              },
+              xAxis: [],
+              yAxis: [],
+              dataZoom: [{
+                  id: "dataZoomX",
+                  type: "slider",
+                  xAxisIndex: [0],
+                  filterMode: "filter"
+              }, ]
+          };
+
+          const markers = [];
+          let lowest = Number.POSITIVE_INFINITY;
+          let highest = Number.NEGATIVE_INFINITY;
+          let tmpLow, tmpHigh;
+          for (let i = this.candles.length - 1; i >= 0; i--) {
+              this.candles[i].start = moment(this.candles[i].start).format('YYYY-MM-DD HH:mm:ss')
+              tmpLow = this.candles[i].low;
+              tmpHigh = this.candles[i].low;
+              if (tmpLow < lowest) lowest = tmpLow;
+              if (tmpHigh > highest) highest = tmpHigh;
+          }
+
+          options.dataset = {};
+          options.dataset.source = this.candles;
+
+          options.dataZoom[0].start = 80;
+          options.dataZoom[0].end = 100;
+
+          options.legend = {
+              top: 30,
+              data: ["Market", "Volume"]
+          };
+
+          options.series = [];
+          options.series.push({
               name: 'Market',
               type: "candlestick",
               encode: {
-                x: "start",
-                y: ["open", "close", "high", "low"],
-                tooltip: ["open", "close", "high", "low"]
+                  x: "start",
+                  y: ["open", "close", "high", "low"],
+                  tooltip: ["open", "close", "high", "low"]
               },
               itemStyle: {
-                normal: {
-                  color: this.upColor,
-                  color0: this.downColor,
-                  borderColor: this.upBorderColor,
-                  borderColor0: this.downBorderColor
-                }
+                  normal: {
+                      color: this.upColor,
+                      color0: this.downColor,
+                      borderColor: this.upBorderColor,
+                      borderColor0: this.downBorderColor
+                  }
               },
               xAxisIndex: 0,
               yAxisIndex: 0
-            }
-          );
-        }
-
-        options.series.push(
-          {
-            name: "Volume",
-            type: "bar",
-            encode: {
-              x: "start",
-              y: "volume"
-            },
-            showSymbol: false,
-            itemStyle: {
-              normal: {
-                color: "#aa4845",
-                opacity: 0.2
-              }
-            },
-            xAxisIndex: 0,
-            yAxisIndex: 1
-          }
-        );
-
-        options.xAxis.push({type: 'category'});
-        options.yAxis.push({scale: true});
-        options.yAxis.push({scale: true, show: false});
-
-        options.dimensions = this.dimensions;
-
-        // TRADES DISPLAY
-        if (this.trades && this.trades.length) {
-          let self = this;
-          _.each(this.trades, function (item) {
-            const formatedDate = moment(item.date).format('YYYY-MM-DD HH:mm:00')
-            let tmp = {
-              coord: [formatedDate, item.price],
-              name: item.action,
-              label: {
-                position: item.action === "sell" ? "top" : "bottom",
-                distance: 15
-              },
-              value: item.action + "\n" + item.price,
-              symbolSize: [15, 30],
-              symbol: "arrow",
-              symbolRotate: item.action === "sell" ? 180 : 0,
-              //symbolOffset: item.action === 'sell' ? [0, -5] : [0, 5],
-              itemStyle: {
-                color: item.action === "sell" ? self.upColor : self.downColor
-              }
-            };
-            tradeMarkings.push(tmp);
           });
-          options.series[0]["markPoint"] = {
-            data: tradeMarkings
-          };
-        }
 
-        // CREATE LINE FOR EACH INDICATOR AND DETERMINE AXIS FOR DISPLAY
-        let group = _.groupBy(options.dimensions, 'group');
-        options.yAxis.push({scale: false}); // create a third yAxis // Grid Index 1 left
-        options.yAxis.push({scale: true}); // create a fourth yAxis // Grid Index 1 right
-        options.yAxis.push({scale: true}); // create a fifth yAxis // Grid Index 2 left
-        let lastyAxisIndicator = 'left';
-        _.each(Object.keys(group), function (item) {
-          if (item !== 'undefined') {
-            _.each(group[item], function (sItem) {
-              if (sItem !== undefined) {
-                let yAxisIndex = 2;
-                let xAxisIndex = 0;
-                if (sItem.displayType) {
-                  if (sItem.displayType === 'overlay') {
-                    yAxisIndex = 0;
+          options.series.push({
+              name: "Volume",
+              type: "bar",
+              encode: {
+                  x: "start",
+                  y: "volume"
+              },
+              showSymbol: false,
+              itemStyle: {
+                  normal: {
+                      color: "#aa4845",
+                      opacity: 0.2
                   }
-                  else if (sItem.displayType === 'indicator') {
-                    // push to grid axis
-                    if (options.xAxis.length < 3) {
-                      options.xAxis.push({type: "category", axisLabel:{show:false}});
-                    }
-                    xAxisIndex = 1;
-                    yAxisIndex = lastyAxisIndicator === 'left' ? 2 : 3;
-                    if (lastyAxisIndicator === 'left') {
-                      lastyAxisIndicator = 'right';
-                    }
-                    else lastyAxisIndicator = 'left';
-                  }
-                  else if (sItem.displayType === 'pattern') {
-                    if (options.xAxis.length < 3) {
-                      options.xAxis.push({type: "category", axisLabel:{show:false}})
-                    }
-                    xAxisIndex = 2;
-                    yAxisIndex = 4;
-                  }
-                }
-                // don't display if the indicator is a pattern-recognition
-                if (yAxisIndex !== null) {
-                  let seriesObj = {
-                    type: "line",
-                    encode: {
-                      x: "start",
-                      y: sItem.name
-                    },
-                    xAxisIndex: xAxisIndex,
-                    yAxisIndex: yAxisIndex,
-                    name: sItem.name,
-                    showSymbol: false
+              },
+              xAxisIndex: 0,
+              yAxisIndex: 1
+          });
+
+          options.xAxis.push({
+              type: 'category'
+          });
+          options.yAxis.push({
+              scale: true
+          });
+          options.yAxis.push({
+              scale: true,
+              show: false
+          });
+
+          options.dimensions = this.dimensions;
+
+          // TRADES DISPLAY
+          let ctx = this;
+          if (this.trades && this.trades.length) {
+              _.each(this.trades, function(trade) {
+                  const formattedDate = moment(trade.date).format('YYYY-MM-DD HH:mm:00')
+                  let tradeMarker = {
+                      coord: [formattedDate, trade.price],
+                      name: trade.action,
+                      label: {
+                          position: trade.action === "sell" ? "top" : "bottom",
+                          distance: 15
+                      },
+                      value: trade.action + "\n" + trade.price,
+                      symbolSize: [15, 30],
+                      symbol: "arrow",
+                      symbolRotate: trade.action === "sell" ? 180 : 0,
+                      symbolOffset: trade.action === "sell" ? [0, '-60%'] : [0, '60%'],
+                      itemStyle: {
+                          color: trade.action === "sell" ? ctx.downColor : ctx.upColor
+                      }
                   };
-                  options.legend.data.push(sItem.name)
-                  options.series.push(seriesObj);
-                }
+                  markers.push(tradeMarker);
+              });
+          }
+          // PATTERNS DISPLAY
+          if (patternsArray && patternsArray.length) {
+              _.each(patternsArray, function(pattern) {
+                  let patternMarker = {
+                      coord: [pattern.date, pattern.value],
+                      name: pattern.name,
+                      label: {
+                          position: "top",
+                          distance: 15
+                      },
+                      value: pattern.name,
+                      symbolSize: [15, 30],
+                      symbol: "diamond",
+                      symbolRotate: 180,
+                      symbolOffset: [0, '-100%'],
+                      itemStyle: {
+                          color: '#039be5'
+                      }
+                  };
+                  markers.push(patternMarker);
+              });
+
+          }
+
+          if ((this.trades && this.trades.length) || (patternsArray && patternsArray.length)) {
+
+              options.series[0]["markPoint"] = {
+                  data: markers
+              };
+
+          }
+
+
+          // CREATE LINE FOR EACH INDICATOR AND DETERMINE AXIS FOR DISPLAY
+
+          options.yAxis.push({
+              scale: true
+          }); // create a third yAxis // Grid Index 1 left
+          options.yAxis.push({
+              scale: true
+          }); // create a fourth yAxis // Grid Index 1 right
+          options.yAxis.push({
+              scale: true
+          }); // create a fifth yAxis // Grid Index 2 left
+          options.yAxis.push({
+              scale: true
+          }); // create a sixth yAxis // Grid Index 2 right
+          options.yAxis.push({
+              scale: true
+          }); // create a seventh yAxis // Grid Index 3 left
+          options.yAxis.push({
+              scale: true
+          }); // create a eighth yAxis // Grid Index 3 right
+
+          // push date to x-axis for the four x-axis that exist (0,1,2,3)
+          while (options.xAxis.length < 4) {
+            options.xAxis.push({
+              type: "category",
+              axisLabel: {
+                show: false
               }
             });
           }
-        });
-        // now correct xAxis assignments if necessary (because we couldn't determine it in the above loop :(
-        let axisLength = options.xAxis.length;
-        _.each(options.series, function (s) {
-          if (s.xAxisIndex && s.xAxisIndex > (axisLength - 1)) {
-            s.xAxisIndex = axisLength - 1;
-            s.yAxisIndex = s.yAxisIndex - 1;
-          }
-        });
 
-        // Create Grid and assign axes stuff....
-        switch (options.xAxis.length) {
-          case 2:
-            this.dynStyle = 'twoAxis';
-            this.dynHeight = 500;
-            break;
-          case 3:
-            this.dynStyle = 'threeAxis';
-            this.dynHeight = 600;
-            break;
-          default:
-            this.dynStyle = 'oneAxis';
-            this.dynHeight = 300;
-            break;
-        }
+          //group by 'group' as only indicators have a group
+          let groupArray = _.groupBy(options.dimensions, 'group');
 
-        // Grid Settings:
-        // yAxis 0+1, xAxis 0 => Index: 0
-        // yAxis 2+3, xAxis 1 => Index: 1
-        // yAxis 4, xAxis 2 => Index: 2
-        if (axisLength > 1) {
-          // Define a Grid!
-          let preGrid = [{
-            left: 20,
-            right: 20,
-            top: 110,
-            height: 220
-          }, {
-            left: 20,
-            right: 20,
-            height: 80,
-            top: 360
-          }, {
-            left: 20,
-            right: 20,
-            height: 40,
-            top: 470
-          }];
+          _.each(Object.keys(groupArray), function(groupNumber) {
 
-          options.grid = [];
-          for (let i = 0; i <= axisLength - 1; i++) {
-            options.grid.push(preGrid[i]);
-          }
-          switch (options.grid.length) {
-            case 2:
-              options.xAxis[1]['gridIndex'] = 1;
-              options.yAxis[2]['gridIndex'] = 1;
-              options.yAxis[3]['gridIndex'] = 1;
-              options.dataZoom[0].xAxisIndex = [0, 1]
-              options.yAxis.splice(4, 1);
-              break;
-            case 3:
+              //if the group returns as undefined we know it is a candle or marker
+              //which we don't want
+              if (groupNumber !== 'undefined') {
+
+                  _.each(groupArray[groupNumber], function(indicator) {
+
+                      if (indicator !== undefined) {
+
+                          let yAxisIndex = 2;
+                          let xAxisIndex = 0;
+
+                          if (indicator.displayType) {
+
+                              if (indicator.displayType === 'overlay') {
+
+                                  yAxisIndex = 0;
+
+                              } else if (indicator.displayType === 'indicator') {
+
+                                  let group = indicator.group;
+
+                                  //assign the lines based on the group
+                                  //the groups are decided by absolute max and min values of each series
+
+                                  if (group === 1) {
+                                      xAxisIndex = 1;
+                                      yAxisIndex = 2;
+                                  } else if (group === 2) {
+                                      xAxisIndex = 1;
+                                      yAxisIndex = 3;
+                                  } else if (group === 3) {
+                                      xAxisIndex = 2;
+                                      yAxisIndex = 4;
+                                  } else if (group === 4) {
+                                      xAxisIndex = 2;
+                                      yAxisIndex = 5;
+                                  } else if (group === 5) {
+                                      xAxisIndex = 3;
+                                      yAxisIndex = 6;
+                                  } else if (group === 6) {
+                                      xAxisIndex = 3;
+                                      yAxisIndex = 7;
+                                  } else {
+                                      xAxisIndex = 3;
+                                      yAxisIndex = 7;
+                                  }
+
+                              }
+                          }
+
+                          //we don't want to plot patterns as lines so skip them
+                          if (indicator.displayType != 'pattern') {
+
+                              let seriesObj = null;
+                              // assign legend info and line to appropriate chart
+                              if (yAxisIndex !== null) {
+                                  seriesObj = {
+                                      type: "line",
+                                      encode: {
+                                          x: "start",
+                                          y: indicator.name
+                                      },
+                                      xAxisIndex: xAxisIndex,
+                                      yAxisIndex: yAxisIndex,
+                                      name: indicator.name,
+                                      showSymbol: false
+                                  };
+                                  options.legend.data.push(indicator.name)
+                                  options.series.push(seriesObj);
+                              }
+                          }
+
+                      }
+                  });
+              }
+          });
+
+          let axisLength = options.xAxis.length;
+
+          //set the height of the graph container
+          this.dynHeight = 900;
+
+          // Grid Settings:
+          if (axisLength > 1) {
+
+              // Define a grid
+              let preGrid = [{
+                  left: 60,
+                  right: 60,
+                  top: '10%',
+                  height: '43%'
+              }, {
+                  left: 60,
+                  right: 60,
+                  top: '57%',
+                  height: '11%'
+              }, {
+                  left: 60,
+                  right: 60,
+                  top: '70%',
+                  height: '11%'
+              }, {
+                  left: 60,
+                  right: 60,
+                  top: '83%',
+                  height: '11%'
+              }];
+
+              options.grid = [];
+              for (let i = 0; i <= axisLength - 1; i++) {
+                  options.grid.push(preGrid[i]);
+              }
               options.xAxis[1]['gridIndex'] = 1;
               options.yAxis[2]['gridIndex'] = 1;
               options.yAxis[3]['gridIndex'] = 1;
               options.xAxis[2]['gridIndex'] = 2;
               options.yAxis[4]['gridIndex'] = 2;
-              options.dataZoom[0].xAxisIndex = [0, 1, 2]
-              break;
+              options.yAxis[5]['gridIndex'] = 2;
+              options.xAxis[3]['gridIndex'] = 3;
+              options.yAxis[6]['gridIndex'] = 3;
+              options.yAxis[7]['gridIndex'] = 3;
+              options.dataZoom[0].xAxisIndex = [0, 1, 2, 3]
           }
-        }
-        // dirty workaround fix :(
-        if (this.$refs.chart && this.$refs.chart.$el && this.$refs.chart.$el.style) {
-          this.$refs.chart.$el.style.height = this.dynHeight + "px";
-          //this.$refs.chart.$el.style.width = "100%";
-        }
+          // dirty workaround fix :(
+          if (this.$refs.chart && this.$refs.chart.$el && this.$refs.chart.$el.style) {
+              this.$refs.chart.$el.style.height = this.dynHeight + "px";
+          }
 
-        return options;
+          return options;
       }
+      //end of update candles function
     },
+    // end of methods
+
     watch: {
       candles: function () {
         this.preparedOptions = this.updateCandles();
       },
       trades: function () {
         this.preparedOptions = this.updateCandles();
-      },
-      selectedIndicator: function (newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.displaySide = 2;
-          this.preparedOptions = this.updateCandles();
-        }
-      },
-      displaySide: function (newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.preparedOptions = this.updateCandles();
-        }
       }
     }
+    // end of watch
+
   };
+  //end of export default
+
 </script>
