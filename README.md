@@ -34,7 +34,7 @@ To install, follow these steps:
 1. Install Quasar-CLI via npm `npm install -g @quasar/cli`, to make sure, everything is alright, follow the official installation guide to Quasar https://quasar.dev/quasar-cli/installation .
 2. Clone this repo to some location on your hardline (should work from any directory in DEV-Mode).
 3. Fire up your gekko in UI-Mode.
-4. CD into cloned repository and run `npm install`.
+4. CD into cloned repository and run `npm install` or if you prefer yarn, `yarn install`.
 5. Start the UI with `quasar dev`
 
 *Note: If it complains about missing modules, make sure, vue-cli and quasar-cli are properly installed.*
