@@ -13,7 +13,7 @@
     "axios": "^0.21.1",
     "echarts": "^4.2.1",
     "humanize-duration": "^3.20.1",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "quasar": "^1.1.0",
     "vue-echarts": "^4.0.3",
