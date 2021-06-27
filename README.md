@@ -1,3 +1,4 @@
+# !ARCHIVED! I am not working on this actively anymore.
 ## UPDATE 2019-09-08: UI is now ported to Quasar Framework 1.0 ##
 # Gordon-UI for Gekko trading bot
 
